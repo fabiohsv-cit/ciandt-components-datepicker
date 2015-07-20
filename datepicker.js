@@ -2,11 +2,11 @@
 
 define(['moment', 'ciandt-components-utilities', 'angular-ngMask', 'bootstrap-datetimepicker'], function () {
 
-    angular.module('ciandt.components.datepicker', ['ciandt.components.utilities']).constant('ciandt.components.datepicker.DatepickerConfig', {
+    angular.module('ciandt.components.layout.datepicker', ['ciandt.components.utilities']).constant('ciandt.components.layout.datepicker.DatepickerConfig', {
         template: '<div class="input-group date">' +
 			      '	<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>' +
 			      '</div>'
-    }).directive('appDatepicker', ['$compile', '$timeout', 'ciandt.components.utilities.Utilities', '$log', 'ciandt.components.datepicker.DatepickerConfig', function ($compile, $timeout, utilities, $log, DatepickerConfig) {
+    }).directive('appDatepicker', ['$compile', '$timeout', 'ciandt.components.utilities.Utilities', '$log', 'ciandt.components.layout.datepicker.DatepickerConfig', function ($compile, $timeout, utilities, $log, DatepickerConfig) {
         return {
             restrict: 'A',
             require: '?^ngModel',

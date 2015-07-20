@@ -1,23 +1,24 @@
-# ciandt-components-datepicker
-Datepicker component written in angularjs.
+# ciandt-components-layout
+Layout components written in angularjs.
 
 ### Install
 
 * Install the dependency:
 
    ```shell
-   bower install ciandt-components-datepicker --save
+   bower install ciandt-components-layout --save
    ```
-* Add datepicker.js to your code:
+* Add layout.js to your code:
 
    ```html
-   <script src='assets/libs/ciandt-components-datepicker/datepicker.js'></script>
+   <script src='assets/libs/ciandt-components-layout/layout.js'></script>
+   <script src='assets/libs/ciandt-components-layout/datepicker.js'></script>
    ```
    - note that the base directory used was assets/libs, you should change bower_components to assets/libs or move from bower_components to assets/libs with grunt.
 * Include module dependency:
 
    ```javascript
-   angular.module('yourApp', ['ciandt.components.datepicker']);
+   angular.module('yourApp', ['ciandt.components.layout']);
    ```
 ======
 
