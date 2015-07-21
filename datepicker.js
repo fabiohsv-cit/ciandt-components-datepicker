@@ -2,7 +2,7 @@
 
 define(['moment', 'ciandt-components-utilities', 'angular-ngMask', 'bootstrap-datetimepicker'], function () {
 
-    angular.module('ciandt.components.layout.datepicker', ['ciandt.components.utilities']).constant('ciandt.components.layout.datepicker.DatepickerConfig', {
+    angular.module('ciandt.components.layout.datepicker', ['ciandt.components.utilities', 'ngMask']).constant('ciandt.components.layout.datepicker.DatepickerConfig', {
         template: '<div class="input-group date">' +
 			      '	<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>' +
 			      '</div>'
