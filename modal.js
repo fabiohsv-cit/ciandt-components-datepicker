@@ -6,7 +6,7 @@ define(['angular'], function () {
         headerTpl: '<div class="panel-heading modal-header">{{titleTpl}}{{closeBtnTpl}}</div>',
         closeBtnTpl: '<span class="glyphicon glyphicon-remove close"></span>',
         titleTpl: '<strong><span class="glyphicon glyphicon-th"></span><i18n>{{appTitle}}</i18n></strong>',
-        defaultBodyClass: 'modal-body form-horizontal',
+        defaultElementClass: 'modal-body form-horizontal',
         defaultFormClass: 'form-validation',
         defaultTableClass: 'table-dynamic'
     }).directive('appModal', ['ciandt.components.layout.modal.ModalConfig', '$interpolate', '$timeout', function (ModalConfig, $interpolate, $timeout) {
@@ -18,7 +18,7 @@ define(['angular'], function () {
                     titleTpl: (attrs.appTitle ? $interpolate(ModalConfig.titleTpl)(angular.extend({}, attrs, scope)) : undefined)
                 }, attrs, scope)));
 
-                element.addClass(ModalConfig.defaultBodyClass);
+                element.addClass(ModalConfig.defaultElementClass);
 
                 if (element.is('form')) {
                     element.addClass(ModalConfig.defaultFormClass);

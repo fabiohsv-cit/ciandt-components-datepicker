@@ -10,6 +10,10 @@ define(['angular'], function () {
         return {
             restrict: 'A',
             compile: function (element, attributes) {
+				if (!element.hasClass('angular-ui-tree-nodes')) {
+					element.addClass('angular-ui-tree-nodes');
+				}
+
                 element.children().addClass('angular-ui-tree-child');
 
                 var children = element.children();
