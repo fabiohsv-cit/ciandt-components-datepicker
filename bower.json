@@ -1,18 +1,23 @@
 {
-  "name": "ciandt-components-datepicker",
+  "name": "ciandt-components-layout",
   "version": "0.0.1",
-  "homepage": "https://github.com/fabiohsv-cit/ciandt-components-datepicker",
+  "homepage": "https://github.com/fabiohsv-cit/ciandt-components-layout",
   "authors": [
     "Fábio Henrique da Silva Viana <fabiohsv@ciandt.com>"
   ],
-  "description": "Datepicker component",
-  "main": ["datepicker.js"],
+  "description": "Layout component",
+  "main": ["datepicker.js", "input.js", "layout.js", "modal.js", "panel.js", "treeview.js"],
   "moduleType": [
     "globals"
   ],
   "keywords": [
     "angular",
-    "datepicker"
+    "datepicker",
+	"input",
+	"modal",
+	"panel",
+	"treeview",
+	"layout"
   ],
   "dependencies": {
 	"eonasdan-bootstrap-datetimepicker": "~4.7.14",
