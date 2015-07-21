@@ -87,7 +87,25 @@ Layout components written in angularjs.
    - bodyTpl: define html to write arround of your element.
    - headerTpl: define html to write in the header panel.
 
-4. **Add app-input directive in your html**
+4. **Add app-modal directive in your html**
+   - this directive creates a bootstrap modal panel with few lines of code. The value setted in directive is the bootstrap col-lg size.
+   ```html
+   <form app-modal="1" app-title="My Modal">
+      ...
+	  <div class="modal-footer">
+	     ...
+	  </div>
+   </form>
+   ```
+   * if you need, you can customize the html. In your angular run from app.js, override the constant ciandt.components.layout.modal.ModalConfig and set your html. There are three attributes:
+   - defaultElementClass: default class to apply in your element
+   - defaultFormClass: default class to apply in the forms into your element
+   - defaultTableClass: default class to apply in the tables into your element
+   - headerTpl: define html to write in the header panel.
+   - titleTpl: define html to write the title content.
+   - closeBtnTpl: define html to write the close button content.
+
+5. **Add app-input directive in your html**
    - this directive apply classes and htmls arround your input to improvement the bootstrap power. The value setted in directive is the bootstrap col-sm size. The directive also add a validation tooltip when there is/are validation error(s) (see ciandt-components-utilities function applyValidationTooltip).
    ```html
    <input app-input="5" app-label-size="1" app-label="My Text" type="text" ng-model="myText">
