@@ -4,7 +4,12 @@ define(['ciandt-components-utilities'], function () {
 
     angular.module('ciandt.components.layout.input', ['ciandt.components.utilities']).constant('ciandt.components.layout.input.InputConfig', {
         useValidationTooltip: true
-    }).directive('appInput', ['$interpolate', '$timeout', 'ciandt.components.utilities.Utilities', '$log', 'ciandt.components.layout.input.InputConfig', function ($interpolate, $timeout, utilities, $log, InputConfig) {
+    }).directive('appInput', ['$interpolate', '$timeout', 'ciandt.components.utilities.Utilities', '$log', 'ciandt.components.layout.input.InputConfig', '$injector', function ($interpolate, $timeout, utilities, $log, InputConfig, $injector) {
+        var localize;
+        try {
+            localize = $injector.get('ciandt.components.i18n.Localize');
+        } catch (e) { }
+
         return {
             restrict: 'A',
             require: '?^ngModel',
@@ -72,7 +77,7 @@ define(['ciandt-components-utilities'], function () {
 
                 if (InputConfig.useValidationTooltip) {
                     // apply validation tooltip
-                    utilities.applyValidationTooltip(scope, element, attrs, ngModel);
+                    utilities.applyValidationTooltip(scope, element, attrs, ngModel, localize);
                 }
 
                 // se for check ou radio trata os elementos de forma diferenciada

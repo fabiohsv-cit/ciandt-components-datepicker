@@ -11,7 +11,7 @@ define(['ciandt-components-utilities'], function () {
         boxedPageTpl: '<div class="page"></div>',
         bodyTpl: '<section class="panel panel-default"></section>',
         headerTpl: '<div class="panel-heading">' +
-                   '  <strong><span class="glyphicon glyphicon-th"></span>{{appTitle}}</strong>' +
+                   '  <strong><span class="glyphicon glyphicon-th"></span><i18n>{{appTitle}}</i18n></strong>' +
                    '</div>'
     }).directive('appPanel', ['ciandt.components.utilities.Utilities', 'ciandt.components.layout.panel.PanelConfig', '$interpolate', function (utilities, PanelConfig, $interpolate) {
         return {
