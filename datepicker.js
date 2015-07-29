@@ -86,6 +86,7 @@ define(['moment', 'ciandt-components-utilities', 'angular-ngMask', 'bootstrap-da
                         return viewValue;
                     } else if (angular.isDate(viewValue) && !isNaN(viewValue)) {
                         ngModel.$setValidity('datepicker', true);
+                        ngModel.$setValidity('mask', true);
                         return viewValue;
                     } else if (angular.isString(viewValue)) {
                         var date = moment(viewValue, format, true);
@@ -94,6 +95,7 @@ define(['moment', 'ciandt-components-utilities', 'angular-ngMask', 'bootstrap-da
                             return undefined;
                         } else {
                             ngModel.$setValidity('datepicker', true);
+                            ngModel.$setValidity('mask', true);
                             setView();
                             return date.toDate();
                         }
