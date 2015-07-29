@@ -65,10 +65,8 @@ define(['moment', 'ciandt-components-utilities', 'angular-ngMask', 'bootstrap-da
                     var dateValue = moment(e.date, format, true);
                     if (!dateValue.isValid()) {
                         scope.$eval(attrs.ngModel + "=value", { value: null }); //retorna null caso a data sejá inválida
-                        element.change();
                     } else {
                         scope.$eval(attrs.ngModel + "=value", { value: dateValue.toDate() });
-                        element.change();
                     }
                 });
 
@@ -135,12 +133,6 @@ define(['moment', 'ciandt-components-utilities', 'angular-ngMask', 'bootstrap-da
                             }, 1);
 
                         } else {
-                            // ToDo: Tanato - Remover comentário se não encontrar nenhum erro de datepicker
-                            // Caso volte o código para produção, certificar que o "date" é um Moment antes de aplicar o format.
-                            //if ((ngModel.$viewValue != element.val()) && ((element.val() == "")) || (moment(element.val(), format, true).isValid())) {
-                            //    ngModel.$viewValue = element.val();
-                            //    date = ngModel.$viewValue;
-                            //}
                             setTimeout(function () {
                                 element.val(date.format(format));
                             }, 1);
@@ -159,8 +151,7 @@ define(['moment', 'ciandt-components-utilities', 'angular-ngMask', 'bootstrap-da
                 };
                 ngModel.$render = setView;
                 element.on('blur', setView);
-                element.on('change', setView);
-
+                
                 //Seta min e max date para o Datepicker - possibilita que dois datepickers sejam usados linkados um ao outro
                 if (attrs.appMinDate) {
                     scope.$watch(attrs.appMinDate, function (newValue, oldValue) {
