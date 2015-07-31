@@ -1,17 +1,17 @@
 ﻿'use strict';
 
-define(['moment', 'ciandt-components-utilities', 'angular-ngMask', 'bootstrap-datetimepicker'], function () {
+define(['moment', 'ng-jedi-utilities', 'angular-ngMask', 'bootstrap-datetimepicker'], function () {
 
-    angular.module('ciandt.components.layout.datepicker', ['ciandt.components.utilities', 'ngMask']).constant('ciandt.components.layout.datepicker.DatepickerConfig', {
+    angular.module('jedi.layout.datepicker', ['jedi.utilities', 'ngMask']).constant('jedi.layout.datepicker.DatepickerConfig', {
         template: '<div class="input-group date">' +
 			      '	<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>' +
 			      '</div>'
-    }).directive('appDatepicker', ['$compile', '$timeout', 'ciandt.components.utilities.Utilities', '$log', 'ciandt.components.layout.datepicker.DatepickerConfig', function ($compile, $timeout, utilities, $log, DatepickerConfig) {
+    }).directive('jdDatepicker', ['$compile', '$timeout', 'jedi.utilities.Utilities', '$log', 'jedi.layout.datepicker.DatepickerConfig', function ($compile, $timeout, utilities, $log, DatepickerConfig) {
         return {
             restrict: 'A',
             require: '?^ngModel',
             link: function (scope, element, attrs, ngModel) {
-                var datepickerAttr = attrs.appDatepicker;
+                var datepickerAttr = attrs.jdDatepicker;
 
                 if (!ngModel) {
                     $log.error('A diretiva Datepicker necessita de um ngModel. Diretiva não carregada.');
@@ -56,7 +56,7 @@ define(['moment', 'ciandt-components-utilities', 'angular-ngMask', 'bootstrap-da
                 element.attr('mask', mask);
 
                 //ng-mask requer uso do $compile
-                element.removeAttr('app-datepicker');
+                element.removeAttr('jd-datepicker');
                 $compile(element)(scope);
 
                 dateWrap.datetimepicker(options);
@@ -155,14 +155,14 @@ define(['moment', 'ciandt-components-utilities', 'angular-ngMask', 'bootstrap-da
                 element.on('blur', setView);
                 
                 //Seta min e max date para o Datepicker - possibilita que dois datepickers sejam usados linkados um ao outro
-                if (attrs.appMinDate) {
-                    scope.$watch(attrs.appMinDate, function (newValue, oldValue) {
+                if (attrs.jdMinDate) {
+                    scope.$watch(attrs.jdMinDate, function (newValue, oldValue) {
                         var dt;
 
-                        if ((scope.$eval(attrs.appMinDate)) instanceof Date) {
-                            dt = moment(scope.$eval(attrs.appMinDate));
+                        if ((scope.$eval(attrs.jdMinDate)) instanceof Date) {
+                            dt = moment(scope.$eval(attrs.jdMinDate));
                         } else {
-                            dt = moment(scope.$eval(attrs.appMinDate), format, true);
+                            dt = moment(scope.$eval(attrs.jdMinDate), format, true);
                         }
 
                         if (dt.isValid()) {
@@ -175,14 +175,14 @@ define(['moment', 'ciandt-components-utilities', 'angular-ngMask', 'bootstrap-da
                     });
                 }
 
-                if (attrs.appMaxDate) {
-                    scope.$watch(attrs.appMaxDate, function (newValue, oldValue) {
+                if (attrs.jdMaxDate) {
+                    scope.$watch(attrs.jdMaxDate, function (newValue, oldValue) {
                         var dt;
 
-                        if ((scope.$eval(attrs.appMaxDate)) instanceof Date) {
-                            dt = moment(scope.$eval(attrs.appMaxDate));
+                        if ((scope.$eval(attrs.jdMaxDate)) instanceof Date) {
+                            dt = moment(scope.$eval(attrs.jdMaxDate));
                         } else {
-                            dt = moment(scope.$eval(attrs.appMaxDate), format, true);
+                            dt = moment(scope.$eval(attrs.jdMaxDate), format, true);
                         }
 
                         if (dt.isValid()) {

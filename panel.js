@@ -1,19 +1,19 @@
 ﻿'use strict';
 
-define(['ciandt-components-utilities'], function () {
+define(['ng-jedi-utilities'], function () {
 
-    angular.module('ciandt.components.layout.panel', ['ciandt.components.utilities']).constant('ciandt.components.layout.panel.PanelConfig', {
+    angular.module('jedi.layout.panel', ['jedi.utilities']).constant('jedi.layout.panel.PanelConfig', {
         defaultElementClass: 'panel-body form-horizontal',
         defaultFormClass: 'form-validation',
-        wrapSizeTpl: '<div class="col-lg-{{appPanel}}"></div>',
+        wrapSizeTpl: '<div class="col-lg-{{jdPanel}}"></div>',
         containerFilter: '.content-container',
         useBoxedPage: true,
         boxedPageTpl: '<div class="page"></div>',
         bodyTpl: '<section class="panel panel-default"></section>',
         headerTpl: '<div class="panel-heading">' +
-                   '  <strong><span class="glyphicon glyphicon-th"></span><i18n>{{appTitle}}</i18n></strong>' +
+                   '  <strong><span class="glyphicon glyphicon-th"></span><i18n>{{jdTitle}}</i18n></strong>' +
                    '</div>'
-    }).directive('appPanel', ['ciandt.components.utilities.Utilities', 'ciandt.components.layout.panel.PanelConfig', '$interpolate', function (utilities, PanelConfig, $interpolate) {
+    }).directive('jdPanel', ['jedi.utilities.Utilities', 'jedi.layout.panel.PanelConfig', '$interpolate', function (utilities, PanelConfig, $interpolate) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
@@ -22,8 +22,8 @@ define(['ciandt-components-utilities'], function () {
 
                 if (element.is('form')) {
                     element.addClass(PanelConfig.defaultFormClass);
-                    if (!attrs.name && attrs.appTitle) {
-                        element.attr('name', attrs.appTitle);
+                    if (!attrs.name && attrs.jdTitle) {
+                        element.attr('name', attrs.jdTitle);
                     }
                     if (angular.isUndefined(attrs.novalidate)) {
                         element.attr('novalidate', '');
@@ -32,11 +32,11 @@ define(['ciandt-components-utilities'], function () {
 
                 var wrapper = utilities.wrapElement(element, $interpolate(PanelConfig.bodyTpl)(angular.extend({}, attrs, scope)));
 
-                if (attrs.appTitle) {
+                if (attrs.jdTitle) {
                     wrapper.prepend($interpolate(PanelConfig.headerTpl)(angular.extend({}, attrs, scope)));
                 }
 
-                if (attrs.appPanel) {
+                if (attrs.jdPanel) {
                     // define painel menor que o padrão 100%
                     utilities.wrapElement(wrapper, $interpolate(PanelConfig.wrapSizeTpl)(angular.extend({}, attrs, scope)));
                 } else

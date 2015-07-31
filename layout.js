@@ -1,15 +1,15 @@
 ﻿'use strict';
 
-define(['ciandt-components-layout-datepicker',
-		'ciandt-components-layout-panel',
-		'ciandt-components-layout-modal',
-		'ciandt-components-layout-treeview',
-		'ciandt-components-layout-input'], function () {
+define(['ng-jedi-layout-datepicker',
+		'ng-jedi-layout-panel',
+		'ng-jedi-layout-modal',
+		'ng-jedi-layout-treeview',
+		'ng-jedi-layout-input'], function () {
 
-    angular.module('ciandt.components.layout', ['ciandt.components.layout.datepicker',
-												'ciandt.components.layout.panel',
-												'ciandt.components.layout.modal',
-												'ciandt.components.layout.treeview',
-												'ciandt.components.layout.input']);
+    angular.module('jedi.layout', ['jedi.layout.datepicker',
+												'jedi.layout.panel',
+												'jedi.layout.modal',
+												'jedi.layout.treeview',
+												'jedi.layout.input']);
 
 });

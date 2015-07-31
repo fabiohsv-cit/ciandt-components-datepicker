@@ -1,9 +1,9 @@
 {
-  "name": "ciandt-components-layout",
+  "name": "ng-jedi-layout",
   "version": "0.0.1",
-  "homepage": "https://github.com/fabiohsv-cit/ciandt-components-layout",
+  "homepage": "https://github.com/ng-jedi/layout",
   "authors": [
-    "Fábio Henrique da Silva Viana <fabiohsv@ciandt.com>"
+    "Fábio Henrique da Silva Viana <fabioviana.bh@gmail.com>"
   ],
   "description": "Layout component",
   "main": ["datepicker.js", "input.js", "layout.js", "modal.js", "panel.js", "treeview.js"],
@@ -24,7 +24,7 @@
 	"bootstrap": "~3.3.4",
 	"moment": "~2.9.0",
 	"angular-ngMask-alias": "*",
-	"ciandt-components-utilities": "*"
+	"ng-jedi-utilities": "*"
   },
   "license": "MIT"
 }

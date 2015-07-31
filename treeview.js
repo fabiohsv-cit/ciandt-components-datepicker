@@ -2,11 +2,11 @@
 
 define(['angular'], function () {
 
-    angular.module('ciandt.components.layout.treeview', []).constant('ciandt.components.layout.treeview.TreeviewConfig', {
+    angular.module('jedi.layout.treeview', []).constant('jedi.layout.treeview.TreeviewConfig', {
         emptyTpl: '<div id="emptyTreeElement"><strong class="text-warning" i18n>Nenhum item encontrado.</strong></div>',
         nodeTpl: '<li ng-repeat="{{repeatExp}}"><a class="angular-ui-tree-handle angular-ui-tree-hover" ng-click="toggle($event)" onclick="$(this).next().toggle();" href="javascript:;"><span class="fa fa-minus-square"></span>&nbsp;<strong>{{label}}</strong></a><ol class="angular-ui-tree-nodes"></ol></li>',
         lastNodeTpl: '<li class="angular-ui-tree-hover" ng-repeat="{{repeatExp}}" ng-class="{\'selected\' : {{rowItem}} == selectedItem}" ng-click="changeClass({{rowItem}})"></li>'
-    }).directive('appTreeview', ['ciandt.components.layout.treeview.TreeviewConfig', '$interpolate', function (TreeviewConfig, $interpolate) {
+    }).directive('jdTreeview', ['jedi.layout.treeview.TreeviewConfig', '$interpolate', function (TreeviewConfig, $interpolate) {
         return {
             restrict: 'A',
             compile: function (element, attributes) {
@@ -18,7 +18,7 @@ define(['angular'], function () {
 
                 var children = element.children();
 
-                var list = attributes.appTreeview.split(';');
+                var list = attributes.jdTreeview.split(';');
                 var parent = element;
 
                 parent.addClass('pre-scrollable');
@@ -52,7 +52,7 @@ define(['angular'], function () {
                     post: function postLink(scope, iElement, iAttrs, controller) {
                         scope.$watch(
                             function () {
-                                var list = iAttrs.appTreeview.split(';');
+                                var list = iAttrs.jdTreeview.split(';');
                                 var firstNode = list[0].split(' ')[2];
                                 var listValue = scope.$eval(firstNode);
 

@@ -1,13 +1,13 @@
 ﻿'use strict';
 
-define(['ciandt-components-utilities'], function () {
+define(['ng-jedi-utilities'], function () {
 
-    angular.module('ciandt.components.layout.input', ['ciandt.components.utilities']).constant('ciandt.components.layout.input.InputConfig', {
+    angular.module('jedi.layout.input', ['jedi.utilities']).constant('jedi.layout.input.InputConfig', {
         useValidationTooltip: true
-    }).directive('appInput', ['$interpolate', '$timeout', 'ciandt.components.utilities.Utilities', '$log', 'ciandt.components.layout.input.InputConfig', '$injector', function ($interpolate, $timeout, utilities, $log, InputConfig, $injector) {
+    }).directive('jdInput', ['$interpolate', '$timeout', 'jedi.utilities.Utilities', '$log', 'jedi.layout.input.InputConfig', '$injector', function ($interpolate, $timeout, utilities, $log, InputConfig, $injector) {
         var localize;
         try {
-            localize = $injector.get('ciandt.components.i18n.Localize');
+            localize = $injector.get('jedi.i18n.Localize');
         } catch (e) { }
 
         return {
@@ -15,8 +15,8 @@ define(['ciandt-components-utilities'], function () {
             require: '?^ngModel',
             link: function (scope, element, attrs, ngModel) {
 
-                // valor do atributo appInput é a definição do tamanho do campo.
-                var size = attrs.appInput;
+                // valor do atributo jdInput é a definição do tamanho do campo.
+                var size = attrs.jdInput;
                 if (!size) {
                     size = 2;
                 }
@@ -30,9 +30,9 @@ define(['ciandt-components-utilities'], function () {
                     }
                 }
 
-                // é possível usar um atributo app-label-size que sobrescreve e força que o label-size seja escolhido
-                if (!isNaN(attrs.appLabelSize)) {
-                    labelSize = parseInt(attrs.appLabelSize);
+                // é possível usar um atributo jd-label-size que sobrescreve e força que o label-size seja escolhido
+                if (!isNaN(attrs.jdLabelSize)) {
+                    labelSize = parseInt(attrs.jdLabelSize);
                 }
 
                 // define id e name do elemento, caso não tenha
@@ -42,7 +42,7 @@ define(['ciandt-components-utilities'], function () {
                     if (!id) {
                         id = attrs.name;
                         if (!id) {
-                            id = attrs.appLabel;
+                            id = attrs.jdLabel;
                         }
                     }
                     element.attr('id', id);
@@ -83,8 +83,8 @@ define(['ciandt-components-utilities'], function () {
                 // se for check ou radio trata os elementos de forma diferenciada
                 if (element.is("input[type=checkbox]") || element.is("input[type=radio]")) {
                     var rWrap;
-                    // se for radio com repeat sem um div[app-input] encobrindo-o, cria o div inline e adiciona todos os inputs dentro dele
-                    if (element.is("input[type=radio]") && (attrs.ngRepeat || attrs.dataNgRepeat) && !element.parent().is('div[app-input]')) {
+                    // se for radio com repeat sem um div[jd-input] encobrindo-o, cria o div inline e adiciona todos os inputs dentro dele
+                    if (element.is("input[type=radio]") && (attrs.ngRepeat || attrs.dataNgRepeat) && !element.parent().is('div[jd-input]')) {
                         // localiza div.radio-inline para adicionar o elemento dentro dele
                         rWrap = element.parent().find('div.radio-inline input[name="' + attrs.name + '"]').parent().parent();
                         if (!rWrap || rWrap.length == 0) {
@@ -94,8 +94,8 @@ define(['ciandt-components-utilities'], function () {
                             if (!element.parent().parent().hasClass('form-group')) {
                                 // cria form-group e area do label
                                 // se definido, adiciona label ao grupo criado, senão cria div com o tamanho do label, para manter layout
-                                if (attrs.appGrouplabel) {
-                                    utilities.wrapElement(rWrap, '<div class="form-group"><label for="' + id + '" class="col-sm-' + labelSize + ' control-label">' + attrs.appGrouplabel + '</label></div>', false);
+                                if (attrs.jdGrouplabel) {
+                                    utilities.wrapElement(rWrap, '<div class="form-group"><label for="' + id + '" class="col-sm-' + labelSize + ' control-label">' + attrs.jdGrouplabel + '</label></div>', false);
                                 } else {
                                     utilities.wrapElement(rWrap, '<div class="form-group"><div class="col-sm-' + labelSize + '"></div></div>', false);
                                 }
@@ -106,8 +106,8 @@ define(['ciandt-components-utilities'], function () {
                     var wrap;
 
                     // adiciona label com seu devido tamanho e estilo (check/radio)
-                    if (attrs.appLabel) {
-                        wrap = utilities.wrapElement(element, '<label class="ui-' + attrs.type + '"><span>' + attrs.appLabel + (isRequired ? ' *' : '') + '</span></label>', true);
+                    if (attrs.jdLabel) {
+                        wrap = utilities.wrapElement(element, '<label class="ui-' + attrs.type + '"><span>' + attrs.jdLabel + (isRequired ? ' *' : '') + '</span></label>', true);
                     } else {
                         wrap = utilities.wrapElement(element, '<label class="ui-' + attrs.type + '"><span></span></label>', true);
                     }
@@ -119,7 +119,7 @@ define(['ciandt-components-utilities'], function () {
                         if (!wrap.parent().is("div.row,td,li")) {
                             // se parent nao for div em linha
                             // se for um elemento normal (input, select, textbox), cria form-group com área div do tamanho do label definido, para manter layout
-                            if (!wrap.parent().is("div[app-input]")) {
+                            if (!wrap.parent().is("div[jd-input]")) {
                                 utilities.wrapElement(wrap, '<div class="form-group"><div class="col-sm-' + labelSize + '"></div></div>');
                             } else
                                 if (!wrap.parent().hasClass(attrs.type + '-inline')) {
@@ -150,8 +150,8 @@ define(['ciandt-components-utilities'], function () {
                     }
 
                     // se tiver label definido, inclui tag label
-                    if (attrs.appLabel) {
-                        wrap.before('<label for="' + id + '" class="col-sm-' + labelSize + ' control-label">' + attrs.appLabel + (isRequired ? ' *' : '') + '</label>');
+                    if (attrs.jdLabel) {
+                        wrap.before('<label for="' + id + '" class="col-sm-' + labelSize + ' control-label">' + attrs.jdLabel + (isRequired ? ' *' : '') + '</label>');
                     }
 
                     // se for select encobre com um span para estilizar o combo
@@ -160,7 +160,7 @@ define(['ciandt-components-utilities'], function () {
                     }
                 }
 
-                element.removeAttr('app-input');
+                element.removeAttr('jd-input');
             }
         };
     }]);

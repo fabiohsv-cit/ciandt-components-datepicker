@@ -1,4 +1,4 @@
-# ciandt-components-layout
+# ng-jedi-layout
 Layout components written in angularjs.
 
 ### Install
@@ -6,39 +6,39 @@ Layout components written in angularjs.
 * Install the dependency:
 
    ```shell
-   bower install ciandt-components-layout --save
+   bower install ng-jedi-layout --save
    ```
 * Add layout.js to your code:
 
    ```html
-   <script src='assets/libs/ciandt-components-layout/layout.js'></script>
-   <script src='assets/libs/ciandt-components-layout/datepicker.js'></script>
-   <script src='assets/libs/ciandt-components-layout/input.js'></script>
-   <script src='assets/libs/ciandt-components-layout/treeview.js'></script>
-   <script src='assets/libs/ciandt-components-layout/modal.js'></script>
-   <script src='assets/libs/ciandt-components-layout/panel.js'></script>
+   <script src='assets/libs/ng-jedi-layout/layout.js'></script>
+   <script src='assets/libs/ng-jedi-layout/datepicker.js'></script>
+   <script src='assets/libs/ng-jedi-layout/input.js'></script>
+   <script src='assets/libs/ng-jedi-layout/treeview.js'></script>
+   <script src='assets/libs/ng-jedi-layout/modal.js'></script>
+   <script src='assets/libs/ng-jedi-layout/panel.js'></script>
    ```
    - note that the base directory used was assets/libs, you should change bower_components to assets/libs or move from bower_components to assets/libs with grunt.
 * Include module dependency:
 
    ```javascript
-   angular.module('yourApp', ['ciandt.components.layout']);
+   angular.module('yourApp', ['jedi.layout']);
    ```
 ======
 
 ### How To Use
 
-1. **Add app-datepicker directive in your html**
+1. **Add jd-datepicker directive in your html**
    - this directive use bootstrap-datetimepicker and integrating its with angularjs
    ```html
-   <input app-datepicker app-min-date="myCtrl.myModel.startDate" app-max-date="myCtrl.myModel.endDate" type="text" ng-model="myCtrl.myModel.initialDate" />
+   <input jd-datepicker jd-min-date="myCtrl.myModel.startDate" jd-max-date="myCtrl.myModel.endDate" type="text" ng-model="myCtrl.myModel.initialDate" />
    ```
-   - if you need, you can customize the html. In your angular run from app.js, override the constant ciandt.components.layout.datepicker.DatepickerConfig and set your html in template attribute.
+   - if you need, you can customize the html. In your angular run from app.js, override the constant jedi.layout.datepicker.DatepickerConfig and set your html in template attribute.
 
-2. **Add app-treeview directive in your html**
+2. **Add jd-treeview directive in your html**
    - this directive creates a treeview in your page. The value setted in directive shoud be the levels, separated by ';'. Each level should be passed the description field name. Your model should be similar to a tree. The last level uses the body content. E.g.:
    ```html
-   <ol app-treeview="level1[level1.fieldLevel1] in myCtrl.myModel.tree; level2[level2.fieldLevel2] in level1.levels2; level3 in level2.levels3">
+   <ol jd-treeview="level1[level1.fieldLevel1] in myCtrl.myModel.tree; level2[level2.fieldLevel2] in level1.levels2; level3 in level2.levels3">
       <input type="checkbox" ng-model="level3.selected">
       <span class="">{{level3.fieldLevel3}}</span>
    </ol>
@@ -60,24 +60,24 @@ Layout components written in angularjs.
       }
    ]};
    ```
-   * if you need, you can customize the html. In your angular run from app.js, override the constant ciandt.components.layout.treeview.TreeviewConfig and set your html. There are three attributes:
+   * if you need, you can customize the html. In your angular run from app.js, override the constant jedi.layout.treeview.TreeviewConfig and set your html. There are three attributes:
    - emptyTpl: define html to write when tree is empty.
    - nodeTpl: define html to write the intermediate nodes.
    - lastNodeTpl: define html to write the last node.
    ```javascript
-   app.run(['ciandt.components.layout.treeview.TreeviewConfig', function(TreeviewConfig){
+   app.run(['jedi.layout.treeview.TreeviewConfig', function(TreeviewConfig){
       TreeviewConfig.emptyTpl = '<div id="emptyTreeElement"><strong class="text-warning"><i18n>Nenhum item encontrado.</i18n></strong></div>';
    }]);
    ```
 
-3. **Add app-panel directive in your html**
+3. **Add jd-panel directive in your html**
    - this directive creates a bootstrap panel with few lines of code. The value setted in directive is the bootstrap col-lg size.
    ```html
-   <form app-panel="1" app-title="My Panel">
+   <form jd-panel="1" jd-title="My Panel">
       ...
    </form>
    ```
-   * if you need, you can customize the html. In your angular run from app.js, override the constant ciandt.components.layout.panel.PanelConfig and set your html. There are three attributes:
+   * if you need, you can customize the html. In your angular run from app.js, override the constant jedi.layout.panel.PanelConfig and set your html. There are three attributes:
    - defaultElementClass: default class to apply in your element
    - defaultFormClass: default class to apply in the forms into your element
    - wrapSizeTpl: define html to write the div with col-lg if you define size to the panel.
@@ -87,17 +87,17 @@ Layout components written in angularjs.
    - bodyTpl: define html to write arround of your element.
    - headerTpl: define html to write in the header panel.
 
-4. **Add app-modal directive in your html**
+4. **Add jd-modal directive in your html**
    - this directive creates a bootstrap modal panel with few lines of code. The value setted in directive is the bootstrap col-lg size.
    ```html
-   <form app-modal="1" app-title="My Modal">
+   <form jd-modal="1" jd-title="My Modal">
       ...
 	  <div class="modal-footer">
 	     ...
 	  </div>
    </form>
    ```
-   * if you need, you can customize the html. In your angular run from app.js, override the constant ciandt.components.layout.modal.ModalConfig and set your html. There are three attributes:
+   * if you need, you can customize the html. In your angular run from app.js, override the constant jedi.layout.modal.ModalConfig and set your html. There are three attributes:
    - defaultElementClass: default class to apply in your element
    - defaultFormClass: default class to apply in the forms into your element
    - defaultTableClass: default class to apply in the tables into your element
@@ -105,22 +105,22 @@ Layout components written in angularjs.
    - titleTpl: define html to write the title content.
    - closeBtnTpl: define html to write the close button content.
 
-5. **Add app-input directive in your html**
-   - this directive apply classes and htmls arround your input to improvement the bootstrap power. The value setted in directive is the bootstrap col-sm size. The directive also add a validation tooltip when there is/are validation error(s) (see ciandt-components-utilities function applyValidationTooltip).
+5. **Add jd-input directive in your html**
+   - this directive apply classes and htmls arround your input to improvement the bootstrap power. The value setted in directive is the bootstrap col-sm size. The directive also add a validation tooltip when there is/are validation error(s) (see ng-jedi-utilities function applyValidationTooltip).
    ```html
-   <input app-input="5" app-label-size="1" app-label="My Text" type="text" ng-model="myText">
+   <input jd-input="5" jd-label-size="1" jd-label="My Text" type="text" ng-model="myText">
    
-   <input app-input app-label="My Check" type="checkbox" ng-model="myCheck">
+   <input jd-input jd-label="My Check" type="checkbox" ng-model="myCheck">
    
-   <input app-input app-grouplabel="My Multi Checks" app-label="{{item.label}}" type="checkbox" ng-model="item.selected" ng-repeat="item in items">
+   <input jd-input jd-grouplabel="My Multi Checks" jd-label="{{item.label}}" type="checkbox" ng-model="item.selected" ng-repeat="item in items">
    
-   <input app-input app-label="My Radio" type="radio" ng-model="myRadio">
+   <input jd-input jd-label="My Radio" type="radio" ng-model="myRadio">
    
-   <input app-input app-grouplabel="My Multi Radios" app-label="{{item.label}}" type="radio" ng-model="item.selected" ng-repeat="item in items">
+   <input jd-input jd-grouplabel="My Multi Radios" jd-label="{{item.label}}" type="radio" ng-model="item.selected" ng-repeat="item in items">
    
-   <select app-input app-label="My Select" ng-model="mySelect">
+   <select jd-input jd-label="My Select" ng-model="mySelect">
    
-   <textarea app-input app-label="My Textarea" ng-model="myTextarea">
+   <textarea jd-input jd-label="My Textarea" ng-model="myTextarea">
    ```
    - in these examples above, the final html will be:
    ```html
@@ -189,7 +189,7 @@ Layout components written in angularjs.
       </div>
    </div>
    ```
-   * if you need, you can customize the html. In your angular run from app.js, override the constant ciandt.components.layout.input.InputConfig and set your html. There are three attributes:
+   * if you need, you can customize the html. In your angular run from app.js, override the constant jedi.layout.input.InputConfig and set your html. There are three attributes:
    - useValidationTooltip: define if the input will use the validation tooltip to show erros.
    - labelTpl: define html to write the label content
    - selectWrapTpl: define html to write the wrap select content
