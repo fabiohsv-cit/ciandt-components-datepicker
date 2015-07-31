@@ -66,7 +66,7 @@ Layout components written in angularjs.
    - lastNodeTpl: define html to write the last node.
    ```javascript
    app.run(['jedi.layout.treeview.TreeviewConfig', function(TreeviewConfig){
-      TreeviewConfig.emptyTpl = '<div id="emptyTreeElement"><strong class="text-warning"><i18n>Nenhum item encontrado.</i18n></strong></div>';
+      TreeviewConfig.emptyTpl = '<div id="emptyTreeElement"><strong class="text-warning"><jd-i18n>Nenhum item encontrado.</jd-i18n></strong></div>';
    }]);
    ```
 

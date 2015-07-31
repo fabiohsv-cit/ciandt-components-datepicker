@@ -3,7 +3,7 @@
 define(['angular'], function () {
 
     angular.module('jedi.layout.treeview', []).constant('jedi.layout.treeview.TreeviewConfig', {
-        emptyTpl: '<div id="emptyTreeElement"><strong class="text-warning" i18n>Nenhum item encontrado.</strong></div>',
+        emptyTpl: '<div id="emptyTreeElement"><strong class="text-warning" jd-i18n>Nenhum item encontrado.</strong></div>',
         nodeTpl: '<li ng-repeat="{{repeatExp}}"><a class="angular-ui-tree-handle angular-ui-tree-hover" ng-click="toggle($event)" onclick="$(this).next().toggle();" href="javascript:;"><span class="fa fa-minus-square"></span>&nbsp;<strong>{{label}}</strong></a><ol class="angular-ui-tree-nodes"></ol></li>',
         lastNodeTpl: '<li class="angular-ui-tree-hover" ng-repeat="{{repeatExp}}" ng-class="{\'selected\' : {{rowItem}} == selectedItem}" ng-click="changeClass({{rowItem}})"></li>'
     }).directive('jdTreeview', ['jedi.layout.treeview.TreeviewConfig', '$interpolate', function (TreeviewConfig, $interpolate) {

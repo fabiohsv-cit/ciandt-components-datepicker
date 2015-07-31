@@ -5,7 +5,7 @@ define(['angular'], function () {
     angular.module('jedi.layout.modal', []).constant('jedi.layout.modal.ModalConfig', {
         headerTpl: '<div class="panel-heading modal-header">{{titleTpl}}{{closeBtnTpl}}</div>',
         closeBtnTpl: '<span class="glyphicon glyphicon-remove close"></span>',
-        titleTpl: '<strong><span class="glyphicon glyphicon-th"></span><i18n>{{jdTitle}}</i18n></strong>',
+        titleTpl: '<strong><span class="glyphicon glyphicon-th"></span><jd-i18n>{{jdTitle}}</jd-i18n></strong>',
         defaultElementClass: 'modal-body form-horizontal',
         defaultFormClass: 'form-validation',
         defaultTableClass: 'table-dynamic'

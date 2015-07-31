@@ -11,7 +11,7 @@ define(['ng-jedi-utilities'], function () {
         boxedPageTpl: '<div class="page"></div>',
         bodyTpl: '<section class="panel panel-default"></section>',
         headerTpl: '<div class="panel-heading">' +
-                   '  <strong><span class="glyphicon glyphicon-th"></span><i18n>{{jdTitle}}</i18n></strong>' +
+                   '  <strong><span class="glyphicon glyphicon-th"></span><jd-i18n>{{jdTitle}}</jd-i18n></strong>' +
                    '</div>'
     }).directive('jdPanel', ['jedi.utilities.Utilities', 'jedi.layout.panel.PanelConfig', '$interpolate', function (utilities, PanelConfig, $interpolate) {
         return {
