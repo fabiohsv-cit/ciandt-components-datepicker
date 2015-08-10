@@ -1,168 +1,238 @@
 ﻿'use strict';
 
-define(['ng-jedi-utilities'], function () {
+define(['angular', 'bootstrap'], function () {
 
-    angular.module('jedi.layout.input', ['jedi.utilities']).constant('jedi.layout.input.InputConfig', {
+    angular.module('jedi.layout.input', []).constant('jedi.layout.input.InputConfig', {
+        specificSizes: {
+            "{{(type === 'radio' || type === 'checkbox') && jdRepeat == undefined || jdRepeat == ''}}": {
+                xsSize: 12,
+                smSize: 6,
+                mdSize: 3,
+                lgSize: 2,
+                xsLabelSize: 0,
+                smLabelSize: 6,
+                mdLabelSize: 0,
+                lgLabelSize: 0,
+                xsInputSize: 12,
+                smInputSize: 6,
+                mdInputSize: 12,
+                lgInputSize: 12,
+            }
+        },
+        defaultSizes: {
+            xsSize: 12,
+            smSize: 6,
+            mdSize: 3,
+            lgSize: 2,
+            xsLabelSize: 12,
+            smLabelSize: 6,
+            mdLabelSize: 12,
+            lgLabelSize: 12,
+            xsInputSize: 12,
+            smInputSize: 6,
+            mdInputSize: 12,
+            lgInputSize: 12,
+        },
+        maxSize: 12,
+        templateSelector: {
+            "{{(type === 'radio' || type === 'checkbox') && jdRepeat != undefined && jdRepeat != ''}}": 'assets/libs/ng-jedi-layout/input-multipleinput.html',
+            "{{(type === 'radio' || type === 'checkbox') && (jdRepeat == undefined || jdRepeat == '')}}": 'assets/libs/ng-jedi-layout/input-oneinput.html'
+        },
+        defaultTemplate: 'assets/libs/ng-jedi-layout/input-single.html',
         useValidationTooltip: true
-    }).directive('jdInput', ['$interpolate', '$timeout', 'jedi.utilities.Utilities', '$log', 'jedi.layout.input.InputConfig', '$injector', function ($interpolate, $timeout, utilities, $log, InputConfig, $injector) {
-        var localize;
-        try {
-            localize = $injector.get('jedi.i18n.Localize');
-        } catch (e) { }
-
+    }).directive("jdInput", ['jedi.layout.input.InputConfig', function(InputConfig) {
+        // prepara input antes de realizar transclude
         return {
-            restrict: 'A',
-            require: '?^ngModel',
-            link: function (scope, element, attrs, ngModel) {
-
-                // valor do atributo jdInput é a definição do tamanho do campo.
-                var size = attrs.jdInput;
-                if (!size) {
-                    size = 2;
-                }
-
-                // se houver uma divisão de paineis em linha (um ao lado do outro), define tamanho do label e elemento maior que o padrão, pra não ficar muito pequeno.
-                var labelSize = 1;
-                if (element.parent().parent().is('div.row') || element.parents('.modal-content').length > 0) {
-                    labelSize = 2;
-                    if (!size) {
-                        size = 3;
-                    }
-                }
-
-                // é possível usar um atributo jd-label-size que sobrescreve e força que o label-size seja escolhido
-                if (!isNaN(attrs.jdLabelSize)) {
-                    labelSize = parseInt(attrs.jdLabelSize);
-                }
-
-                // define id e name do elemento, caso não tenha
-                var id = attrs.id;
-                if (!id) {
-                    id = attrs.ngModel;
-                    if (!id) {
-                        id = attrs.name;
-                        if (!id) {
-                            id = attrs.jdLabel;
+            restrict: "A",
+            priority: 1000.2,
+            compile: function compile(cElement, cAttrs) {
+                if (!cElement.attr('id')) {
+                    cElement.attr('id', cElement.attr('ng-model'));
+                    if (!cElement.attr('id')) {
+                        cElement.attr('id', cElement.attr('name'));
+                        if (!cElement.attr('id')) {
+                            cElement.attr('id', cElement.attr('jd-label'));
                         }
                     }
-                    element.attr('id', id);
+                    cAttrs.id = cElement.attr('id');
                 }
 
-                var name = attrs.name;
-                if (!name) {
-                    name = id;
-                    element.attr('name', name);
+                if (!cElement.attr('name')) {
+                    cElement.attr('name', cElement.attr('id'));
                 }
 
-                // se parent for uma div com elementos em linha, adiciona nele a classe form-group, para definir a margem entre linhas
-                if (element.parent().is("div.row") && !element.parent().hasClass('form-group')) {
-                    element.parent().addClass('form-group');
+                if (!cElement.attr('jd-i18n')) {
+                    cElement.attr('jd-i18n', '');
                 }
 
-                var isRequired = angular.isDefined(attrs.required);
-                var minLength = attrs['ngMinlength'];
-                var maxLength = attrs['ngMaxlength'];
-                var min = attrs['min'];
-                var max = attrs['max'];
-
-                if (minLength) {
-                    element.attr('minLength', minLength);
-                    attrs.minLength = minLength;
+                if (cElement.is(':input') && !cElement.is(':radio') && !cElement.is(':checkbox') && !cElement.hasClass('form-control')) {
+                    cElement.addClass('form-control');
                 }
 
-                if (maxLength) {
-                    element.attr('maxLength', maxLength);
-                    attrs.maxLength = maxLength;
+                if (!cAttrs.type && !cElement.is(':input')) {
+                    cAttrs.type = 'statictext';
                 }
 
-                if (InputConfig.useValidationTooltip) {
-                    // apply validation tooltip
-                    utilities.applyValidationTooltip(scope, element, attrs, ngModel, localize);
+                if (cAttrs.jdRepeat) {
+                    if (cElement.attr('ng-value').indexOf('$parent') < 0 && cElement.attr('ng-value') != 'true' && cElement.attr('ng-value') != 'false') {
+                        cElement.attr('ng-value', '$parent.' + cElement.attr('ng-value'));
+                    }
+                    if (cElement.attr('ng-model').indexOf('$parent') < 0) {
+                        cElement.attr('ng-model', '$parent.$parent.$parent.' + cElement.attr('ng-model').replace('$index', '$parent.$index'));
+                    }
                 }
 
-                // se for check ou radio trata os elementos de forma diferenciada
-                if (element.is("input[type=checkbox]") || element.is("input[type=radio]")) {
-                    var rWrap;
-                    // se for radio com repeat sem um div[jd-input] encobrindo-o, cria o div inline e adiciona todos os inputs dentro dele
-                    if (element.is("input[type=radio]") && (attrs.ngRepeat || attrs.dataNgRepeat) && !element.parent().is('div[jd-input]')) {
-                        // localiza div.radio-inline para adicionar o elemento dentro dele
-                        rWrap = element.parent().find('div.radio-inline input[name="' + attrs.name + '"]').parent().parent();
-                        if (!rWrap || rWrap.length == 0) {
-                            // caso não haja div.radio-inline, cria e adiciona elemento dentro dele
-                            rWrap = utilities.wrapElement(element, '<div class="radio-inline"></div>');
-                            // se parent definido com form-group, ignora layout
-                            if (!element.parent().parent().hasClass('form-group')) {
-                                // cria form-group e area do label
-                                // se definido, adiciona label ao grupo criado, senão cria div com o tamanho do label, para manter layout
-                                if (attrs.jdGrouplabel) {
-                                    utilities.wrapElement(rWrap, '<div class="form-group"><label for="' + id + '" class="col-sm-' + labelSize + ' control-label">' + attrs.jdGrouplabel + '</label></div>', false);
-                                } else {
-                                    utilities.wrapElement(rWrap, '<div class="form-group"><div class="col-sm-' + labelSize + '"></div></div>', false);
-                                }
+                if (cElement.is('textarea')) {
+                    cAttrs.type = 'textarea';
+                }
+
+                if (cElement.is('select')) {
+                    cAttrs.type = 'select';
+                    if (cElement.attr('ng-model').indexOf('$parent') < 0) {
+                        cElement.attr('ng-model', '$parent.$parent.' + cElement.attr('ng-model'));
+                    }
+                }
+
+                if (cAttrs.jdOptions) {
+                    cElement.attr('ng-options', cAttrs.jdOptions);
+                }
+
+                if (InputConfig.useValidationTooltip && !cAttrs.jdValidationTooltip && cAttrs.ngModel && cElement.is(':input')) {
+                    cElement.attr('jd-validation-tooltip', '');
+                }
+                
+                if(cAttrs.jdInput && !cAttrs.jdMdSize){
+                    cElement.attr('jd-md-size', cAttrs.jdInput);
+                    cAttrs.jdMdSize = cAttrs.jdInput;
+                }
+            }
+        };
+    }]).directive("jdInput", ['jedi.layout.input.InputConfig', '$interpolate', function(InputConfig, $interpolate) {
+        // realiza transclude+template no input
+        return {
+            restrict: "A",
+            replace: true,
+            transclude: 'element',
+            scope: {
+                jdLabel: '@',
+                jdGrouplabel: '@',
+                id: '@',
+                type: '@',
+                jdXsSize: '@',
+                jdSmSize: '@',
+                jdMdSize: '@',
+                jdLgSize: '@',
+                jdXsLabelSize: '@',
+                jdSmLabelSize: '@',
+                jdMdLabelSize: '@',
+                jdLgLabelSize: '@',
+                jdXsInputSize: '@',
+                jdSmInputSize: '@',
+                jdMdInputSize: '@',
+                jdLgInputSize: '@',
+                jdHelp: '@'
+            },
+            priority: 1000.1,
+            templateUrl: function(elem, attrs) {
+                var _tpl;
+
+                jQuery.each(InputConfig.templateSelector, function(expression, template) {
+                    var checkTemplate = $interpolate(expression)(attrs) === "true";
+
+                    if (checkTemplate) {
+                        _tpl = template;
+                        return false;
+                    }
+                });
+
+                if (_tpl) {
+                    return _tpl;
+                } else {
+                    return InputConfig.defaultTemplate;
+                }
+            },
+            controller: ['$scope', '$attrs', '$element', function Controller($scope, $attrs, $element) {
+                if ($attrs.jdRepeat) {
+                    $scope.showLabel = $attrs.jdGrouplabel && $attrs.jdGrouplabel !== '';
+                } else {
+                    $scope.showLabel = $attrs.jdLabel && $attrs.jdLabel !== '';
+                }
+
+                $scope.showHelp = $attrs.jdHelp && $attrs.jdHelp !== '';
+
+                var maxSize = InputConfig.maxSize;
+
+                var sizesToUse = InputConfig.defaultSizes;
+                jQuery.each(InputConfig.specificSizes, function(expression, sizes) {
+                    var checkSizes = $interpolate(expression)($attrs) === 'true';
+
+                    if (checkSizes){
+                     sizesToUse = sizes;
+                     return false;
+                    }
+                });
+
+                jQuery.each(sizesToUse, function(size, value) {
+                    size = 'jd' + size.charAt(0).toUpperCase() + size.substr(1);
+                    // apenas ajusto os valores caso a pessoa não informar o tamanho.
+                    if (!$attrs[size]) {
+                        // atribui valor default
+                        $scope[size] = value;
+
+                        // se tamanho de label definido e não for definido o tamanho do input, atribui o input sendo a diferença entre o label
+                        if (size.indexOf('Label') > -1) {
+                            var inputSize = size.replace('Label', 'Input');
+                            if ($attrs[inputSize]) {
+                                var inputSizeValue = parseInt($attrs[inputSize]);
+                                $scope[size] = inputSizeValue == maxSize ? maxSize : maxSize - inputSizeValue;
                             }
                         }
+
+                        // se tamanho de input definido e não for definido o tamanho do label, atribui o label sendo a diferença entre o input
+                        if (size.indexOf('Input') > -1) {
+                            var labelSize = size.replace('Input', 'Label');
+                            if ($attrs[labelSize]) {
+                                var labelSizeValue = parseInt($attrs[labelSize]);
+                                $scope[size] = labelSizeValue == maxSize ? maxSize : maxSize - labelSizeValue;
+                            }
+                        }
+
+                        $attrs[size] = $scope[size];
                     }
-
-                    var wrap;
-
-                    // adiciona label com seu devido tamanho e estilo (check/radio)
-                    if (attrs.jdLabel) {
-                        wrap = utilities.wrapElement(element, '<label class="ui-' + attrs.type + '"><span>' + attrs.jdLabel + (isRequired ? ' *' : '') + '</span></label>', true);
+                });
+            }],
+            compile: function compile(cElement, cAttrs, cTransclude) {
+                // caso haja jdRepeat, atribui ng-repeat no lugar, para que não dê problema com transclude+template
+                if (cAttrs.jdRepeat) {
+                    var repeatElement = cElement.find('[ng-repeat]');
+                    if (cAttrs.jdRepeat.indexOf('$parent') < 0) {
+                        repeatElement.attr('ng-repeat', cAttrs.jdRepeat.replace(/\s+in\s+/, ' in $parent.'));
                     } else {
-                        wrap = utilities.wrapElement(element, '<label class="ui-' + attrs.type + '"><span></span></label>', true);
+                        repeatElement.attr('ng-repeat', cAttrs.jdRepeat);
                     }
-
-                    // se houver rWrap de agrupamento (por conta do repeat), adiciona o elemento dentro dele
-                    if (rWrap && rWrap.length != 0) {
-                        rWrap.append(wrap);
-                    } else
-                        if (!wrap.parent().is("div.row,td,li")) {
-                            // se parent nao for div em linha
-                            // se for um elemento normal (input, select, textbox), cria form-group com área div do tamanho do label definido, para manter layout
-                            if (!wrap.parent().is("div[jd-input]")) {
-                                utilities.wrapElement(wrap, '<div class="form-group"><div class="col-sm-' + labelSize + '"></div></div>');
-                            } else
-                                if (!wrap.parent().hasClass(attrs.type + '-inline')) {
-                                    // senão é um div de agrupamento inline, adiciona classe para tal estilo
-                                    wrap.parent().addClass(attrs.type + '-inline');
-                                }
-                        }
-                } else {
-                    var wrap = element;
-                    // se não for um div de agrupamento (de radios/checks), adiciona classe form-control e wrap no elemento para definir tamanho
-                    if (!element.is("div") && !element.is('.input-lg,.input-sm')) {
-                        element.addClass('form-control');
-                        wrap = utilities.wrapElement(element, '<div class="col-sm-' + size + '"></div>');
-                        if (element.is("select")) {
-                            element.change(function () {
-                                var widthTmp = $('<span id="width_tmp" style="display: none; white-space:nowrap; text-indent: .01px; font-size: 11px; font-weight: 700; text-transform: uppercase;"></span>');
-                                element.after(widthTmp);
-                                $("#width_tmp").html(element.children('option:selected').text());
-                                element.attr('style', 'width: ' + ($("#width_tmp").width() + 90) + 'px; !important')
-                                widthTmp.remove();
-                            });
-                        }
-                    }
-
-                    // adiciona div.form-group caso o parent do elemento não seja um div com vários elementos em linha.
-                    if (!element.parent().is('div.row,td,li,.form-group') && !element.parent().parent().is('div.row,td,li,.form-group')) {
-                        utilities.wrapElement(wrap, '<div class="form-group"></div>');
-                    }
-
-                    // se tiver label definido, inclui tag label
-                    if (attrs.jdLabel) {
-                        wrap.before('<label for="' + id + '" class="col-sm-' + labelSize + ' control-label">' + attrs.jdLabel + (isRequired ? ' *' : '') + '</label>');
-                    }
-
-                    // se for select encobre com um span para estilizar o combo
-                    if (element.is("select")) {
-                        utilities.wrapElement(element, '<span class="ui-select"></span>');
-                    }
+                    repeatElement.html(repeatElement.html().replace('{{jdLabel}}', cAttrs.jdLabel));
                 }
 
-                element.removeAttr('jd-input');
+                return function(scope, element, attrs) {
+                    // se element for do tipo select, ajusta os ctrls para correto binding do model
+                    if (element.is('[type=select]')) {
+                        var ctrlTpl = element.controller('select');
+                        var ctrlSelect = element.find('select').controller('select');
+                        if (ctrlTpl && ctrlSelect) {
+                            // substitui ctrl do select e ngModel contidos no template para usar os do select
+                            ctrlTpl.ngModelCtrl = ctrlSelect.ngModelCtrl;
+                            ctrlTpl.unknownOption = ctrlSelect.unknownOption;
+                            ctrlTpl.renderUnknownOption = ctrlSelect.renderUnknownOption;
+                            ctrlTpl.removeUnknownOption = ctrlSelect.removeUnknownOption;
+                            ctrlTpl.readValue = ctrlSelect.readValue;
+                            ctrlTpl.writeValue = ctrlSelect.writeValue;
+                            ctrlTpl.addOption = ctrlSelect.addOption;
+                            ctrlTpl.removeOption = ctrlSelect.removeOption;
+                            ctrlTpl.hasOption = ctrlSelect.hasOption;
+                        }
+                    }
+                };
             }
         };
     }]);
-
 });
