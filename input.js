@@ -100,10 +100,10 @@ define(['angular', 'bootstrap'], function () {
                 if (InputConfig.useValidationTooltip && !cAttrs.jdValidationTooltip && cAttrs.ngModel && cElement.is(':input')) {
                     cElement.attr('jd-validation-tooltip', '');
                 }
-                
-                if(cAttrs.jdInput && !cAttrs.jdMdSize){
-                    cElement.attr('jd-md-size', cAttrs.jdInput);
-                    cAttrs.jdMdSize = cAttrs.jdInput;
+
+                if(cAttrs.jdInput && !cAttrs.jdLgSize){
+                    cElement.attr('jd-lg-size', cAttrs.jdInput);
+                    cAttrs.jdLgSize = cAttrs.jdInput;
                 }
             }
         };
