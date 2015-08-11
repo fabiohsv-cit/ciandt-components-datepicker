@@ -130,7 +130,9 @@ define(['angular', 'bootstrap'], function () {
                 jdSmInputSize: '@',
                 jdMdInputSize: '@',
                 jdLgInputSize: '@',
-                jdHelp: '@'
+                jdHelp: '@',
+                jdInputClass: '@',
+                jdElementClass: '@'
             },
             priority: 1000.1,
             templateUrl: function(elem, attrs) {
@@ -213,7 +215,11 @@ define(['angular', 'bootstrap'], function () {
                     repeatElement.html(repeatElement.html().replace('{{jdLabel}}', cAttrs.jdLabel));
                 }
 
-                return function(scope, element, attrs) {
+                return function(scope, element, attrs, ctrl, transclude) {
+                    if (attrs.jdElementClass) {
+                        element.find('ng-transclude:first > :first-child,[ng-transclude]:first > :first-child').addClass(attrs.jdElementClass);
+                    }
+
                     // se element for do tipo select, ajusta os ctrls para correto binding do model
                     if (element.is('[type=select]')) {
                         var ctrlTpl = element.controller('select');
