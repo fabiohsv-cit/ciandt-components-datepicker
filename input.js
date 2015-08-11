@@ -4,46 +4,46 @@ define(['angular', 'bootstrap'], function () {
 
     angular.module('jedi.layout.input', []).constant('jedi.layout.input.InputConfig', {
         specificSizes: {
-            "{{(type === 'radio' || type === 'checkbox') && jdRepeat == undefined || jdRepeat == ''}}": {
+            "{{(type === 'radio' || type === 'checkbox') && (jdRepeat == undefined || jdRepeat == '')}}": {
                 xsSize: 12,
-                smSize: 6,
+                smSize: 3,
                 mdSize: 3,
-                lgSize: 2,
+                lgSize: 3,
                 xsLabelSize: 0,
-                smLabelSize: 6,
+                smLabelSize: 0,
                 mdLabelSize: 0,
                 lgLabelSize: 0,
                 xsInputSize: 12,
-                smInputSize: 6,
+                smInputSize: 12,
                 mdInputSize: 12,
                 lgInputSize: 12,
             }
         },
         lgSizesProportion: {
-            "1": { mdSize: 2, smSize: 4, xsSize: 6 },
-            "2": { mdSize: 2, smSize: 6, xsSize: 8 },
-            "3": { mdSize: 4, smSize: 8, xsSize: 10 },
-            "4": { mdSize: 4, smSize: 10, xsSize: 12 },
-            "5": { mdSize: 6, smSize: 12, xsSize: 12 },
-            "6": { mdSize: 6, smSize: 12, xsSize: 12 },
-            "7": { mdSize: 8, smSize: 12, xsSize: 12 },
-            "8": { mdSize: 8, smSize: 12, xsSize: 12 },
-            "9": { mdSize: 10, smSize: 12, xsSize: 12 },
-            "10": { mdSize: 10, smSize: 12, xsSize: 12 },
-            "11": { mdSize: 12, smSize: 12, xsSize: 12 },
+            "1": { mdSize: 1, smSize: 2, xsSize: 12 },
+            "2": { mdSize: 2, smSize: 3, xsSize: 12 },
+            "3": { mdSize: 3, smSize: 3, xsSize: 12 },
+            "4": { mdSize: 4, smSize: 4, xsSize: 12 },
+            "5": { mdSize: 5, smSize: 5, xsSize: 12 },
+            "6": { mdSize: 6, smSize: 6, xsSize: 12 },
+            "7": { mdSize: 7, smSize: 7, xsSize: 12 },
+            "8": { mdSize: 8, smSize: 8, xsSize: 12 },
+            "9": { mdSize: 9, smSize: 9, xsSize: 12 },
+            "10": { mdSize: 10, smSize: 10, xsSize: 12 },
+            "11": { mdSize: 11, smSize: 11, xsSize: 12 },
             "12": { mdSize: 12, smSize: 12, xsSize: 12 },
         },
         defaultSizes: {
             xsSize: 12,
-            smSize: 6,
+            smSize: 3,
             mdSize: 3,
-            lgSize: 2,
+            lgSize: 3,
             xsLabelSize: 12,
-            smLabelSize: 6,
+            smLabelSize: 12,
             mdLabelSize: 12,
             lgLabelSize: 12,
             xsInputSize: 12,
-            smInputSize: 6,
+            smInputSize: 12,
             mdInputSize: 12,
             lgInputSize: 12,
         },
@@ -114,11 +114,6 @@ define(['angular', 'bootstrap'], function () {
                 if (InputConfig.useValidationTooltip && !cAttrs.jdValidationTooltip && cAttrs.ngModel && cElement.is(':input')) {
                     cElement.attr('jd-validation-tooltip', '');
                 }
-
-                if (cAttrs.jdInput && !cAttrs.jdLgSize) {
-                    cElement.attr('jd-lg-size', cAttrs.jdInput);
-                    cAttrs.jdLgSize = cAttrs.jdInput;
-                }
             }
         };
     }]).directive("jdInput", ['jedi.layout.input.InputConfig', '$interpolate', function (InputConfig, $interpolate) {
@@ -183,6 +178,9 @@ define(['angular', 'bootstrap'], function () {
                 //**Valores para a div root(Encobre o label + input)**
                 //Se o tamanho foi informado pelo jdInput, são usados valores proporcionais (xs/sm/md/lg)
                 if ($attrs.jdInput) {
+                    $scope.jdLgSize = $attrs.jdInput;
+                    $attrs.jdLgSize = $attrs.jdInput;
+
                     var lgSizeProportion = InputConfig.lgSizesProportion[$attrs.jdInput];
                     jQuery.each(lgSizeProportion, function (size, value) {
                         size = 'jd' + size.charAt(0).toUpperCase() + size.substr(1);
@@ -193,7 +191,6 @@ define(['angular', 'bootstrap'], function () {
                         }
                     });
                 }
-
 
                 var maxSize = InputConfig.maxSize;
 
