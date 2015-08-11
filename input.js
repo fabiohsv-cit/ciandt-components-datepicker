@@ -19,6 +19,20 @@ define(['angular', 'bootstrap'], function () {
                 lgInputSize: 12,
             }
         },
+        lgSizesProportion: {
+            "1": { mdSize: 2, smSize: 4, xsSize: 6 },
+            "2": { mdSize: 2, smSize: 6, xsSize: 8 },
+            "3": { mdSize: 4, smSize: 8, xsSize: 10 },
+            "4": { mdSize: 4, smSize: 10, xsSize: 12 },
+            "5": { mdSize: 6, smSize: 12, xsSize: 12 },
+            "6": { mdSize: 6, smSize: 12, xsSize: 12 },
+            "7": { mdSize: 8, smSize: 12, xsSize: 12 },
+            "8": { mdSize: 8, smSize: 12, xsSize: 12 },
+            "9": { mdSize: 10, smSize: 12, xsSize: 12 },
+            "10": { mdSize: 10, smSize: 12, xsSize: 12 },
+            "11": { mdSize: 12, smSize: 12, xsSize: 12 },
+            "12": { mdSize: 12, smSize: 12, xsSize: 12 },
+        },
         defaultSizes: {
             xsSize: 12,
             smSize: 6,
@@ -40,7 +54,7 @@ define(['angular', 'bootstrap'], function () {
         },
         defaultTemplate: 'assets/libs/ng-jedi-layout/input-single.html',
         useValidationTooltip: true
-    }).directive("jdInput", ['jedi.layout.input.InputConfig', function(InputConfig) {
+    }).directive("jdInput", ['jedi.layout.input.InputConfig', function (InputConfig) {
         // prepara input antes de realizar transclude
         return {
             restrict: "A",
@@ -74,10 +88,10 @@ define(['angular', 'bootstrap'], function () {
                 }
 
                 if (cAttrs.jdRepeat) {
-                    if (cElement.attr('ng-value').indexOf('$parent') < 0 && cElement.attr('ng-value') != 'true' && cElement.attr('ng-value') != 'false') {
+                    if (cElement.attr('ng-value') && cElement.attr('ng-value').indexOf('$parent') < 0 && cElement.attr('ng-value') != 'true' && cElement.attr('ng-value') != 'false') {
                         cElement.attr('ng-value', '$parent.' + cElement.attr('ng-value'));
                     }
-                    if (cElement.attr('ng-model').indexOf('$parent') < 0) {
+                    if (cElement.attr('ng-model') && cElement.attr('ng-model').indexOf('$parent') < 0) {
                         cElement.attr('ng-model', '$parent.$parent.$parent.' + cElement.attr('ng-model').replace('$index', '$parent.$index'));
                     }
                 }
@@ -101,13 +115,13 @@ define(['angular', 'bootstrap'], function () {
                     cElement.attr('jd-validation-tooltip', '');
                 }
 
-                if(cAttrs.jdInput && !cAttrs.jdLgSize){
+                if (cAttrs.jdInput && !cAttrs.jdLgSize) {
                     cElement.attr('jd-lg-size', cAttrs.jdInput);
                     cAttrs.jdLgSize = cAttrs.jdInput;
                 }
             }
         };
-    }]).directive("jdInput", ['jedi.layout.input.InputConfig', '$interpolate', function(InputConfig, $interpolate) {
+    }]).directive("jdInput", ['jedi.layout.input.InputConfig', '$interpolate', function (InputConfig, $interpolate) {
         // realiza transclude+template no input
         return {
             restrict: "A",
@@ -136,10 +150,10 @@ define(['angular', 'bootstrap'], function () {
                 jdElementClass: '@'
             },
             priority: 1000.1,
-            templateUrl: function(elem, attrs) {
+            templateUrl: function (elem, attrs) {
                 var _tpl;
 
-                jQuery.each(InputConfig.templateSelector, function(expression, template) {
+                jQuery.each(InputConfig.templateSelector, function (expression, template) {
                     var checkTemplate = $interpolate(expression)(attrs) === "true";
 
                     if (checkTemplate) {
@@ -161,25 +175,43 @@ define(['angular', 'bootstrap'], function () {
                     $scope.showLabel = $attrs.jdLabel && $attrs.jdLabel !== '';
                 }
 
+                $scope.showRequired = $attrs.required;
+
                 $scope.showHelp = $attrs.jdHelp && $attrs.jdHelp !== '';
+
+
+                //**Valores para a div root(Encobre o label + input)**
+                //Se o tamanho foi informado pelo jdInput, são usados valores proporcionais (xs/sm/md/lg)
+                if ($attrs.jdInput) {
+                    var lgSizeProportion = InputConfig.lgSizesProportion[$attrs.jdInput];
+                    jQuery.each(lgSizeProportion, function (size, value) {
+                        size = 'jd' + size.charAt(0).toUpperCase() + size.substr(1);
+                        //apenas uso a proporção caso a pessoa não informar o tamanho.
+                        if (!$attrs[size]) {
+                            $scope[size] = value; // atribui valor proporcional
+                            $attrs[size] = $scope[size];
+                        }
+                    });
+                }
+
 
                 var maxSize = InputConfig.maxSize;
 
                 var sizesToUse = InputConfig.defaultSizes;
-                jQuery.each(InputConfig.specificSizes, function(expression, sizes) {
+                jQuery.each(InputConfig.specificSizes, function (expression, sizes) {
                     var checkSizes = $interpolate(expression)($attrs) === 'true';
 
-                    if (checkSizes){
-                     sizesToUse = sizes;
-                     return false;
+                    if (checkSizes) {
+                        sizesToUse = sizes;
+                        return false;
                     }
                 });
 
-                jQuery.each(sizesToUse, function(size, value) {
+                jQuery.each(sizesToUse, function (size, value) {
                     size = 'jd' + size.charAt(0).toUpperCase() + size.substr(1);
                     // apenas ajusto os valores caso a pessoa não informar o tamanho.
                     if (!$attrs[size]) {
-                        // atribui valor default
+                        //atribui valor default
                         $scope[size] = value;
 
                         // se tamanho de label definido e não for definido o tamanho do input, atribui o input sendo a diferença entre o label
@@ -216,7 +248,7 @@ define(['angular', 'bootstrap'], function () {
                     repeatElement.html(repeatElement.html().replace('{{jdLabel}}', cAttrs.jdLabel));
                 }
 
-                return function(scope, element, attrs, ctrl, transclude) {
+                return function (scope, element, attrs, ctrl, transclude) {
                     if (attrs.jdElementClass) {
                         element.find('ng-transclude:first > :first-child,[ng-transclude]:first > :first-child').addClass(attrs.jdElementClass);
                     }
