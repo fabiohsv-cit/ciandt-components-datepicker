@@ -132,6 +132,7 @@ define(['angular', 'bootstrap'], function () {
                 jdLgInputSize: '@',
                 jdHelp: '@',
                 jdInputClass: '@',
+                jdLabelClass: '@',
                 jdElementClass: '@'
             },
             priority: 1000.1,
