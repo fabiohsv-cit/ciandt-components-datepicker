@@ -11,8 +11,8 @@ define(['ng-jedi-utilities'], function () {
         boxedPageTpl: '<div class="page"></div>',
         bodyTpl: '<section class="panel panel-default"></section>',
         headerTpl: '<div class="panel-heading">' +
-                   '  <strong>{{jdIcon}}<jd-i18n>{{jdTitle}}</jd-i18n></strong>' +
-                   '</div>',
+        '  <strong>{{jdIcon}}<jd-i18n>{{jdTitle}}</jd-i18n></strong>' +
+        '</div>',
         iconTpl: '<span class="glyphicon {{jdTitleIcon}}"></span>'
     }).directive('jdPanel', ['jedi.utilities.Utilities', 'jedi.layout.panel.PanelConfig', '$interpolate', '$compile', function (utilities, PanelConfig, $interpolate, $compile) {
         return {
@@ -51,32 +51,59 @@ define(['ng-jedi-utilities'], function () {
                     // define painel menor que o padrão 100%
                     utilities.wrapElement(wrapper, $interpolate(PanelConfig.wrapSizeTpl)(angular.extend({}, attrs, scope)));
                 } else
-                if (PanelConfig.useBoxedPage && wrapper.parent().is(PanelConfig.containerFilter)) {
-                    // cria div page caso o parent seja o container
-                    utilities.wrapElement(wrapper, $interpolate(PanelConfig.boxedPageTpl)(angular.extend({}, attrs, scope)));
-                }
+                    if (PanelConfig.useBoxedPage && wrapper.parent().is(PanelConfig.containerFilter)) {
+                        // cria div page caso o parent seja o container
+                        utilities.wrapElement(wrapper, $interpolate(PanelConfig.boxedPageTpl)(angular.extend({}, attrs, scope)));
+                    }
 
                 var i18n = element.parents('.panel:first').find('.panel-heading jd-i18n,.panel-heading [jd-i18n]');
                 if (i18n.length > 0) {
                     $compile(i18n)(scope);
                 }
 
+                var footer = element.children('.panel-footer');
+                if (footer.length > 0) {
+                    element.after(footer);
+                }
+
                 if (typeof attrs.jdToggle != 'undefined') {
-                    element.parents('.panel:first').find('.panel-heading *').addClass('toggleable').click(function(e) {
-                        var $target = jQuery(e.target).parents('.panel-heading').find('.glyphicon');
-                        if (element.toggle().is(':visible')) {
+
+                    var toggle = function toggle(panel) {
+                        var $target = panel.children('.panel-heading').find('.glyphicon');
+                        var panelContent = panel.children('.panel-body,.panel-footer');
+                        if (panelContent.toggle().is(':visible')) {
                             $target.removeClass('glyphicon-chevron-right');
                             $target.addClass('glyphicon-chevron-down');
                         } else {
                             $target.removeClass('glyphicon-chevron-down');
                             $target.addClass('glyphicon-chevron-right');
                         }
+                        if (scope.$eval(attrs.jdToggle)) {
+                            scope.$eval(attrs.jdToggle + ' = value', { value: panelContent.is(':visible') });
+                        }
+                    };
+
+                    element.parents('.panel:first').find('.panel-heading:first *').addClass('toggleable').click(function (e) {
+                        toggle(jQuery(e.target).parents('.panel:first'));
                         e.stopPropagation();
                         return false;
                     });
 
-                    if (attrs.jdToggle.toLowerCase().trim() == 'false') {
-                        element.hide();
+                    if (attrs.jdToggle.toLowerCase().trim() === 'false') {
+                        toggle(element.parents('.panel:first'));
+                    } else if (attrs.jdToggle.toLowerCase().trim() !== "") {
+                        scope.$watch(attrs.jdToggle, function (newValue, oldValue) {
+                            if (newValue === oldValue && typeof newValue == 'undefined') {
+                                //Desconsidera a vez que o angular roda o watch antes mesmo da variável ser inicializada
+                                return;
+                            }
+                            var panel = element.parents('.panel:first');
+
+                            if ((!newValue && panel.children('.panel-body,.panel-footer').is(':visible'))
+                                    || (newValue && !panel.children('.panel-body,.panel-footer').is(':visible'))) {
+                                toggle(panel);
+                            }
+                        });
                     }
                 }
             }
