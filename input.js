@@ -4,20 +4,10 @@ define(['angular', 'bootstrap'], function () {
 
     angular.module('jedi.layout.input', []).constant('jedi.layout.input.InputConfig', {
         specificSizes: {
-            "{{(type === 'radio' || type === 'checkbox') && (jdRepeat == undefined || jdRepeat == '')}}": {
-                xsSize: 12,
-                smSize: 3,
-                mdSize: 3,
-                lgSize: 3,
-                xsLabelSize: 0,
-                smLabelSize: 0,
-                mdLabelSize: 0,
-                lgLabelSize: 0,
-                xsInputSize: 12,
-                smInputSize: 12,
-                mdInputSize: 12,
-                lgInputSize: 12,
-            }
+
+        },
+        specificSizesProportion: {
+
         },
         lgSizesProportion: {
             "1": { mdSize: 1, smSize: 2, xsSize: 12 },
@@ -31,7 +21,7 @@ define(['angular', 'bootstrap'], function () {
             "9": { mdSize: 9, smSize: 9, xsSize: 12 },
             "10": { mdSize: 10, smSize: 10, xsSize: 12 },
             "11": { mdSize: 11, smSize: 11, xsSize: 12 },
-            "12": { mdSize: 12, smSize: 12, xsSize: 12 },
+            "12": { mdSize: 12, smSize: 12, xsSize: 12 }
         },
         defaultSizes: {
             xsSize: 12,
@@ -45,7 +35,7 @@ define(['angular', 'bootstrap'], function () {
             xsInputSize: 12,
             smInputSize: 12,
             mdInputSize: 12,
-            lgInputSize: 12,
+            lgInputSize: 12
         },
         maxSize: 12,
         templateSelector: {
@@ -180,6 +170,30 @@ define(['angular', 'bootstrap'], function () {
                 if ($attrs.jdInput) {
                     $scope.jdLgSize = $attrs.jdInput;
                     $attrs.jdLgSize = $attrs.jdInput;
+
+                    var specificProportions;
+                    jQuery.each(InputConfig.specificSizesProportion, function (proportionExpression, proportionSizes) {
+                        var checkProportion = $interpolate(proportionExpression)($attrs) === 'true';
+
+                        if (checkProportion) {
+                            specificProportions = proportionSizes;
+                            return false;
+                        }
+                    });
+
+                    if (specificProportions) {
+                        var specificProportion = specificProportions[$attrs.jdInput];
+                        jQuery.each(specificProportion, function (size, value) {
+                            size = 'jd' + size.charAt(0).toUpperCase() + size.substr(1);
+                            //apenas uso a proporção caso a pessoa não informar o tamanho.
+                            if (!$attrs[size]) {
+                                $scope[size] = value; // atribui valor proporcional
+                                $attrs[size] = $scope[size];
+                            }
+                        });
+
+                        return;
+                    }
 
                     var lgSizeProportion = InputConfig.lgSizesProportion[$attrs.jdInput];
                     jQuery.each(lgSizeProportion, function (size, value) {
