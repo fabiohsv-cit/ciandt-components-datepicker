@@ -112,7 +112,7 @@ Layout components written in angularjs.
 
    - There are attributes that you can use to customize the input the way you want it:
    ```shell
-      - Sizes (Correspond to the bootstrap classes col-xs/col-sm/col-md/col-lg. Values must be between 1 and 12):
+      - Sizes (Correspond to the bootstrap classes col-xs/col-sm/col-md/col-lg. Values must be 1 to 12):
          - jd-xs-size / jd-sm-size / jd-md-size / jd-lg-size (Size of the root div that wrap label + input).
          - jd-xs-label-size / jd-sm-label-size / jd-md-label-size / jd-lg-label-size (Label's size).
          - jd-xs-input-size / jd-sm-input-size / jd-md-input-size / jd-lg-input-size (Input's size).
@@ -129,11 +129,16 @@ Layout components written in angularjs.
          - jd-label-class (Css classes that will be applied to the label).
          - jd-element-class (Css classes that will be applied to the input itself).
    ```
-   * Keep in mind that if you use the Sizes attributes, it will override all configured values (default/proportion and specific) for the sizes.
+   - *There are a few topics to pay attention:*
 
-   - **IMPORTANT: You will notice that some attributes of the inputs have a ```shell $parent``` tag. That's because of the transclude that is used in the directive. It creates a new scope for the cloned element, plus the directive itself has its own scope causing the model to be acessible only through the scope of the $parent.$parent element. In other cases through the $parent.$parent.$parent element because of ng-repeat.**
+      - Keep in mind that if you use the Sizes attributes, it will override all configured values (default/proportion and specific) for the sizes.
 
-   *Examples:*
+      - The ```jd-repeat``` and ```jd-options``` are not directives, they are used just to avoid conflicts with ```ng-repeat``` and ```transclude```. Under the hood the directive replaces them with ```ng-repeat```.
+
+   - **IMPORTANT: You will notice that some attributes of the inputs have a ```$parent``` tag. That's because of the transclude that is used in the directive. It creates a new scope for the cloned element, plus the directive itself has its own scope causing the model to be acessible only through the scope of the $parent.$parent element. In other cases through the $parent.$parent.$parent element because of ng-repeat.**
+      
+
+   ##### *Examples:*
 
    - Type: Text
    ```html
@@ -159,12 +164,11 @@ Layout components written in angularjs.
 
    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 jd-checkbox">
       <div class="form-group">
-         <div class="col-xs-offset-12 col-sm-offset-12 col-md-offset-12 col-lg-offset-12  col-xs-12 col-sm-12 col-md-12 col-lg-12 ">
+         <div class="col-xs-offset-0 col-sm-offset-0 col-md-offset-0 col-lg-offset-0  col-xs-12 col-sm-12 col-md-12 col-lg-12 ">
             <div class="checkbox">
                <label class="ng-binding">
-                  <input jd-input="" jd-label="My Check" type="checkbox" ng-model="myCheck" id="myCheck" name="myCheck" jd-i18n="" jd-validation-tooltip="" class="ng-pristine ng-untouched ng-valid ng-scope" ng-value="true">
-                  My Check
-                </label>
+                  <input jd-input="" jd-label="My Check" type="checkbox" ng-model="myCheck" ng-value="true" id="myCheck" name="myCheck" jd-i18n="" jd-validation-tooltip="" class="ng-pristine ng-untouched ng-valid ng-scope" value="true">My Check
+               </label>
             </div>
          </div>
       </div>
@@ -173,7 +177,7 @@ Layout components written in angularjs.
 
    - Type: Checkbox (Multi)
    ```html
-   <input jd-input jd-grouplabel="My Multi Checks" jd-label="{{item.label}}" type="checkbox" ng-model="item.selected" ng-repeat="item in items" ng-value="item">
+   <input jd-input jd-grouplabel="My Multi Checks" jd-label="{{item.label}}" type="checkbox" ng-model="item.selected" jd-repeat="item in items" ng-value="item">
 
    Becomes:
 
@@ -196,22 +200,21 @@ Layout components written in angularjs.
    
    - Type: Radio
    ```html
-   <input jd-input jd-label="Radio" ng-model="myRadio" type="radio" ng-value="true"/>
+   <input jd-input jd-label="My Radio" ng-model="myRadio" type="radio" ng-value="true"/>
 
    Becomes:
 
    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 jd-radio">
       <div class="form-group">
-         <div class="col-xs-offset-12 col-sm-offset-12 col-md-offset-12 col-lg-offset-12  col-xs-12 col-sm-12 col-md-12 col-lg-12 ">
+         <div class="col-xs-offset-0 col-sm-offset-0 col-md-offset-0 col-lg-offset-0  col-xs-12 col-sm-12 col-md-12 col-lg-12 ">
             <div class="radio">
-                   <label class="ng-binding">
-                       <input jd-input="" jd-label="My Radio" ng-model="myRadio" type="radio" id="myRadio" name="myRadio" jd-i18n="" jd-validation-tooltip="" class="ng-pristine ng-untouched ng-valid ng-scope" ng-value="true">
-                       My Radio
-                   </label>
+               <label class="ng-binding">
+                  <input jd-input="" jd-label="My Radio" ng-model="myRadio" type="radio" ng-value="true" id="myRadio" name="myRadio" jd-i18n="" jd-validation-tooltip="" class="ng-pristine ng-untouched ng-valid ng-scope" value="true">My Radio
+               </label>
             </div>
          </div>
       </div>
-   </div>   
+   </div>
    ```
 
    - Type: Radio (Multi)
@@ -297,7 +300,7 @@ Layout components written in angularjs.
    </div>
    ```
 
-   *Examples with attributes:*
+   ##### *Examples with attributes:*
 
    ```html
    <input jd-input="6" jd-help="I'm a tiny text below the input" jd-input-class="ImInTheDivThatWrapTheInput" jd-label-class="ImInTheLabel" jd-element-class="ImInTheInput" jd-label="MyInput's Label" type="text" ng-model="myInput" />
@@ -314,64 +317,77 @@ Layout components written in angularjs.
       </div>
    </div>
    ```
+
    As you can see the class 'ImInTheDivThatWrapTheInput' is in the input's parent element, the class 'ImInTheLabel' is in the label element and the class 'ImInTheInput' is in the input element.
 
-   The ```html jd-help``` attribute adds a ```html small``` tag below the input with the provided text.
+   The ```jd-help``` attribute adds a ```small``` tag below the input with the provided text.
 
-   Since we used ```html jd-input="6"``` notice that the sizes of the root element have changed in comparison with the examples previously discribed.
+   Since we used ```jd-input="6"``` notice that the sizes of the root element have changed in comparison with the examples previously discribed.
 
    Using the sizes attributes will result in the override of the classes (e.g.:
-      • ```html jd-xs-size="4"``` will result the root element to have ```html col-xs-4``` instead of ```html col-xs-12```
-      • ```html jd-sm-label-size="8"``` will result the label element to have ```html col-sm-8``` instead of ```html col-sm-12``` and will calculate the size for the input to be ```html col-sm-4``` instead of ```html col-sm-12```
-      • ```html jd-md-input-size="10"``` will result the div wrapping the input to have ```html col-md-10``` instead of ```html col-md-12``` and will calculate the size for the label to be ```html col-md-2``` instead of ```html col-md-12```).
+      • ```jd-xs-size="4"``` will result the root element to have ```col-xs-4``` instead of ```col-xs-12```
+      • ```jd-sm-label-size="8"``` will result the label element to have ```col-sm-8``` instead of ```col-sm-12``` and will calculate the size for the input to be ```col-sm-4``` instead of ```col-sm-12```
+      • ```jd-md-input-size="10"``` will result the div wrapping the input to have ```col-md-10``` instead of ```col-md-12``` and will calculate the size for the label to be ```col-md-2``` instead of ```col-md-12```).
 
 
-   * if you need, you can customize the html. In your angular run from app.js, override the constant jedi.layout.input.InputConfig and set your html. There are three attributes:
+   - if you need, you can customize the html. In your angular run from app.js, override the constant jedi.layout.input.InputConfig and set your html. There are three attributes:
 
-   - specificSizes: used by angular's $interpolate to determinate which sizes to use for a specific type of input. e.g.:
-      - "{{(type === 'radio' || type === 'checkbox') && (jdRepeat == undefined || jdRepeat == '')}}": {
-                xsSize: 12,
-                smSize: 3,
-                mdSize: 3,
-                lgSize: 3,
-                xsLabelSize: 0,
-                smLabelSize: 0,
-                mdLabelSize: 0,
-                lgLabelSize: 0,
-                xsInputSize: 12,
-                smInputSize: 12,
-                mdInputSize: 12,
-                lgInputSize: 12,
-            }
+      - specificSizes: used by angular's $interpolate to determinate which sizes to use for a specific type of input. e.g.:
+      ```shell
+         - "{{(type === 'radio' || type === 'checkbox') && (jdRepeat == undefined || jdRepeat == '')}}": {
+                  xsSize: 12,
+                  smSize: 3,
+                  mdSize: 3,
+                  lgSize: 3,
+                  xsLabelSize: 0,
+                  smLabelSize: 0,
+                  mdLabelSize: 0,
+                  lgLabelSize: 0,
+                  xsInputSize: 12,
+                  smInputSize: 12,
+                  mdInputSize: 12,
+                  lgInputSize: 12,
+               }
+      ```
 
-   - specificSizesProportion: used by angular's $interpolate to determinate which sizes to use in the root element for a specific type of input in case ```html jd-input``` has value, using the right proportion for each type of resolution/device. e.g.:
-      - "{{(type === 'radio' || type === 'checkbox') && (jdRepeat == undefined || jdRepeat == '')}}": {
-                "1": { mdSize: 3, smSize: 3, xsSize: 12 },
-                ...
-                "12": { mdSize: 4, smSize: 6, xsSize: 12 }
-            }
+      - specificSizesProportion: used by angular's $interpolate to determinate which sizes to use in the root element for a specific type of input in case ```jd-input``` has value, using the right proportion for each type of resolution/device. e.g.:
+         ```shell
+         "{{(type === 'radio' || type === 'checkbox') && (jdRepeat == undefined || jdRepeat == '')}}": {
+            "1": { mdSize: 3, smSize: 3, xsSize: 12 },
+            ...
+            "12": { mdSize: 4, smSize: 6, xsSize: 12 }
+         }
+         ```
 
-   - lgSizesProportion: the size proportion that will be used in the root element for non-specific inputs in case ```html jd-input``` is specified. e.g.:
-      -  "1": { mdSize: 1, smSize: 2, xsSize: 12 },
+      - lgSizesProportion: the size proportion that will be used in the root element for non-specific inputs in case ```jd-input``` is specified. e.g.:
+         ```shell
+         "1": { mdSize: 1, smSize: 2, xsSize: 12 },
+
          ...
+
          "12": { mdSize: 12, smSize: 12, xsSize: 12 }
+         ```
 
-   - defaultSizes: the default sizes for the input, if none are defined. e.g:
-      -  xsSize: 12,
-         smSize: 3,
-         mdSize: 3,
-         lgSize: 3,
-         xsLabelSize: 12,
-         smLabelSize: 12,
-         mdLabelSize: 12,
-         lgLabelSize: 12,
-         xsInputSize: 12,
-         smInputSize: 12,
-         mdInputSize: 12,
-         lgInputSize: 12
+      - defaultSizes: the default sizes for the input, if none are defined. e.g:
+         ```shell
+            xsSize: 12,
+            smSize: 3,
+            mdSize: 3,
+            lgSize: 3,
+            xsLabelSize: 12,
+            smLabelSize: 12,
+            mdLabelSize: 12,
+            lgLabelSize: 12,
+            xsInputSize: 12,
+            smInputSize: 12,
+            mdInputSize: 12,
+            lgInputSize: 12
+         ```
 
-   - templateSelector: used by angular's $interpolate to determinate which templates to use for specific inputs. e.g.:
-      - "{{(type === 'radio' || type === 'checkbox')}}": 'your/template/path/template.html',
+      - templateSelector: used by angular's $interpolate to determinate which templates to use for specific inputs. e.g.:
+         ```shell
+            "{{(type === 'radio' || type === 'checkbox')}}": 'your/template/path/template.html',
+         ```
 
-   - defaultTemplate: The url for the default template. Define if you want to use your own default (String).
-   - useValidationTooltip: define if the input will use the validation tooltip to show erros (Boolean).
+      - defaultTemplate: The url for the default template. Define if you want to use your own default (String).
+      - useValidationTooltip: True, if the input should use the validation tooltip to show erros (Boolean).
