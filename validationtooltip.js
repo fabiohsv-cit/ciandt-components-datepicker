@@ -43,7 +43,7 @@ define(['angular', 'bootstrap'], function () {
                     attrs.maxLength = maxLength;
                 }
 
-                element.on('change click input paste keyup', function () {
+                element.on('change.jdValidationTooltip click.jdValidationTooltip input.jdValidationTooltip paste.jdValidationTooltip keyup.jdValidationTooltip', function () {
                     element.removeData('jd-modelstate-errors');
                 });
 
@@ -57,7 +57,7 @@ define(['angular', 'bootstrap'], function () {
                         }, function (value) {
                             if (!value && !_.isEmpty(ngModel.$error)) {
                                 element.tooltip({ trigger: 'manual', container: 'body' });
-                                element.on('focus.tooltipError mouseenter.tooltipError', function () {
+                                element.on('focus.jdValidationTooltip mouseenter.jdValidationTooltip', function () {
                                     var _tooltip = element.data('bs.tooltip');
                                     var listError = Object.getOwnPropertyNames(ngModel.$error);
                                     var error;
@@ -106,7 +106,7 @@ define(['angular', 'bootstrap'], function () {
                                 });
 
                                 // oculta tooltip ao perder foco
-                                element.on('blur.tooltipError mouseleave.tooltipError', function () {
+                                element.on('blur.jdValidationTooltip mouseleave.jdValidationTooltip', function () {
                                     var _tooltip = element.data('bs.tooltip');
                                     if (_tooltip && _tooltip.tip().hasClass('in')) {
                                         element.tooltip('hide');
@@ -115,9 +115,16 @@ define(['angular', 'bootstrap'], function () {
                             }
                         });
                     } else if (tooltip) {
-                        element.unbind('focus.tooltipError mouseenter.tooltipError blur.tooltipError mouseleave.tooltipError');
+                        element.unbind('focus.jdValidationTooltip mouseenter.jdValidationTooltip blur.jdValidationTooltip mouseleave.jdValidationTooltip');
                         element.tooltip('destroy');
                     }
+                });
+
+                // destroy
+                // se escopo destruido remove eventos
+                scope.$on('$destroy', function () {
+                    element.unbind('change.jdValidationTooltip click.jdValidationTooltip input.jdValidationTooltip paste.jdValidationTooltip keyup.jdValidationTooltip focus.jdValidationTooltip mouseenter.jdValidationTooltip blur.jdValidationTooltip mouseleave.jdValidationTooltip');
+                    element.tooltip('destroy');
                 });
             }
         };

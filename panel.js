@@ -37,11 +37,14 @@ define(['ng-jedi-utilities'], function () {
                     attrs.jdTitleIcon = attrs.jdToggle.toLowerCase().trim() == 'false' ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down';
                 }
 
-                if (!attrs.jdTitleIcon) {
+                // se jdTitleIcon definido vazio então fica sem icone
+                if (typeof attrs.jdTitleIcon == 'undefined') {
                     attrs.jdTitleIcon = 'glyphicon-th';
+                    attrs.jdIcon = $interpolate(PanelConfig.iconTpl)(angular.extend({}, attrs, scope));
+                } else 
+                if (attrs.jdTitleIcon.trim() !== '') {
+                    attrs.jdIcon = $interpolate(PanelConfig.iconTpl)(angular.extend({}, attrs, scope));
                 }
-
-                attrs.jdIcon = $interpolate(PanelConfig.iconTpl)(angular.extend({}, attrs, scope));
 
                 if (attrs.jdTitle) {
                     wrapper.prepend($interpolate(PanelConfig.headerTpl)(angular.extend({}, attrs, scope)));
@@ -49,16 +52,16 @@ define(['ng-jedi-utilities'], function () {
 
                 if (attrs.jdPanel) {
                     // define painel menor que o padrão 100%
-                    utilities.wrapElement(wrapper, $interpolate(PanelConfig.wrapSizeTpl)(angular.extend({}, attrs, scope)));
+                    wrapper = utilities.wrapElement(wrapper, $interpolate(PanelConfig.wrapSizeTpl)(angular.extend({}, attrs, scope)));
                 } else
-                    if (PanelConfig.useBoxedPage && wrapper.parent().is(PanelConfig.containerFilter)) {
-                        // cria div page caso o parent seja o container
-                        utilities.wrapElement(wrapper, $interpolate(PanelConfig.boxedPageTpl)(angular.extend({}, attrs, scope)));
-                    }
+                if (PanelConfig.useBoxedPage && wrapper.parent().is(PanelConfig.containerFilter)) {
+                    // cria div page caso o parent seja o container
+                    wrapper = utilities.wrapElement(wrapper, $interpolate(PanelConfig.boxedPageTpl)(angular.extend({}, attrs, scope)));
+                }
 
-                var i18n = element.parents('.panel:first').find('.panel-heading jd-i18n,.panel-heading [jd-i18n]');
-                if (i18n.length > 0) {
-                    $compile(i18n)(scope);
+                var head = element.parents('.panel:first').children('.panel-heading');
+                if (head.length > 0) {
+                    $compile(head)(scope);
                 }
 
                 var footer = element.children('.panel-footer');
@@ -66,8 +69,9 @@ define(['ng-jedi-utilities'], function () {
                     element.after(footer);
                 }
 
-                if (typeof attrs.jdToggle != 'undefined') {
+                var toggleElement;
 
+                if (typeof attrs.jdToggle != 'undefined') {
                     var toggle = function toggle(panel) {
                         var $target = panel.children('.panel-heading').find('.glyphicon');
                         var panelContent = panel.children('.panel-body,.panel-footer');
@@ -83,7 +87,7 @@ define(['ng-jedi-utilities'], function () {
                         }
                     };
 
-                    element.parents('.panel:first').find('.panel-heading:first *').addClass('toggleable').click(function (e) {
+                    toggleElement = element.parents('.panel:first').children('.panel-heading').find('*:first').addClass('toggleable').click(function (e) {
                         toggle(jQuery(e.target).parents('.panel:first'));
                         e.stopPropagation();
                         return false;
@@ -97,15 +101,35 @@ define(['ng-jedi-utilities'], function () {
                                 //Desconsidera a vez que o angular roda o watch antes mesmo da variável ser inicializada
                                 return;
                             }
-                            var panel = element.parents('.panel:first');
 
-                            if ((!newValue && panel.children('.panel-body,.panel-footer').is(':visible'))
-                                    || (newValue && !panel.children('.panel-body,.panel-footer').is(':visible'))) {
+                            var panel = element.parents('.panel:first');
+                            var children = panel.children('.panel-body,.panel-footer');
+
+                            if (( !newValue && children.is(':visible'))
+                                  || (newValue && !children.is(':visible'))) {
                                 toggle(panel);
                             }
                         });
                     }
                 }
+
+                // destroy
+                // se escopo destruido remove eventos
+                scope.$on('$destroy', function () {
+                    if (toggleElement) {
+                        toggleElement.unbind('click');
+                    }
+                });
+                // se input destruido remove wrap
+                element.on('$destroy', function () {
+                    if (wrapper) {
+                        var w = wrapper;
+                        wrapper = null;
+                        toggleElement = null;
+                        w.remove();
+                    }
+                    scope.$destroy();
+                });
             }
         }
     }]);

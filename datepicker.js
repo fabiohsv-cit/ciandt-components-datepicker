@@ -8,11 +8,6 @@ define(['moment', 'ng-jedi-utilities', 'angular-ngMask', 'bootstrap-datetimepick
         '</div>',
 
         mask: function ($element, $attrs, MaskService, ngMaskConfig, $timeout) {
-            if (!$attrs.mask || !$attrs.ngModel) {
-                $log.info('Mask and ng-model attributes are required!');
-                return;
-            }
-
             var _mask = $attrs.mask;
             var _validate;
 
@@ -212,14 +207,10 @@ define(['moment', 'ng-jedi-utilities', 'angular-ngMask', 'bootstrap-datetimepick
     }).directive('jdDatepicker', ['$compile', '$timeout', 'MaskService', 'ngMaskConfig', 'jedi.utilities.Utilities', '$log', 'jedi.layout.datepicker.DatepickerConfig', function ($compile, $timeout, MaskService, ngMaskConfig, utilities, $log, DatepickerConfig) {
         return {
             restrict: 'A',
-            require: '?^ngModel',
+            require: '^ngModel',
             compile: function (cElement, cAttrs) {
                 if (!cElement.is("input")) {
                     $log.debug('Tentando acionar datepicker num elemento do tipo ' + cElement.prop("nodeName"));
-                    return false;
-                }
-                if (!cAttrs.ngModel) {
-                    $log.error('A diretiva Datepicker necessita de um ngModel. Diretiva não carregada.');
                     return false;
                 }
 
@@ -231,35 +222,34 @@ define(['moment', 'ng-jedi-utilities', 'angular-ngMask', 'bootstrap-datetimepick
                     showClose: true,
                     useStrict: true,
                     keepInvalid: true,
-                    locale: 'pt-br'
+                    locale: moment.locale()
                 };
 
                 if ((datepickerAttr.toLowerCase() == "date-time") || (datepickerAttr.toLowerCase() == "datetime") || (datepickerAttr.toLowerCase() == "date.time")) {
                     options.format = 'L LT';
-                    format = moment.localeData('pt-br').longDateFormat("L") + " " + moment.localeData().longDateFormat("LT");
+                    format = moment.localeData(moment.locale()).longDateFormat("L") + " " + moment.localeData().longDateFormat("LT");
                     options.useCurrent = 'minute';
                 } else if ((datepickerAttr) == "time") {
                     options.format = 'LT';
-                    format = moment.localeData('pt-br').longDateFormat("LT");
+                    format = moment.localeData(moment.locale()).longDateFormat("LT");
                     options.useCurrent = 'minute';
                 } else if ((datepickerAttr === "") || (datepickerAttr == "date")) {
                     options.format = 'L';
-                    format = moment.localeData('pt-br').longDateFormat("L");
+                    format = moment.localeData(moment.locale()).longDateFormat("L");
                     options.useCurrent = 'day';
                 } else {
                     format = datepickerAttr;
                     options.format = format;
                     options.useCurrent = 'minute';
                 }
+
                 // Para o ng-mask. Campos devem ser obrigatoriamente 'padded' (e.g. 02 ao invés de 2).
                 var maskFormat = format.replace(/DD/, '39').replace(/MM/, '19').replace(/YYYY/i, '2999').replace(/yy/i, '99').replace(/hh/i, '29').replace(/mm/, '59').replace(/ss/, '59');
 
                 //placeholder usa o format
                 cElement.attr('placeholder', format.toLowerCase());
                 cAttrs.placeholder = format.toLowerCase();
-                cElement.attr('mask', maskFormat);
                 cAttrs.mask = maskFormat;
-                cElement.addClass('form-control');
 
                 var mask = DatepickerConfig.mask(cElement, cAttrs, MaskService, ngMaskConfig, $timeout);
 
@@ -268,16 +258,9 @@ define(['moment', 'ng-jedi-utilities', 'angular-ngMask', 'bootstrap-datetimepick
                         mask.pre(scope, element, attrs, ngModel);
                     },
                     post: function (scope, element, attrs, ngModel) {
-                        if (!ngModel) {
-                            $log.error('A diretiva Datepicker necessita de um ngModel. Diretiva não carregada.');
-                            return false;
-                        }
-                        if (!element.is("input")) {
-                            $log.debug('Tentando acionar datepicker num elemento do tipo' + element.prop("nodeName"));
-                            return false;
-                        }
-
+                        // aplica máscara de data
                         mask.post(scope, element, attrs, ngModel);
+
                         var dateWrap = utilities.wrapElement(element, DatepickerConfig.template, true);
                         dateWrap.datetimepicker(options);
 
@@ -301,7 +284,7 @@ define(['moment', 'ng-jedi-utilities', 'angular-ngMask', 'bootstrap-datetimepick
                             }
                         });
 
-                        var parseDate = function parseDate(viewValue) {
+                        ngModel.$parsers.push(function parseDate(viewValue) {
                             if (!viewValue) {
                                 ngModel.$setValidity('datepicker', true);
                                 ngModel.$setValidity('mask', true);
@@ -328,10 +311,9 @@ define(['moment', 'ng-jedi-utilities', 'angular-ngMask', 'bootstrap-datetimepick
                                 ngModel.$setValidity('datepicker', false);
                                 return viewValue;
                             }
-                        };
-                        ngModel.$parsers.push(parseDate);
+                        });
 
-                        var dateFormatter = function dateFormatter(value) {
+                        ngModel.$formatters.push(function dateFormatter(value) {
                             if (!value) {
                                 return value;
                             } else if (moment.isMoment(value) && value.isValid()) {
@@ -356,8 +338,7 @@ define(['moment', 'ng-jedi-utilities', 'angular-ngMask', 'bootstrap-datetimepick
                             } else {
                                 return value;
                             }
-                        };
-                        ngModel.$formatters.push(dateFormatter);
+                        });
 
                         //Seta min e max date para o Datepicker - possibilita que dois datepickers sejam usados linkados um ao outro
                         if (attrs.jdMinDate) {
@@ -412,6 +393,26 @@ define(['moment', 'ng-jedi-utilities', 'angular-ngMask', 'bootstrap-datetimepick
                                     widget.attr('style', 'display: block; top: 26px; bottom: auto; left: 0px; right: auto;');
                                 }
                             }
+                        });
+
+                        // destroy
+                        // se escopo destruido remove eventos
+                        scope.$on('$destroy', function () {
+                            if (dateWrap) {
+                                var dtPicker = dateWrap.data('DateTimePicker');
+                                if (dtPicker) {
+                                    dtPicker.destroy();
+                                }
+                            }
+                        });
+                        // se input destruido remove wrap
+                        element.on('$destroy', function () {
+                            if (dateWrap) {
+                                var w = dateWrap;
+                                dateWrap = null;
+                                w.remove();
+                            }
+                            scope.$destroy();
                         });
                     }
                 };

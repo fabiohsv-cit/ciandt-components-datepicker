@@ -56,6 +56,12 @@ define(['angular'], function () {
                         scope.$dismiss();
                         return false;
                     });
+
+                    // destroy
+                    // se escopo destruido remove eventos
+                    scope.$on('$destroy', function () {
+                        element.find('[jd-dismiss-modal]').unbind('click');
+                    });
                 };
             }
         }

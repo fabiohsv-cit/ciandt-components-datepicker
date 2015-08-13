@@ -80,7 +80,8 @@ define(['angular'], function () {
                                         }
                                     }
                                 }
-                            });
+                            }
+                        );
 
                         scope.selectedItem = undefined;
                         scope.collapsed = false;

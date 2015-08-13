@@ -4,7 +4,20 @@ define(['angular', 'bootstrap'], function () {
 
     angular.module('jedi.layout.input', []).constant('jedi.layout.input.InputConfig', {
         specificSizes: {
-
+            "{{(type === 'radio' || type === 'checkbox') && (jdRepeat == undefined || jdRepeat == '')}}": {
+                xsSize: 12,
+                smSize: 3,
+                mdSize: 3,
+                lgSize: 3,
+                xsLabelSize: 0,
+                smLabelSize: 0,
+                mdLabelSize: 0,
+                lgLabelSize: 0,
+                xsInputSize: 12,
+                smInputSize: 12,
+                mdInputSize: 12,
+                lgInputSize: 12
+            }
         },
         specificSizesProportion: {
 
