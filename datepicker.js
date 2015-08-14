@@ -11,21 +11,6 @@ define(['moment', 'ng-jedi-utilities', 'angular-ngMask', 'bootstrap-datetimepick
             var _mask = $attrs.mask;
             var _validate;
 
-            // Set Alias and function 
-            if (typeof ngMaskConfig.alias[_mask] != 'undefined') {
-                $attrs.mask = ngMaskConfig.alias[_mask];
-
-                _validate = $attrs.mask.validate;
-
-                if (typeof $attrs.mask == 'object') {
-                    $attrs.mask = $attrs.mask.mask;
-                }
-
-                if (typeof $attrs.mask == 'function') {
-                    $attrs.mask = $attrs.mask($attrs);
-                }
-            }
-
             var maskService = MaskService.create();
             var timeout;
             var promise;
@@ -62,19 +47,19 @@ define(['moment', 'ng-jedi-utilities', 'angular-ngMask', 'bootstrap-datetimepick
                     promise = maskService.generateRegex({
                         mask: $attrs.mask,
                         // repeat mask expression n times
-                        repeat: ($attrs.repeat || $attrs.maskRepeat),
+                        repeat: undefined,
                         // clean model value - without divisors
-                        clean: (($attrs.clean || $attrs.maskClean) === 'true'),
+                        clean: false,
                         // limit length based on mask length
-                        limit: (($attrs.limit || $attrs.maskLimit || 'true') === 'true'),
+                        limit: true,
                         // how to act with a wrong value
-                        restrict: ($attrs.restrict || $attrs.maskRestrict || 'reject'), //select, reject, accept
+                        restrict: 'reject', //select, reject, accept
                         // set validity mask
-                        validate: (($attrs.validate || $attrs.maskValidate || 'true') === 'true'),
+                        validate: true,
                         // default model value
                         model: $attrs.ngModel,
                         // default input value
-                        value: $attrs.ngValue
+                        value: undefined
                     });
                 },
                 post: function ($scope, $element, $attrs, controller) {
@@ -87,7 +72,7 @@ define(['moment', 'ng-jedi-utilities', 'angular-ngMask', 'bootstrap-datetimepick
                             // set default value equal 0
                             value = value || '';
 
-                            // para o caso do datepicker onde value � um Date e n�o uma string
+                            // para o caso do datepicker onde value é um Date e não uma string
                             if (value instanceof Date) {
                                 return value;
                             }
@@ -111,47 +96,22 @@ define(['moment', 'ng-jedi-utilities', 'angular-ngMask', 'bootstrap-datetimepick
 
                                 // current position is valid
                                 var validCurrentPosition = regex.test(viewValueWithDivisors) || fullRegex.test(viewValueWithDivisors);
-
-                                // difference means for select option
-                                var diffValueAndViewValueLengthIsOne = (value.length - viewValueWithDivisors.length) === 1;
-                                var diffMaskAndViewValueIsGreaterThanZero = (maskWithoutOptionals.length - viewValueWithDivisors.length) > 0;
-
-                                if (options.restrict !== 'accept') {
-                                    if (options.restrict === 'select' && (!validCurrentPosition || diffValueAndViewValueLengthIsOne)) {
-                                        var lastCharInputed = value[(value.length - 1)];
-                                        var lastCharGenerated = viewValueWithDivisors[(viewValueWithDivisors.length - 1)];
-
-                                        if ((lastCharInputed !== lastCharGenerated) && diffMaskAndViewValueIsGreaterThanZero) {
-                                            viewValueWithDivisors = viewValueWithDivisors + lastCharInputed;
-                                        }
-
-                                        var wrongPosition = maskService.getFirstWrongPosition(viewValueWithDivisors);
-                                        if (angular.isDefined(wrongPosition)) {
-                                            setSelectionRange(wrongPosition);
-                                        }
-                                    } else if (options.restrict === 'reject' && !validCurrentPosition) {
-                                        viewValue = maskService.removeWrongPositions(viewValueWithDivisors);
-                                        viewValueWithDivisors = viewValue.withDivisors(true);
-                                        viewValueWithoutDivisors = viewValue.withoutDivisors(true);
-
-                                        // setSelectionRange(viewValueWithDivisors.length);
-                                    }
+                                
+                                if (!validCurrentPosition) {
+                                    viewValue = maskService.removeWrongPositions(viewValueWithDivisors);
+                                    viewValueWithDivisors = viewValue.withDivisors(true);
+                                    viewValueWithoutDivisors = viewValue.withoutDivisors(true);
                                 }
-
-                                if (!options.limit) {
-                                    viewValueWithDivisors = viewValue.withDivisors(false);
-                                    viewValueWithoutDivisors = viewValue.withoutDivisors(false);
-                                }
-
+                                viewValueWithDivisors = viewValue.withDivisors(false);
+                                viewValueWithoutDivisors = viewValue.withoutDivisors(false);                           
                                 // Set validity
-                                if (options.validate && controller.$dirty) {
+                                if (controller.$dirty) {
                                     if (fullRegex.test(viewValueWithDivisors) || controller.$isEmpty(controller.$modelValue)) {
                                         controller.$setValidity('mask', !_validate || _validate(viewValueWithoutDivisors));
                                     } else {
                                         controller.$setValidity('mask', false);
                                     }
                                 }
-
                                 // Update view and model values
                                 if (value !== viewValueWithDivisors) {
                                     controller.$setViewValue(angular.copy(viewValueWithDivisors), 'input');
@@ -161,13 +121,7 @@ define(['moment', 'ng-jedi-utilities', 'angular-ngMask', 'bootstrap-datetimepick
                                 $log.error('[mask - parseViewValue]');
                                 throw e;
                             }
-
-                            // Update model, can be different of view value
-                            if (options.clean) {
-                                return viewValueWithoutDivisors;
-                            } else {
-                                return viewValueWithDivisors;
-                            }
+                            return viewValueWithDivisors;
                         }
 
                         controller.$parsers.push(parseViewValue);
@@ -176,7 +130,6 @@ define(['moment', 'ng-jedi-utilities', 'angular-ngMask', 'bootstrap-datetimepick
                             timeout = $timeout(function () {
                                 // Manual debounce to prevent multiple execution
                                 $timeout.cancel(timeout);
-
                                 parseViewValue($element.val());
                                 $scope.$apply();
                             }, 100);
@@ -190,16 +143,6 @@ define(['moment', 'ng-jedi-utilities', 'angular-ngMask', 'bootstrap-datetimepick
                                 watcher();
                             }
                         });
-
-                        // $evalAsync from a directive
-                        // it should run after the DOM has been manipulated by Angular
-                        // but before the browser renders
-                        if (options.value) {
-                            $scope.$evalAsync(function ($scope) {
-                                controller.$setViewValue(angular.copy(options.value), 'input');
-                                controller.$render();
-                            });
-                        }
                     });
                 }
             }
@@ -326,7 +269,8 @@ define(['moment', 'ng-jedi-utilities', 'angular-ngMask', 'bootstrap-datetimepick
                                 if (date.isValid()) {
                                     return date.format(format);
                                 } else {
-                                    date = new Date(value); //Em alguns casos value é uma string de um objeto Date (date.toString()), e o moment não consegue realizar o parse
+                                    //Em alguns casos value é uma string de um objeto Date (date.toString()), e o moment não consegue realizar o parse
+                                    date = new Date(value);
                                     var mDate = moment(date);
                                     if (mDate.isValid()) {
                                         return mDate.format(format);
