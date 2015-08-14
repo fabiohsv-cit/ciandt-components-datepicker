@@ -10,23 +10,23 @@ Layout components for your application.
 * Install the dependency:
 
    ```shell
-   bower install ng-jedi-layout --save
+      bower install ng-jedi-layout --save
    ```
 * Add layout.js to your code:
 
    ```html
-   <script src='assets/libs/ng-jedi-layout/layout.js'></script>
-   <script src='assets/libs/ng-jedi-layout/datepicker.js'></script>
-   <script src='assets/libs/ng-jedi-layout/input.js'></script>
-   <script src='assets/libs/ng-jedi-layout/treeview.js'></script>
-   <script src='assets/libs/ng-jedi-layout/modal.js'></script>
-   <script src='assets/libs/ng-jedi-layout/panel.js'></script>
+      <script src='assets/libs/ng-jedi-layout/layout.js'></script>
+      <script src='assets/libs/ng-jedi-layout/datepicker.js'></script>
+      <script src='assets/libs/ng-jedi-layout/input.js'></script>
+      <script src='assets/libs/ng-jedi-layout/treeview.js'></script>
+      <script src='assets/libs/ng-jedi-layout/modal.js'></script>
+      <script src='assets/libs/ng-jedi-layout/panel.js'></script>
    ```
    - note that the base directory used was assets/libs, you should change bower_components to assets/libs or move from bower_components to assets/libs with [Grunt](http://gruntjs.com/).
 * Include module dependency:
 
    ```javascript
-   angular.module('yourApp', ['jedi.layout']);
+      angular.module('yourApp', ['jedi.layout']);
    ```
 ======
 
@@ -40,85 +40,104 @@ Layout components for your application.
   1. [jdValidationTooltip](#jdvalidationtooltip)
 
 #### jdDatepicker
-   - this directive use bootstrap-datetimepicker and integrating its with angularjs
+
+   - This directive use bootstrap-datetimepicker and integrating its with angularjs
+
+   ##### Example:
+
    ```html
-   <input jd-datepicker jd-min-date="myCtrl.myModel.startDate" jd-max-date="myCtrl.myModel.endDate" type="text" ng-model="myCtrl.myModel.initialDate" />
+      <input jd-datepicker jd-min-date="myCtrl.myModel.startDate" jd-max-date="myCtrl.myModel.endDate" type="text" ng-model="myCtrl.myModel.initialDate" />
    ```
    - if you need, you can customize the html. In your angular run from app.js, override the constant jedi.layout.datepicker.DatepickerConfig and set your html in template attribute.
 
    **[Back to top](#how-to-use)**
 
 #### jdTreeview
-   - this directive creates a treeview in your page. The value setted in directive shoud be the levels, separated by ';'. Each level should be passed the description field name. Your model should be similar to a tree. The last level uses the body content. E.g.:
+
+   - This directive creates a treeview in your page. The value setted in directive shoud be the levels, separated by ';'. Each level should be passed the description field name. Your model should be similar to a tree. The last level uses the body content. E.g.:
+
+   ##### Example:
+
    ```html
-   <ol jd-treeview="level1[level1.fieldLevel1] in myCtrl.myModel.tree; level2[level2.fieldLevel2] in level1.levels2; level3 in level2.levels3">
-      <input type="checkbox" ng-model="level3.selected">
-      <span class="">{{level3.fieldLevel3}}</span>
-   </ol>
+      <ol jd-treeview="level1[level1.fieldLevel1] in myCtrl.myModel.tree; level2[level2.fieldLevel2] in level1.levels2; level3 in level2.levels3">
+         <input type="checkbox" ng-model="level3.selected">
+         <span class="">{{level3.fieldLevel3}}</span>
+      </ol>
    ```
+
    ```javascript
-   vm.myModel = {tree: [
-      {
-         fieldLevel1: 'Description level 1',
-         levels2: [
-            {
-               fieldLevel2: 'Description level 2',
-               levels3: [
-                  {
-                     fieldLevel3: 'Description level 3'
-                  }
-               ]
-            }
-         ]
-      }
-   ]};
+      vm.myModel = {tree: [
+         {
+            fieldLevel1: 'Description level 1',
+            levels2: [
+               {
+                  fieldLevel2: 'Description level 2',
+                  levels3: [
+                     {
+                        fieldLevel3: 'Description level 3'
+                     }
+                  ]
+               }
+            ]
+         }
+      ]};
    ```
-   * if you need, you can customize the html. In your angular run from app.js, override the constant jedi.layout.treeview.TreeviewConfig and set your html. There are three attributes:
-   - emptyTpl: define html to write when tree is empty.
-   - nodeTpl: define html to write the intermediate nodes.
-   - lastNodeTpl: define html to write the last node.
+
+   - if you need, you can customize the html. In your angular run from app.js, override the constant jedi.layout.treeview.TreeviewConfig and set your html. There are three attributes:
+      - emptyTpl: define html to write when tree is empty.
+      - nodeTpl: define html to write the intermediate nodes.
+      - lastNodeTpl: define html to write the last node.
+
    ```javascript
-   app.run(['jedi.layout.treeview.TreeviewConfig', function(TreeviewConfig){
-      TreeviewConfig.emptyTpl = '<div id="emptyTreeElement"><strong class="text-warning"><jd-i18n>Nenhum item encontrado.</jd-i18n></strong></div>';
-   }]);
+      app.run(['jedi.layout.treeview.TreeviewConfig', function(TreeviewConfig){
+         TreeviewConfig.emptyTpl = '<div id="emptyTreeElement"><strong class="text-warning"><jd-i18n>Nenhum item encontrado.</jd-i18n></strong></div>';
+      }]);
    ```
 
    **[Back to top](#how-to-use)**
 
 #### jdPanel
-   - this directive creates a bootstrap panel with few lines of code. The value setted in directive is the bootstrap col-lg size.
-   ```html
-   <form jd-panel="1" jd-title="My Panel">
-      ...
-   </form>
+
+   - This directive creates a bootstrap panel with few lines of code. The value setted in directive is the bootstrap col-lg size.
+
+   ##### Example:
+
+   ```html   
+      <form jd-panel="1" jd-title="My Panel">
+         ...
+      </form>
    ```
-   * if you need, you can customize the html. In your angular run from app.js, override the constant jedi.layout.panel.PanelConfig and set your html. There are three attributes:
-   - defaultElementClass: default class to apply in your element
-   - defaultFormClass: default class to apply in the forms into your element
-   - wrapSizeTpl: define html to write the div with col-lg if you define size to the panel.
-   - useBoxedPage: define if the panel will be create a div.page wrap
-   - containerFilter: jQuery filter to check if panel parent is a container for then create div.page
-   - boxedPageTpl: define html to write on div.page element.
-   - bodyTpl: define html to write arround of your element.
-   - headerTpl: define html to write in the header panel.
+
+   - if you need, you can customize the html. In your angular run from app.js, override the constant jedi.layout.panel.PanelConfig and set your html. There are three attributes:
+      - defaultElementClass: default class to apply in your element
+      - defaultFormClass: default class to apply in the forms into your element
+      - wrapSizeTpl: define html to write the div with col-lg if you define size to the panel.
+      - useBoxedPage: define if the panel will be create a div.page wrap
+      - containerFilter: jQuery filter to check if panel parent is a container for then create div.page
+      - boxedPageTpl: define html to write on div.page element.
+      - bodyTpl: define html to write arround of your element.
+      - headerTpl: define html to write in the header panel.
+
+   **[Back to top](#how-to-use)**
 
 #### jdModal
-   - this directive creates a bootstrap modal panel with few lines of code. The value setted in directive is the bootstrap col-lg size.
+
+   - This directive creates a bootstrap modal panel with few lines of code. The value setted in directive is the bootstrap col-lg size.
+
+   ##### Example:
+
    ```html
-   <form jd-modal="1" jd-title="My Modal">
-      ...
-	  <div class="modal-footer">
-	     ...
-	  </div>
-   </form>
+      <form jd-modal="10" jd-title="My Modal">
+         ...
+   	  <div class="modal-footer">
+   	     ...
+   	  </div>
+      </form>
    ```
-   * if you need, you can customize the html. In your angular run from app.js, override the constant jedi.layout.modal.ModalConfig and set your html. There are three attributes:
-   - defaultElementClass: default class to apply in your element
-   - defaultFormClass: default class to apply in the forms into your element
-   - defaultTableClass: default class to apply in the tables into your element
-   - headerTpl: define html to write in the header panel.
-   - titleTpl: define html to write the title content.
-   - closeBtnTpl: define html to write the close button content.
+   - if you need, you can customize the html. In your angular run from app.js, override the constant jedi.layout.modal.ModalConfig and set your html. There are three attributes:   
+      - defaultFormClass: default class to apply in the forms into your element.
+      - defaultTableClass: default class to apply in the tables into your element.
+      - defaultTemplateUrl: default template to use for the modal.
 
    **[Back to top](#how-to-use)**
 
@@ -346,16 +365,17 @@ Layout components for your application.
    Since we used ```jd-input="6"``` notice that the sizes of the root element have changed in comparison with the examples previously discribed.
 
    Using the sizes attributes will result in the override of the classes (e.g.:
+   ```shell
       • ```jd-xs-size="4"``` will result the root element to have ```col-xs-4``` instead of ```col-xs-12```
       • ```jd-sm-label-size="8"``` will result the label element to have ```col-sm-8``` instead of ```col-sm-12``` and will calculate the size for the input to be ```col-sm-4``` instead of ```col-sm-12```
       • ```jd-md-input-size="10"``` will result the div wrapping the input to have ```col-md-10``` instead of ```col-md-12``` and will calculate the size for the label to be ```col-md-2``` instead of ```col-md-12```).
-
+   ```
 
    - if you need, you can customize the html. In your angular run from app.js, override the constant jedi.layout.input.InputConfig and set your size configuration. There are three attributes:
 
       - specificSizes: used by angular's $interpolate to determinate which sizes to use for a specific type of input. e.g.:
       ```shell
-         - "{{(type === 'radio' || type === 'checkbox') && (jdRepeat == undefined || jdRepeat == '')}}": {
+         "{{(type === 'radio' || type === 'checkbox') && (jdRepeat == undefined || jdRepeat == '')}}": {
                   xsSize: 12,
                   smSize: 3,
                   mdSize: 3,
@@ -409,9 +429,7 @@ Layout components for your application.
          ```
 
       - defaultTemplate: The url for the default template. Define if you want to use your own default (String).
-      - useValidationTooltip: True, if the input should use the validation tooltip to show erros (Boolean).
-
-      **[Back to top](#how-to-use)**
+      - useValidationTooltip: True if the input should use the validation tooltip to show erros (Boolean).
 
    **[Back to top](#how-to-use)**
 
@@ -432,15 +450,15 @@ Layout components for your application.
       - messages: the messages that you want to use in your application for validation errors. e.g.:
          ```shell
             messages: {
-            'required': 'This field is required.',
-            'minlength': 'This field should have at least x characters.',
-            'maxlength': 'This field should not have more than x characters.',
-            'pattern': 'This field should match the pattern.',
-            'equal': 'This field should be equal to something.',
-            'email': 'This field should be a valid e-mail.',
-            ...
-            'default': 'This is the default message.'
-        }
+               'required': 'This field is required.',
+               'minlength': 'This field should have at least x characters.',
+               'maxlength': 'This field should not have more than x characters.',
+               'pattern': 'This field should match the pattern.',
+               'equal': 'This field should be equal to something.',
+               'email': 'This field should be a valid e-mail.',
+               ...
+               'default': 'This is the default message.'
+            }
          ```
 
    **[Back to top](#how-to-use)**
