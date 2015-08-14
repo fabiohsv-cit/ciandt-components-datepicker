@@ -449,16 +449,14 @@ Layout components for your application.
 
       - messages: the messages that you want to use in your application for validation errors. e.g.:
          ```shell
-            messages: {
-               'required': 'This field is required.',
-               'minlength': 'This field should have at least x characters.',
-               'maxlength': 'This field should not have more than x characters.',
-               'pattern': 'This field should match the pattern.',
-               'equal': 'This field should be equal to something.',
-               'email': 'This field should be a valid e-mail.',
-               ...
-               'default': 'This is the default message.'
-            }
+            'required': 'This field is required.',
+            'minlength': 'This field should have at least x characters.',
+            'maxlength': 'This field should not have more than x characters.',
+            'pattern': 'This field should match the pattern.',
+            'equal': 'This field should be equal to something.',
+            'email': 'This field should be a valid e-mail.',
+            ...
+            'default': 'This is the default message.'            
          ```
 
    **[Back to top](#how-to-use)**
