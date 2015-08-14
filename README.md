@@ -1,5 +1,9 @@
 # ng-jedi-layout
-Layout components written in angularjs.
+Layout components for your application.
+###### Written in [AngularJs](https://angularjs.org/)
+
+  1. [Install](#install)
+  1. [How To Use](#how-to-use)
 
 ### Install
 
@@ -18,7 +22,7 @@ Layout components written in angularjs.
    <script src='assets/libs/ng-jedi-layout/modal.js'></script>
    <script src='assets/libs/ng-jedi-layout/panel.js'></script>
    ```
-   - note that the base directory used was assets/libs, you should change bower_components to assets/libs or move from bower_components to assets/libs with grunt.
+   - note that the base directory used was assets/libs, you should change bower_components to assets/libs or move from bower_components to assets/libs with [Grunt](http://gruntjs.com/).
 * Include module dependency:
 
    ```javascript
@@ -28,14 +32,23 @@ Layout components written in angularjs.
 
 ### How To Use
 
-1. **Add jd-datepicker directive in your html**
+  1. [jdDatepicker](#jddatepicker)
+  1. [jdTreeview](#jdtreeview)
+  1. [jdPanel](#jdpanel)
+  1. [jdModal](#jdmodal)
+  1. [jdInput](#jdinput)
+  1. [jdValidationTooltip](#jdvalidationtooltip)
+
+#### jdDatepicker
    - this directive use bootstrap-datetimepicker and integrating its with angularjs
    ```html
    <input jd-datepicker jd-min-date="myCtrl.myModel.startDate" jd-max-date="myCtrl.myModel.endDate" type="text" ng-model="myCtrl.myModel.initialDate" />
    ```
    - if you need, you can customize the html. In your angular run from app.js, override the constant jedi.layout.datepicker.DatepickerConfig and set your html in template attribute.
 
-2. **Add jd-treeview directive in your html**
+   **[Back to top](#how-to-use)**
+
+#### jdTreeview
    - this directive creates a treeview in your page. The value setted in directive shoud be the levels, separated by ';'. Each level should be passed the description field name. Your model should be similar to a tree. The last level uses the body content. E.g.:
    ```html
    <ol jd-treeview="level1[level1.fieldLevel1] in myCtrl.myModel.tree; level2[level2.fieldLevel2] in level1.levels2; level3 in level2.levels3">
@@ -70,7 +83,9 @@ Layout components written in angularjs.
    }]);
    ```
 
-3. **Add jd-panel directive in your html**
+   **[Back to top](#how-to-use)**
+
+#### jdPanel
    - this directive creates a bootstrap panel with few lines of code. The value setted in directive is the bootstrap col-lg size.
    ```html
    <form jd-panel="1" jd-title="My Panel">
@@ -87,7 +102,7 @@ Layout components written in angularjs.
    - bodyTpl: define html to write arround of your element.
    - headerTpl: define html to write in the header panel.
 
-4. **Add jd-modal directive in your html**
+#### jdModal
    - this directive creates a bootstrap modal panel with few lines of code. The value setted in directive is the bootstrap col-lg size.
    ```html
    <form jd-modal="1" jd-title="My Modal">
@@ -105,10 +120,13 @@ Layout components written in angularjs.
    - titleTpl: define html to write the title content.
    - closeBtnTpl: define html to write the close button content.
 
-5. **Add jd-input directive in your html**
+   **[Back to top](#how-to-use)**
+
+#### jdInput
+
    - This directive apply classes and htmls arround your input to improve bootstrap's power.
 
-   - The value of the directive (if specified) will be bootstrap's col-lg size and the other sizes such as col-xs/col-sm/col-md will be calculated by proportion considering the value informed, *but only for the root element of the template*. In case you don't specify a value for the directive it will use the default values configured for all four sizes. The directive also add a validation tooltip when there is/are validation error(s) (see ng-jedi-utilities function applyValidationTooltip).
+   - The value of the directive (if specified) will be bootstrap's col-lg size and the other sizes such as col-xs/col-sm/col-md will be calculated by proportion considering the value informed, *but only for the root element of the template*. In case you don't specify a value for the directive it will use the default values configured for all four sizes. The directive also add a validation tooltip when there is/are validation error(s) (see [jdValidationTooltip directive](#jdvalidationtooltip)).
 
    - There are attributes that you can use to customize the input the way you want it:
    ```shell
@@ -137,8 +155,9 @@ Layout components written in angularjs.
 
    - **IMPORTANT: You will notice that some attributes of the inputs have a ```$parent``` tag. That's because of the transclude that is used in the directive. It creates a new scope for the cloned element, plus the directive itself has its own scope causing the model to be acessible only through the scope of the $parent.$parent element. In other cases through the $parent.$parent.$parent element because of ng-repeat.**
       
+   ---      
 
-   ##### *Examples:*
+   ##### Examples:
 
    - Type: Text
    ```html
@@ -300,7 +319,9 @@ Layout components written in angularjs.
    </div>
    ```
 
-   ##### *Examples with attributes:*
+   ---
+
+   ##### Examples with attributes:
 
    ```html
    <input jd-input="6" jd-help="I'm a tiny text below the input" jd-input-class="ImInTheDivThatWrapTheInput" jd-label-class="ImInTheLabel" jd-element-class="ImInTheInput" jd-label="MyInput's Label" type="text" ng-model="myInput" />
@@ -330,7 +351,7 @@ Layout components written in angularjs.
       • ```jd-md-input-size="10"``` will result the div wrapping the input to have ```col-md-10``` instead of ```col-md-12``` and will calculate the size for the label to be ```col-md-2``` instead of ```col-md-12```).
 
 
-   - if you need, you can customize the html. In your angular run from app.js, override the constant jedi.layout.input.InputConfig and set your html. There are three attributes:
+   - if you need, you can customize the html. In your angular run from app.js, override the constant jedi.layout.input.InputConfig and set your size configuration. There are three attributes:
 
       - specificSizes: used by angular's $interpolate to determinate which sizes to use for a specific type of input. e.g.:
       ```shell
@@ -362,9 +383,7 @@ Layout components written in angularjs.
       - lgSizesProportion: the size proportion that will be used in the root element for non-specific inputs in case ```jd-input``` is specified. e.g.:
          ```shell
          "1": { mdSize: 1, smSize: 2, xsSize: 12 },
-
          ...
-
          "12": { mdSize: 12, smSize: 12, xsSize: 12 }
          ```
 
@@ -391,3 +410,38 @@ Layout components written in angularjs.
 
       - defaultTemplate: The url for the default template. Define if you want to use your own default (String).
       - useValidationTooltip: True, if the input should use the validation tooltip to show erros (Boolean).
+
+      **[Back to top](#how-to-use)**
+
+   **[Back to top](#how-to-use)**
+
+#### jdValidationTooltip
+
+   - This directive applies a tooltip to your input for validation purpose.
+
+   ##### Example:
+
+   ```html
+      <input id="myRequiredInput" name="myRequiredInput" type="text" ng-model="myRequiredInputModel" required jd-validation-tooltip />
+   ```
+
+   As you can see the input above has the ```required``` attribute and because of that the ```jdValidationTooltip``` directive will apply a tooltip on the right side of the input when this field is empty.
+
+   - if you need, you can customize the messages. In your angular run from app.js, override the constant jedi.layout.validationtooltip.ValidationTooltipConfig and set the messages that you want. There is one attribute:
+
+      - messages: the messages that you want to use in your application for validation errors. e.g.:
+         ```shell
+            messages: {
+            'required': 'This field is required.',
+            'minlength': 'This field should have at least x characters.',
+            'maxlength': 'This field should not have more than x characters.',
+            'pattern': 'This field should match the pattern.',
+            'equal': 'This field should be equal to something.',
+            'email': 'This field should be a valid e-mail.',
+            ...
+            'default': 'This is the default message.'
+        }
+         ```
+
+   **[Back to top](#how-to-use)**
+
