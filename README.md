@@ -122,16 +122,26 @@ Layout components for your application.
 
 #### jdModal
 
-   - This directive creates a bootstrap modal panel with few lines of code. The value setted in directive is the bootstrap col-lg size.
+   - This directive creates a bootstrap modal with few lines of code.
+
+   - You can decorate an element with a special attribute called ```jd-dismiss-modal``` to close the modal.
+
+   - Keep in mind that this directive only applies the modal's layout. In case you want to change the size or some other configuration, please take a look on these:
+      - [ui.bootstrap - $modal](http://angular-ui.github.io/bootstrap/#/modal)
+      - [ng-jedi-factory - factory.newModal](https://github.com/ng-jedi/factory#newmodal)
+      - [ng-jedi-dialogs - ModalHelper](https://github.com/ng-jedi/dialogs)
 
    ##### Example:
 
    ```html
-      <form jd-modal="10" jd-title="My Modal">
+      <form jd-modal jd-title="My Modal">
          ...
-   	  <div class="modal-footer">
-   	     ...
-   	  </div>
+
+         <button jd-dismiss-modal>This button closes the modal</button>
+
+      	<div class="modal-footer">
+      	   ...
+      	</div>
       </form>
    ```
    - if you need, you can customize the html. In your angular run from app.js, override the constant jedi.layout.modal.ModalConfig and set your html. There are three attributes:   
@@ -448,16 +458,16 @@ Layout components for your application.
    - if you need, you can customize the messages. In your angular run from app.js, override the constant jedi.layout.validationtooltip.ValidationTooltipConfig and set the messages that you want. There is one attribute:
 
       - messages: the messages that you want to use in your application for validation errors. e.g.:
-         ```shell
-            'required': 'This field is required.',
-            'minlength': 'This field should have at least x characters.',
-            'maxlength': 'This field should not have more than x characters.',
-            'pattern': 'This field should match the pattern.',
-            'equal': 'This field should be equal to something.',
-            'email': 'This field should be a valid e-mail.',
-            ...
-            'default': 'This is the default message.'            
-         ```
+   ```shell
+      'required': 'This field is required.',
+      'minlength': 'This field should have at least x characters.',
+      'maxlength': 'This field should not have more than x characters.',
+      'pattern': 'This field should match the pattern.',
+      'equal': 'This field should be equal to something.',
+      'email': 'This field should be a valid e-mail.',
+      ...
+      'default': 'This is the default message.'
+   ```
 
    **[Back to top](#how-to-use)**
 
