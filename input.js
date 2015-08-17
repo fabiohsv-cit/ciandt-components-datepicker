@@ -118,7 +118,7 @@ define(['angular', 'bootstrap'], function () {
                     cElement.attr('jd-validation-tooltip', '');
                 }
 
-                if (!cAttrs.required && cElement.find(':input[required]').length > 0) {
+                if (!cAttrs.required && cElement.find(':input[required],:input[ng-required],:input[data-ng-required]').length > 0) {
                     cAttrs.required = true;
                 }
             }
@@ -177,10 +177,9 @@ define(['angular', 'bootstrap'], function () {
                     $scope.showLabel = $attrs.jdLabel && $attrs.jdLabel !== '';
                 }
 
-                $scope.showRequired = $attrs.required ? ' *' : '';
+                $scope.showRequired = angular.isDefined($attrs.required) || angular.isDefined($attrs.ngRequired) || angular.isDefined($attrs.dataNgRequired) ? ' *' : '';
 
                 $scope.showHelp = $attrs.jdHelp && $attrs.jdHelp !== '';
-
 
                 //**Valores para a div root(Encobre o label + input)**
                 //Se o tamanho foi informado pelo jdInput, são usados valores proporcionais (xs/sm/md/lg)
