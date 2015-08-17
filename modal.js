@@ -6,7 +6,7 @@ define(['angular'], function () {
         defaultFormClass: 'form-validation',
         defaultTableClass: 'table-dynamic',
         defaultTemplateUrl: 'assets/libs/ng-jedi-layout/modal.html'
-    }).directive('jdModal', ['jedi.layout.modal.ModalConfig', '$timeout', '$compile', function (ModalConfig, $timeout, $compile) {
+    }).directive('jdModal', ['jedi.layout.modal.ModalConfig', '$timeout', '$compile', '$filter', function (ModalConfig, $timeout, $compile, $filter) {
         return {
             restrict: "A",
             priority: 1000.1,
@@ -14,7 +14,7 @@ define(['angular'], function () {
                 if (cElement.is('form')) {
                     cElement.addClass(ModalConfig.defaultFormClass);
                     if (!cAttrs.name && cAttrs.jdTitle) {
-                        cElement.attr('name', cAttrs.jdTitle);
+                        cElement.attr('name', $filter('jdReplaceSpecialChars')(cAttrs.jdTitle));
                     }
                     if (angular.isUndefined(cAttrs.novalidate)) {
                         cElement.attr('novalidate', '');
