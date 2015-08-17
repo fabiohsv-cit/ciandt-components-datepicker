@@ -117,6 +117,10 @@ define(['angular', 'bootstrap'], function () {
                 if (InputConfig.useValidationTooltip && !cAttrs.jdValidationTooltip && cAttrs.ngModel && cElement.is(':input')) {
                     cElement.attr('jd-validation-tooltip', '');
                 }
+
+                if (!cAttrs.required && cElement.find(':input[required]').length > 0) {
+                    cAttrs.required = true;
+                }
             }
         };
     }]).directive("jdInput", ['jedi.layout.input.InputConfig', '$interpolate', function (InputConfig, $interpolate) {
@@ -173,7 +177,7 @@ define(['angular', 'bootstrap'], function () {
                     $scope.showLabel = $attrs.jdLabel && $attrs.jdLabel !== '';
                 }
 
-                $scope.showRequired = $attrs.required;
+                $scope.showRequired = $attrs.required ? ' *' : '';
 
                 $scope.showHelp = $attrs.jdHelp && $attrs.jdHelp !== '';
 
