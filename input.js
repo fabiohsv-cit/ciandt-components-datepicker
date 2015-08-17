@@ -57,7 +57,7 @@ define(['angular', 'bootstrap'], function () {
         },
         defaultTemplate: 'assets/libs/ng-jedi-layout/input-single.html',
         useValidationTooltip: true
-    }).directive("jdInput", ['jedi.layout.input.InputConfig', function (InputConfig) {
+    }).directive("jdInput", ['jedi.layout.input.InputConfig', '$filter', function (InputConfig, $filter) {
         // prepara input antes de realizar transclude
         return {
             restrict: "A",
@@ -68,7 +68,7 @@ define(['angular', 'bootstrap'], function () {
                     if (!cElement.attr('id')) {
                         cElement.attr('id', cElement.attr('name'));
                         if (!cElement.attr('id')) {
-                            cElement.attr('id', cElement.attr('jd-label'));
+                            cElement.attr('id', $filter('jdReplaceSpecialChars')(cElement.attr('jd-label')));
                         }
                     }
                     cAttrs.id = cElement.attr('id');

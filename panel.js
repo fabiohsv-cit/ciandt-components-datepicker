@@ -14,7 +14,7 @@ define(['ng-jedi-utilities'], function () {
         '  <strong>{{jdIcon}}<jd-i18n>{{jdTitle}}</jd-i18n></strong>' +
         '</div>',
         iconTpl: '<span class="glyphicon {{jdTitleIcon}}"></span>'
-    }).directive('jdPanel', ['jedi.utilities.Utilities', 'jedi.layout.panel.PanelConfig', '$interpolate', '$compile', function (utilities, PanelConfig, $interpolate, $compile) {
+    }).directive('jdPanel', ['jedi.utilities.Utilities', 'jedi.layout.panel.PanelConfig', '$interpolate', '$compile', '$filter', function (utilities, PanelConfig, $interpolate, $compile, $filter) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
@@ -24,7 +24,7 @@ define(['ng-jedi-utilities'], function () {
                 if (element.is('form')) {
                     element.addClass(PanelConfig.defaultFormClass);
                     if (!attrs.name && attrs.jdTitle) {
-                        element.attr('name', attrs.jdTitle);
+                        element.attr('name', $filter('jdReplaceSpecialChars')(attrs.jdTitle));
                     }
                     if (angular.isUndefined(attrs.novalidate)) {
                         element.attr('novalidate', '');
