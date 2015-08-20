@@ -102,8 +102,7 @@ define(['moment', 'ng-jedi-utilities', 'angular-ngMask', 'bootstrap-datetimepick
                                     viewValueWithDivisors = viewValue.withDivisors(true);
                                     viewValueWithoutDivisors = viewValue.withoutDivisors(true);
                                 }
-                                viewValueWithDivisors = viewValue.withDivisors(false);
-                                viewValueWithoutDivisors = viewValue.withoutDivisors(false);                           
+                                                       
                                 // Set validity
                                 if (controller.$dirty) {
                                     if (fullRegex.test(viewValueWithDivisors) || controller.$isEmpty(controller.$modelValue)) {
