@@ -82,6 +82,9 @@ Layout components for your application.
          }
       ]};
    ```
+   
+   - If the treeview contains an empty array it will show the empty template, that is by default a message saying "No item found"
+   - if the treeview value is set null or undefined, it will hide from screen.
 
    - if you need, you can customize the html. In your angular run from app.js, override the constant jedi.layout.treeview.TreeviewConfig and set your html. There are three attributes:
       - emptyTpl: define html to write when tree is empty.

@@ -55,29 +55,20 @@ define(['angular'], function () {
                                 var list = iAttrs.jdTreeview.split(';');
                                 var firstNode = list[0].split(' ')[2];
                                 var listValue = scope.$eval(firstNode);
-
-                                if (listValue) {
-                                    scope.TreeViewIsReady = listValue.fromServer;
-                                    return listValue.length;
-                                }
-
-                                return undefined;
+                                return listValue;
                             },
                             function (newValue, oldValue) {
                                 iElement.children().remove("#emptyTreeElement");
-
-                                if (scope.TreeViewIsReady) {
-                                    if (newValue != oldValue) {
+                                //If content is null or undefined, doesn't show any content.
+                                if (!newValue) {
+                                    iElement.hide();
+                                } else {
+                                    iElement.show();
+                                    //If the new list TreeView(newValue) contains an empty array, show alert message.
+                                    if (newValue != oldValue && newValue.length === 0) {
                                         var emptyTreeViewTemplate = $interpolate(TreeviewConfig.emptyTpl)(angular.extend({}, iAttrs));
                                         var emptyTreeViewElement = angular.element(emptyTreeViewTemplate);
-
-                                        if (newValue == undefined)
-                                            return;
-
-                                        //Se a nova lista da TreeView(newValue) não possuir itens e caso a última lista tenha tido itens, adiciono a mensagem.
-                                        if (newValue == 0 && oldValue != 0) {
-                                            iElement.append(emptyTreeViewElement);
-                                        }
+                                        iElement.append(emptyTreeViewElement);
                                     }
                                 }
                             }
