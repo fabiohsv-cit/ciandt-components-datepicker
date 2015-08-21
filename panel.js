@@ -41,10 +41,10 @@ define(['ng-jedi-utilities'], function () {
                 if (typeof attrs.jdTitleIcon == 'undefined') {
                     attrs.jdTitleIcon = 'glyphicon-th';
                     attrs.jdIcon = $interpolate(PanelConfig.iconTpl)(angular.extend({}, attrs, scope));
-                } else 
-                if (attrs.jdTitleIcon.trim() !== '') {
-                    attrs.jdIcon = $interpolate(PanelConfig.iconTpl)(angular.extend({}, attrs, scope));
-                }
+                } else
+                    if (attrs.jdTitleIcon.trim() !== '') {
+                        attrs.jdIcon = $interpolate(PanelConfig.iconTpl)(angular.extend({}, attrs, scope));
+                    }
 
                 if (attrs.jdTitle) {
                     wrapper.prepend($interpolate(PanelConfig.headerTpl)(angular.extend({}, attrs, scope)));
@@ -54,10 +54,10 @@ define(['ng-jedi-utilities'], function () {
                     // define painel menor que o padrão 100%
                     wrapper = utilities.wrapElement(wrapper, $interpolate(PanelConfig.wrapSizeTpl)(angular.extend({}, attrs, scope)));
                 } else
-                if (PanelConfig.useBoxedPage && wrapper.parent().is(PanelConfig.containerFilter)) {
-                    // cria div page caso o parent seja o container
-                    wrapper = utilities.wrapElement(wrapper, $interpolate(PanelConfig.boxedPageTpl)(angular.extend({}, attrs, scope)));
-                }
+                    if (PanelConfig.useBoxedPage && wrapper.parent().is(PanelConfig.containerFilter)) {
+                        // cria div page caso o parent seja o container
+                        wrapper = utilities.wrapElement(wrapper, $interpolate(PanelConfig.boxedPageTpl)(angular.extend({}, attrs, scope)));
+                    }
 
                 var head = element.parents('.panel:first').children('.panel-heading');
                 if (head.length > 0) {
@@ -75,16 +75,34 @@ define(['ng-jedi-utilities'], function () {
                     var toggle = function toggle(panel) {
                         var $target = panel.children('.panel-heading').find('.glyphicon');
                         var panelContent = panel.children('.panel-body,.panel-footer');
-                        if (panelContent.toggle().is(':visible')) {
-                            $target.removeClass('glyphicon-chevron-right');
-                            $target.addClass('glyphicon-chevron-down');
-                        } else {
-                            $target.removeClass('glyphicon-chevron-down');
-                            $target.addClass('glyphicon-chevron-right');
+
+                        var doneToggling = function doneToggling() {
+                            if (panelContent.is(':visible')) {
+                                $target.removeClass('glyphicon-chevron-right');
+                                $target.addClass('glyphicon-chevron-down');
+                            } else {
+                                $target.removeClass('glyphicon-chevron-down');
+                                $target.addClass('glyphicon-chevron-right');
+                            }
+                            if (scope.$eval(attrs.jdToggle)) {
+                                scope.$eval(attrs.jdToggle + ' = value', { value: panelContent.is(':visible') });
+                            }
                         }
-                        if (scope.$eval(attrs.jdToggle)) {
-                            scope.$eval(attrs.jdToggle + ' = value', { value: panelContent.is(':visible') });
-                        }
+
+                        var animateStyles = {
+                            height: 'toggle',
+                            "padding-top": 'toggle',
+                            "padding-bottom": 'toggle'
+                        };
+
+                        var animateOptions = {
+                            duration: 200,
+                            easing: 'linear',
+                            queue: false,
+                            done: doneToggling,
+                        };
+
+                        panelContent.stop().animate(animateStyles, animateOptions);
                     };
 
                     toggleElement = element.parents('.panel:first').children('.panel-heading').find('*:first').addClass('toggleable').click(function (e) {
@@ -101,12 +119,10 @@ define(['ng-jedi-utilities'], function () {
                                 //Desconsidera a vez que o angular roda o watch antes mesmo da variável ser inicializada
                                 return;
                             }
-
                             var panel = element.parents('.panel:first');
-                            var children = panel.children('.panel-body,.panel-footer');
+                            var icon = panel.children('.panel-heading').find('.glyphicon');
 
-                            if (( !newValue && children.is(':visible'))
-                                  || (newValue && !children.is(':visible'))) {
+                            if (!newValue != !icon.hasClass('glyphicon-chevron-down')) {
                                 toggle(panel);
                             }
                         });
