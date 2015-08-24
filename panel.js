@@ -84,15 +84,15 @@ define(['ng-jedi-utilities'], function () {
                                 $target.removeClass('glyphicon-chevron-down');
                                 $target.addClass('glyphicon-chevron-right');
                             }
-                            if (scope.$eval(attrs.jdToggle)) {
+                            if (attrs.jdToggle !== "") {
                                 scope.$eval(attrs.jdToggle + ' = value', { value: panelContent.is(':visible') });
                             }
                         }
 
                         var animateStyles = {
                             height: 'toggle',
-                            "padding-top": 'toggle',
-                            "padding-bottom": 'toggle'
+                            'padding-top': 'toggle',
+                            'padding-bottom': 'toggle'
                         };
 
                         var animateOptions = {
