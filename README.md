@@ -131,8 +131,8 @@ Layout components for your application.
 
    - Keep in mind that this directive only applies the modal's layout. In case you want to change the size or some other configuration, please take a look on these:
       - [ui.bootstrap - $modal](http://angular-ui.github.io/bootstrap/#/modal)
-      - [ng-jedi-factory - factory.newModal](https://github.com/ng-jedi/factory#newmodal)
-      - [ng-jedi-dialogs - ModalHelper](https://github.com/ng-jedi/dialogs)
+      - [ng-jedi-factory - factory.newModal](https://github.com/jediproject/ng-jedi-factory#newmodal)
+      - [ng-jedi-dialogs - ModalHelper](https://github.com/jediproject/ng-jedi-dialogs)
 
    ##### Example:
 
@@ -473,4 +473,3 @@ Layout components for your application.
    ```
 
    **[Back to top](#how-to-use)**
-
