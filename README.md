@@ -41,12 +41,16 @@ Layout components for your application.
 
 #### jdDatepicker
 
-   - This directive use bootstrap-datetimepicker and integrating its with angularjs
+   - This directive integrates [bootstrap-datetimepicker](https://eonasdan.github.io/bootstrap-datetimepicker/) with angularjs, wrapping it in your input and including mask and validation. It returns a javascript date object to the ng-model object.
+   - You can use the jd-min-date and jd-max-date attributes to set a range of enabled dates to be chosen from the datepicker (it does not prevent the user from entering manually a date out of the range on the input, but only through the datepicker - for that you can disable the input)
+   - The directive accepts "date" (default), "time", "date-time" or a custom format (following [moment's parsing formats](http://momentjs.com/docs/#/parsing/string-format/)) as parameters, creating a date-picker, time-picke, a standard date-time-picker, or a date-time-picker that outputs in the chosen custom format.
 
    ##### Example:
 
    ```html
-      <input jd-datepicker jd-min-date="myCtrl.myModel.startDate" jd-max-date="myCtrl.myModel.endDate" type="text" ng-model="myCtrl.myModel.initialDate" />
+      <input jd-datepicker jd-min-date="myCtrl.myModel.startDate" jd-max-date="myCtrl.myModel.endDate" type="text" ng-model="myCtrl.myModel.selectedDate" />
+      <input jd-datepicker="date-time" type="text" ng-model="myCtrl.myModel.dateTime" />
+      <input jd-datepicker="YYYY-MM-DD" type="text" ng-model="myCtrl.myModel.customDate" />
    ```
    - if you need, you can customize the html. In your angular run from app.js, override the constant jedi.layout.datepicker.DatepickerConfig and set your html in template attribute.
 
@@ -54,7 +58,7 @@ Layout components for your application.
 
 #### jdTreeview
 
-   - This directive creates a treeview in your page. The value setted in directive shoud be the levels, separated by ';'. Each level should be passed the description field name. Your model should be similar to a tree. The last level uses the body content. E.g.:
+   - This directive creates a treeview in your page. The value setted in the directive shoud declare the levels to render, separated by ';'. For each level should be passed the description field name to be shown. Your model should be similar to a tree. The last level uses the body content to be rendered. E.g.:
 
    ##### Example:
 
@@ -101,25 +105,27 @@ Layout components for your application.
 
 #### jdPanel
 
-   - This directive creates a bootstrap panel with few lines of code. The value setted in directive is the bootstrap col-lg size.
+   - This directive creates a bootstrap panel with few lines of code. The value setted in the directive is the bootstrap col-lg size.
+   - Use jd-title to set the desired title to your panel.
+   - Using jd-toggle will add the possibility of collapsing/expanding the panel by clicking on it's header. You can also pass a boolean to jd-toggle and collapse/expand it programmatically setting its value to true/false.
 
    ##### Example:
 
    ```html   
-      <form jd-panel="1" jd-title="My Panel">
+      <form jd-panel="1" jd-title="My Panel" jd-toggle="myCtrl.myModel.toggleBoolean">
          ...
       </form>
    ```
 
-   - if you need, you can customize the html. In your angular run from app.js, override the constant jedi.layout.panel.PanelConfig and set your html. There are three attributes:
+   - if you need, you can customize the html. In your angular run from app.js, override the constant jedi.layout.panel.PanelConfig and set your customizations. There are three attributes:
       - defaultElementClass: default class to apply in your element
       - defaultFormClass: default class to apply in the forms into your element
-      - wrapSizeTpl: define html to write the div with col-lg if you define size to the panel.
+      - wrapSizeTpl: define the html to write as the div with col-lg if you define size to the panel.
       - useBoxedPage: define if the panel will be create a div.page wrap
-      - containerFilter: jQuery filter to check if panel parent is a container for then create div.page
-      - boxedPageTpl: define html to write on div.page element.
-      - bodyTpl: define html to write arround of your element.
-      - headerTpl: define html to write in the header panel.
+      - containerFilter: jQuery filter to check if panel parent is a container and decide if it should create a div.page
+      - boxedPageTpl: define the html to write on div.page element.
+      - bodyTpl: define the html to write arround your element.
+      - headerTpl: define the html to write in the header panel.
 
    **[Back to top](#how-to-use)**
 
@@ -377,7 +383,7 @@ Layout components for your application.
 
    Since we used ```jd-input="6"``` notice that the sizes of the root element have changed in comparison with the examples previously discribed.
 
-   Using the sizes attributes will result in the override of the classes (e.g.:
+   Using the sizes attributes will result in the override of the classes, e.g.:
    ```shell
       • ```jd-xs-size="4"``` will result the root element to have ```col-xs-4``` instead of ```col-xs-12```
       • ```jd-sm-label-size="8"``` will result the label element to have ```col-sm-8``` instead of ```col-sm-12``` and will calculate the size for the input to be ```col-sm-4``` instead of ```col-sm-12```
@@ -448,7 +454,7 @@ Layout components for your application.
 
 #### jdValidationTooltip
 
-   - This directive applies a tooltip to your input for validation purpose.
+   - This directive applies a tooltip to your input for validation purposes.
 
    ##### Example:
 
