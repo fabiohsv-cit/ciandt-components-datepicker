@@ -123,6 +123,7 @@ Layout components for your application.
       - defaultBoxedClass: default class to apply in the main div when is not setted size.
       - templateUrl: url to template.
    - the default template is:
+
    ```html   
       <div class="{{jdPanel}}">
          <section class="panel panel-default">
