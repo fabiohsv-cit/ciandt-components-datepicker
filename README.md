@@ -120,12 +120,20 @@ Layout components for your application.
    - if you need, you can customize the html. In your angular run from app.js, override the constant jedi.layout.panel.PanelConfig and set your customizations. There are three attributes:
       - defaultElementClass: default class to apply in your element
       - defaultFormClass: default class to apply in the forms into your element
-      - wrapSizeTpl: define the html to write as the div with col-lg if you define size to the panel.
-      - useBoxedPage: define if the panel will be create a div.page wrap
-      - containerFilter: jQuery filter to check if panel parent is a container and decide if it should create a div.page
-      - boxedPageTpl: define the html to write on div.page element.
-      - bodyTpl: define the html to write arround your element.
-      - headerTpl: define the html to write in the header panel.
+      - defaultBoxedClass: default class to apply in the main div when is not setted size.
+      - templateUrl: url to template.
+   - the default template is:
+   ```html   
+      <div class="{{jdPanel}}">
+         <section class="panel panel-default">
+            <div class="panel-heading" ng-show="showTitle">
+               <strong><span ng-show="showTitleIcon" class="glyphicon {{jdTitleIcon}}"></span><jd-i18n>{{jdTitle}}</jd-i18n></strong>
+            </div>
+            <ng-transclude></ng-transclude>
+         </section>
+      </div>
+   ```
+   - the tag ng-transclude is the point that jdPanel will do append original element.
 
    **[Back to top](#how-to-use)**
 
@@ -167,7 +175,7 @@ Layout components for your application.
    - The value of the directive (if specified) will be bootstrap's col-lg size and the other sizes such as col-xs/col-sm/col-md will be calculated by proportion considering the value informed, *but only for the root element of the template*. In case you don't specify a value for the directive it will use the default values configured for all four sizes. The directive also add a validation tooltip when there is/are validation error(s) (see [jdValidationTooltip directive](#jdvalidationtooltip)).
 
    - There are attributes that you can use to customize the input the way you want it:
-   ```shell
+   ```code
       - Sizes (Correspond to the bootstrap classes col-xs/col-sm/col-md/col-lg. Values must be 1 to 12):
          - jd-xs-size / jd-sm-size / jd-md-size / jd-lg-size (Size of the root div that wrap label + input).
          - jd-xs-label-size / jd-sm-label-size / jd-md-label-size / jd-lg-label-size (Label's size).
@@ -200,9 +208,9 @@ Layout components for your application.
    - Type: Text
    ```html
    <input jd-input jd-label="MyInput" type="text" ng-model="myInput" />
-
+   ```
    Becomes:
-
+   ```html
    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3>
       <div class="form-group">
          <label ng-if="showLabel" for="myInput" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 control-label" jd-i18n="">MyInput</label>
@@ -216,9 +224,9 @@ Layout components for your application.
    - Type: Checkbox
    ```html
    <input jd-input jd-label="My Check" type="checkbox" ng-model="myCheck" ng-value="true">
-
+   ```
    Becomes:
-
+   ```html
    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 jd-checkbox">
       <div class="form-group">
          <div class="col-xs-offset-0 col-sm-offset-0 col-md-offset-0 col-lg-offset-0  col-xs-12 col-sm-12 col-md-12 col-lg-12 ">
@@ -235,9 +243,9 @@ Layout components for your application.
    - Type: Checkbox (Multi)
    ```html
    <input jd-input jd-grouplabel="My Multi Checks" jd-label="{{item.label}}" type="checkbox" ng-model="item.selected" jd-repeat="item in items" ng-value="item">
-
+   ```
    Becomes:
-
+   ```html
    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3>
       <div class="form-group">
          <label ng-if="showLabel" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 control-label" jd-i18n="">My Multi Checks</label>
@@ -258,9 +266,9 @@ Layout components for your application.
    - Type: Radio
    ```html
    <input jd-input jd-label="My Radio" ng-model="myRadio" type="radio" ng-value="true"/>
-
+   ```
    Becomes:
-
+   ```html
    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 jd-radio">
       <div class="form-group">
          <div class="col-xs-offset-0 col-sm-offset-0 col-md-offset-0 col-lg-offset-0  col-xs-12 col-sm-12 col-md-12 col-lg-12 ">
@@ -277,9 +285,9 @@ Layout components for your application.
    - Type: Radio (Multi)
    ```html
    <input jd-input jd-grouplabel="My Multi Radios" jd-label="{{item.value}}" ng-model="item.selected" type="radio" jd-repeat="item in list" ng-value="item" />
-
+   ```
    Becomes:
-
+   ```html
    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 jd-multi-radio">
       <div class="form-group">
          <label ng-if="showLabel" class="col-xs-12 col-sm-12 col-md-12 col-lg-12  control-label" jd-i18n="">Radios</label>
@@ -302,9 +310,9 @@ Layout components for your application.
    <select jd-input jd-label="My Select 1" ng-model="mySelect1">
       <option ng-repeat="item in list track by item.id" value="{{item.id}}">{{item.value}}</option>
    </select>
-
+   ```
    Becomes:
-
+   ```html
    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 jd-select">
       <div class="form-group">
          <label ng-if="showLabel" for="mySelect1" class="col-xs-12 col-sm-12 col-md-12 col-lg-12  control-label" jd-i18n="">My Select 1</label>
@@ -323,9 +331,9 @@ Layout components for your application.
    - Type: Select (2nd Way)
    ```html
    <select jd-input jd-label="My Select 2" ng-model="mySelect2" jd-options="item.id as item.value for item in list"></select>
-
+   ```
    Becomes:
-
+   ```html
    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 jd-select">
       <div class="form-group">
          <label ng-if="showLabel" for="mySelect2" class="col-xs-12 col-sm-12 col-md-12 col-lg-12  control-label" jd-i18n="">My Select 2</label>
@@ -344,9 +352,9 @@ Layout components for your application.
    - Type: Textarea
    ```html
    <textarea jd-input jd-label="My Textarea" ng-model="myTextarea"></textarea>
-
+   ```
    Becomes:
-
+   ```html
    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 jd-textarea">
       <div class="form-group">
          <label ng-if="showLabel" for="myTextarea" class="col-xs-12 col-sm-12 col-md-12 col-lg-12  control-label" jd-i18n="">My Textarea</label>
@@ -363,9 +371,9 @@ Layout components for your application.
 
    ```html
    <input jd-input="6" jd-help="I'm a tiny text below the input" jd-input-class="ImInTheDivThatWrapTheInput" jd-label-class="ImInTheLabel" jd-element-class="ImInTheInput" jd-label="MyInput's Label" type="text" ng-model="myInput" />
-
+   ```
    Becomes:
-
+   ```html
    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 jd-text">
       <div class="form-group">
          <label ng-if="showLabel" for="myInput" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 ImInTheLabel control-label" jd-i18n="">MyInput's Label</label>
@@ -384,16 +392,16 @@ Layout components for your application.
    Since we used ```jd-input="6"``` notice that the sizes of the root element have changed in comparison with the examples previously discribed.
 
    Using the sizes attributes will result in the override of the classes, e.g.:
-   ```shell
-      • ```jd-xs-size="4"``` will result the root element to have ```col-xs-4``` instead of ```col-xs-12```
-      • ```jd-sm-label-size="8"``` will result the label element to have ```col-sm-8``` instead of ```col-sm-12``` and will calculate the size for the input to be ```col-sm-4``` instead of ```col-sm-12```
-      • ```jd-md-input-size="10"``` will result the div wrapping the input to have ```col-md-10``` instead of ```col-md-12``` and will calculate the size for the label to be ```col-md-2``` instead of ```col-md-12```).
+   ```code
+      • jd-xs-size="4" will result the root element to have col-xs-4 instead of col-xs-12
+      • jd-sm-label-size="8" will result the label element to have col-sm-8 instead of col-sm-12 and will calculate the size for the input to be col-sm-4 instead of col-sm-12
+      • jd-md-input-size="10" will result the div wrapping the input to have col-md-10 instead of col-md-12 and will calculate the size for the label to be col-md-2 instead of col-md-12).
    ```
 
    - if you need, you can customize the html. In your angular run from app.js, override the constant jedi.layout.input.InputConfig and set your size configuration. There are three attributes:
 
       - specificSizes: used by angular's $interpolate to determinate which sizes to use for a specific type of input. e.g.:
-      ```shell
+      ```javascript
          "{{(type === 'radio' || type === 'checkbox') && (jdRepeat == undefined || jdRepeat == '')}}": {
                   xsSize: 12,
                   smSize: 3,
@@ -411,7 +419,7 @@ Layout components for your application.
       ```
 
       - specificSizesProportion: used by angular's $interpolate to determinate which sizes to use in the root element for a specific type of input in case ```jd-input``` has value, using the right proportion for each type of resolution/device. e.g.:
-         ```shell
+         ```javascript
          "{{(type === 'radio' || type === 'checkbox') && (jdRepeat == undefined || jdRepeat == '')}}": {
             "1": { mdSize: 3, smSize: 3, xsSize: 12 },
             ...
@@ -420,14 +428,14 @@ Layout components for your application.
          ```
 
       - lgSizesProportion: the size proportion that will be used in the root element for non-specific inputs in case ```jd-input``` is specified. e.g.:
-         ```shell
+         ```javascript
          "1": { mdSize: 1, smSize: 2, xsSize: 12 },
          ...
          "12": { mdSize: 12, smSize: 12, xsSize: 12 }
          ```
 
       - defaultSizes: the default sizes for the input, if none are defined. e.g:
-         ```shell
+         ```javascript
             xsSize: 12,
             smSize: 3,
             mdSize: 3,
@@ -443,7 +451,7 @@ Layout components for your application.
          ```
 
       - templateSelector: used by angular's $interpolate to determinate which templates to use for specific inputs. e.g.:
-         ```shell
+         ```javascript
             "{{(type === 'radio' || type === 'checkbox')}}": 'your/template/path/template.html',
          ```
 
@@ -467,7 +475,7 @@ Layout components for your application.
    - if you need, you can customize the messages. In your angular run from app.js, override the constant jedi.layout.validationtooltip.ValidationTooltipConfig and set the messages that you want. There is one attribute:
 
       - messages: the messages that you want to use in your application for validation errors. e.g.:
-   ```shell
+   ```javascript
       'required': 'This field is required.',
       'minlength': 'This field should have at least x characters.',
       'maxlength': 'This field should not have more than x characters.',
