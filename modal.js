@@ -11,6 +11,8 @@ define(['angular'], function () {
             restrict: "A",
             priority: 1000.1,
             compile: function compile(cElement, cAttrs, cTransclude) {
+                cElement.addClass('jd-modal');
+                
                 if (cElement.is('form')) {
                     cElement.addClass(ModalConfig.defaultFormClass);
                     if (!cAttrs.name && cAttrs.jdTitle) {

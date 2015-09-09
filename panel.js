@@ -41,7 +41,7 @@ define(['ng-jedi-utilities'], function () {
 
                 if (attrs.jdPanel != '') {
                     attrs.jdPanel = 'col-lg-' + attrs.jdPanel;
-                }  else if (element.parents('.jd-panel:first').length == 0) {
+                } else if (element.parents('.jd-panel:first, .jd-modal:first').length == 0) {
                     attrs.jdPanel = PanelConfig.defaultBoxedClass;
                     element.addClass('jd-panel');
                 }
