@@ -166,6 +166,12 @@ Layout components for your application.
       - defaultFormClass: default class to apply in the forms into your element.
       - defaultTableClass: default class to apply in the tables into your element.
       - defaultTemplateUrl: default template to use for the modal.
+   
+   - The default html template can also be changed through  the templateUrl attribute
+   ```html
+   <jd-modal templateUrl="app/common/components/modal/yourModal.html"></jd-modal>
+   ```
+   - the default template is stored in bower_components/ng-jedi-layout/modal.html
 
    **[Back to top](#how-to-use)**
 
