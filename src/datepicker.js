@@ -1,8 +1,4 @@
-﻿'use strict';
-
-define(['moment', 'ng-jedi-utilities', 'angular-ngMask', 'bootstrap-datetimepicker'], function () {
-
-    angular.module('jedi.layout.datepicker', ['jedi.utilities', 'ngMask']).constant('jedi.layout.datepicker.DatepickerConfig', {
+﻿    angular.module('jedi.layout.datepicker', ['jedi.utilities', 'ngMask']).constant('jedi.layout.datepicker.DatepickerConfig', {
         template: '<div class="input-group date">' +
         '   <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>' +
         '</div>',
@@ -364,6 +360,4 @@ define(['moment', 'ng-jedi-utilities', 'angular-ngMask', 'bootstrap-datetimepick
                 });
             }
         };
-    }
-    ]);
-});
+    }]);

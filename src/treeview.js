@@ -1,11 +1,9 @@
-﻿'use strict';
-
-define(['angular'], function () {
-
+﻿
     angular.module('jedi.layout.treeview', []).constant('jedi.layout.treeview.TreeviewConfig', {
-        emptyTpl: '<div id="emptyTreeElement"><strong class="text-warning" jd-i18n>Nenhum item encontrado.</strong></div>',
+        emptyTpl: '<div id="emptyTreeElement"><strong class="text-warning" jd-i18n>{{emptyMsgLabel}}</strong></div>',
         nodeTpl: '<li ng-repeat="{{repeatExp}}"><a class="angular-ui-tree-handle angular-ui-tree-hover" ng-click="toggle($event)" onclick="$(this).next().toggle();" href="javascript:;"><span class="fa fa-minus-square"></span>&nbsp;<strong>{{label}}</strong></a><ol class="angular-ui-tree-nodes"></ol></li>',
-        lastNodeTpl: '<li class="angular-ui-tree-hover" ng-repeat="{{repeatExp}}" ng-class="{\'selected\' : {{rowItem}} == selectedItem}" ng-click="changeClass({{rowItem}})"></li>'
+        lastNodeTpl: '<li class="angular-ui-tree-hover" ng-repeat="{{repeatExp}}" ng-class="{\'selected\' : {{rowItem}} == selectedItem}" ng-click="changeClass({{rowItem}})"></li>',
+        emptyMsgLabel: 'No items found.'
     }).directive('jdTreeview', ['jedi.layout.treeview.TreeviewConfig', '$interpolate', function (TreeviewConfig, $interpolate) {
         return {
             restrict: 'A',
@@ -66,7 +64,7 @@ define(['angular'], function () {
                                     iElement.show();
                                     //If the new list TreeView(newValue) contains an empty array, show alert message.
                                     if (newValue != oldValue && newValue.length === 0) {
-                                        var emptyTreeViewTemplate = $interpolate(TreeviewConfig.emptyTpl)(angular.extend({}, iAttrs));
+                                        var emptyTreeViewTemplate = $interpolate(TreeviewConfig.emptyTpl)(angular.extend({emptyMsgLabel: TreeviewConfig.emptyMsgLabel}, iAttrs));
                                         var emptyTreeViewElement = angular.element(emptyTreeViewTemplate);
                                         iElement.append(emptyTreeViewElement);
                                     }
@@ -97,5 +95,3 @@ define(['angular'], function () {
             }
         };
     }]);
-
-});

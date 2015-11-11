@@ -1,27 +1,17 @@
-﻿'use strict';
-
-define(['ng-jedi-utilities'], function () {
-
-    angular.module('jedi.layout.panel', ['jedi.utilities']).constant('jedi.layout.panel.PanelConfig', {
+﻿    angular.module('jedi.layout.panel', ['jedi.utilities']).constant('jedi.layout.panel.PanelConfig', {
         defaultElementClass: 'panel-body form-horizontal',
         defaultFormClass: 'form-validation',
         defaultBoxedClass: 'page',
         templateUrl: 'assets/libs/ng-jedi-layout/panel.html'
-    }).run(['$http', '$templateCache', 'jedi.layout.panel.PanelConfig', function($http, $templateCache, PanelConfig) {
-        if (PanelConfig.templateUrl != 'assets/libs/ng-jedi-layout/panel.html') {
-            $http.get(PanelConfig.templateUrl, { cache: true }).success(function (html) {
-                $templateCache.put(PanelConfig.templateUrl, html);
-            });
-        } else {
-            $templateCache.put('assets/libs/ng-jedi-layout/panel.html', '<div class="{{jdPanel}}">'+
-                                                                        '    <section class="panel panel-default">'+
-                                                                        '        <div class="panel-heading" ng-show="showTitle">'+
-                                                                        '            <strong><span ng-show="showTitleIcon" class="glyphicon {{jdTitleIcon}}"></span><jd-i18n>{{jdTitle}}</jd-i18n></strong>'+
-                                                                        '        </div>'+
-                                                                        '        <ng-transclude></ng-transclude>'+
-                                                                        '    </section>'+
-                                                                        '</div>');
-        }
+    }).run(['$templateCache', function($templateCache) {
+        $templateCache.put('assets/libs/ng-jedi-layout/panel.html', '<div class="{{jdPanel}}">'+
+                                                                    '    <section class="panel panel-default">'+
+                                                                    '        <div class="panel-heading" ng-show="showTitle">'+
+                                                                    '            <strong><span ng-show="showTitleIcon" class="glyphicon {{jdTitleIcon}}"></span><jd-i18n>{{jdTitle}}</jd-i18n></strong>'+
+                                                                    '        </div>'+
+                                                                    '        <ng-transclude></ng-transclude>'+
+                                                                    '    </section>'+
+                                                                    '</div>');
     }]).directive('jdPanel', ['jedi.utilities.Utilities', 'jedi.layout.panel.PanelConfig', '$timeout', '$compile', '$filter', '$templateCache', function (utilities, PanelConfig, $timeout, $compile, $filter, $templateCache) {
         return {
             restrict: 'A',
@@ -181,4 +171,3 @@ define(['ng-jedi-utilities'], function () {
             }
         }
     }]);
-});

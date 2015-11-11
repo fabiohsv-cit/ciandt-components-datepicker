@@ -1,24 +1,20 @@
-'use strict';
-
-define(['angular', 'bootstrap'], function () {
-
     angular.module('jedi.layout.validationtooltip', []).constant('jedi.layout.validationtooltip.ValidationTooltipConfig', {
         messages: {
-            'required': 'Preenchimento obrigatório.',
-            'minlength': 'Informe pelo menos {{minLength}} caracteres.',
-            'maxlength': 'Informe até {{maxLength}} caracteres.',
-            'pattern': 'Valor preenchido é inválido.',
-            'equal': 'Valor informado não é igual ao campo anterior.',
-            'email': 'Email informado é inválido.',
-            'url': 'Url informada é inválida.',
-            'number': 'Informe um número válido.',
-            'datepicker': 'Informe uma data válida.',
-            'date': 'Informe uma data válida.',
-            'min': 'Informe um número a partir de {{min}}.',
-            'max': 'Informe um número até {{max}}.',
-            'cpf': 'CPF informado é inválido.',
-            'cnpj': 'CNPJ informado é inválido.',
-            'default': 'Conteúdo do campo é inválido.'
+            'required': 'Required field.',
+            'minlength': 'Field should have at least {{minLength}} characters.',
+            'maxlength': 'Field should have at maximum {{maxLength}} characters.',
+            'pattern': 'Invalid value.',
+            'equal': 'Value should match the previous field.',
+            'email': 'Invalid email.',
+            'url': 'Invalid Url.',
+            'number': 'Please use a valid number.',
+            'datepicker': 'Plase use a valid date.',
+            'date': 'Plase use a valid date.',
+            'min': 'Use a number starting from {{min}}.',
+            'max': 'Use a number that is less or equal to {{max}}.',
+            'cpf': 'Invalid CPF.',
+            'cnpj': 'Invalid CNPJ.',
+            'default': 'Invalid value.'
         }
     }).directive('jdValidationTooltip', ['$injector', '$interpolate', 'jedi.layout.validationtooltip.ValidationTooltipConfig', function ($injector, $interpolate, ValidationTooltipConfig) {
         var localize;
@@ -129,5 +125,3 @@ define(['angular', 'bootstrap'], function () {
             }
         };
     }]);
-
-});

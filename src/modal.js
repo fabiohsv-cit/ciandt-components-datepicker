@@ -1,8 +1,4 @@
-﻿'use strict';
-
-define(['angular'], function () {
-
-    angular.module('jedi.layout.modal', []).constant('jedi.layout.modal.ModalConfig', {
+﻿    angular.module('jedi.layout.modal', []).constant('jedi.layout.modal.ModalConfig', {
         defaultFormClass: 'form-validation',
         defaultTableClass: 'table-dynamic',
         defaultTemplateUrl: 'assets/libs/ng-jedi-layout/modal.html'
@@ -91,6 +87,13 @@ define(['angular'], function () {
                 };
             }]
         }
+    }]).run(['$templateCache', function ($templateCache) {
+        $templateCache.put('assets/libs/ng-jedi-layout/modal.html', '<div>'+
+                                                                    '    <div class="panel-heading modal-header">'+
+                                                                    '      <strong><span class="glyphicon glyphicon-th"></span><jd-i18n>{{jdTitle}}</jd-i18n></strong>'+
+                                                                    '      <span class="glyphicon glyphicon-remove close" ng-click="closeModal()"></span>'+
+                                                                    '    </div>'+
+                                                                    '    <div class="modal-body form-horizontal" ng-transclude>'+
+                                                                    '    </div>'+
+                                                                    '</div>');
     }]);
-
-});

@@ -5,8 +5,8 @@
   "authors": [
     "Fábio Henrique da Silva Viana <fabioviana.bh@gmail.com>"
   ],
-  "description": "Layout component",
-  "main": ["datepicker.js", "input.js", "layout.js", "modal.js", "panel.js", "treeview.js"],
+  "description": "AngularJs UI jedi component",
+  "main": ["layout.js"],
   "moduleType": [
     "globals"
   ],
