@@ -2,10 +2,12 @@
     if (typeof define === 'function') {
         define(['moment', 'ng-jedi-utilities', 'angular-ngMask', 'bootstrap-datetimepicker'], factory);
     } else {
+        var _moment = moment;
         if (typeof module !== "undefined" && typeof exports !== "undefined" && module.exports === exports){
             module.exports = 'jedi.layout';
+            _moment = require('moment');
         }
-        return factory();
+        return factory(_moment);
     }
-}(function() {
+}(function(moment) {
 	"use strict";
