@@ -1,12 +1,12 @@
 {
   "name": "ng-jedi-layout",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "homepage": "https://github.com/jediproject/ng-jedi-layout",
   "authors": [
     "Fábio Henrique da Silva Viana <fabioviana.bh@gmail.com>"
   ],
   "description": "AngularJs UI jedi component",
-  "main": ["layout.js"],
+  "main": ["layout.js", "layout.css"],
   "moduleType": [
     "globals"
   ],

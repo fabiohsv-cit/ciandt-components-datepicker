@@ -2,12 +2,14 @@
         defaultElementClass: 'panel-body form-horizontal',
         defaultFormClass: 'form-validation',
         defaultBoxedClass: 'page',
+        defaultPanelHeadingRightClass: 'panel-heading-right',
         templateUrl: 'assets/libs/ng-jedi-layout/panel.html'
     }).run(['$templateCache', function($templateCache) {
         $templateCache.put('assets/libs/ng-jedi-layout/panel.html', '<div class="{{jdPanel}}">'+
                                                                     '    <section class="panel panel-default">'+
                                                                     '        <div class="panel-heading" ng-show="showTitle">'+
                                                                     '            <strong><span ng-show="showTitleIcon" class="glyphicon {{jdTitleIcon}}"></span><jd-i18n>{{jdTitle}}</jd-i18n></strong>'+
+                                                                    '            <div class="pull-right"></div>'+                                                                    
                                                                     '        </div>'+
                                                                     '        <ng-transclude></ng-transclude>'+
                                                                     '    </section>'+
@@ -15,6 +17,16 @@
     }]).directive('jdPanel', ['jedi.utilities.Utilities', 'jedi.layout.panel.PanelConfig', '$timeout', '$compile', '$filter', '$templateCache', function (utilities, PanelConfig, $timeout, $compile, $filter, $templateCache) {
         return {
             restrict: 'A',
+            scope: true,
+            controller: function ($scope) {
+                $scope.panelHead = null;
+                
+                $scope.setHeadingRight = function (headingRight) {                 
+                    if (headingRight.length > 0) {
+                        $scope.panelHead.find('.pull-right').html(headingRight);
+                    }   
+                }
+            },
             compile: function (element, attrs) {
                 // centralizar painel, usar classes: col-md-8 col-md-offset-2
                 element.addClass(PanelConfig.defaultElementClass);
@@ -73,6 +85,9 @@
                             if (footer.length > 0) {
                                 element.after(footer);
                             }
+                            
+                            scope.panelHead = panelHead;
+                            scope.setHeadingRight(element.children('.panel-heading-right'));                            
 
                             var panelContent = element.add(footer);
 
@@ -106,7 +121,8 @@
                                         duration: 200,
                                         easing: 'linear',
                                         queue: false,
-                                        done: function(evt) {
+                                        done: function(evt) {                                            
+                                            panelHead.toggleClass('panel-collapsed');
                                             // stop emite evento done, if adicionado para não passar pelo doneToggling 2x
                                             if (panelContent.is(':visible') == $target.hasClass('glyphicon-chevron-right')) {
                                                 doneToggling(changeScope);
@@ -118,12 +134,13 @@
 
                                 var hide = function() {
                                     panelContent.hide();
+                                    panelHead.addClass('panel-collapsed');
                                     $timeout(function () {
                                         doneToggling(true);
                                     });
                                 };
 
-                                toggleElement = panelHead.find('*:first').addClass('toggleable').click(function (e) {
+                                toggleElement = panelHead.addClass('head-toggleable').find('*:first').addClass('toggleable').click(function (e) {
                                     toggle();
                                     e.stopPropagation();
                                     return false;
@@ -144,7 +161,7 @@
                                             toggle(true);
                                         }
                                     });
-                                }
+                                }                                
                             }
 
                             // destroy

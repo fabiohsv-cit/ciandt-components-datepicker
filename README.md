@@ -116,11 +116,25 @@ Layout components for your application.
          ...
       </form>
    ```
-
+   
+   #### Custom behavior
+   - You can define content to be in panel's header and footer
+   ```html   
+      <form jd-panel="1" jd-title="My Panel" jd-toggle="myCtrl.myModel.toggleBoolean">
+          <div class="panel-heading-right">
+              ...
+          </div>
+          <div class="panel-footer">
+              ...
+          </div>
+      </form>
+   ```
+   
    - if you need, you can customize the html. In your angular run from app.js, override the constant jedi.layout.panel.PanelConfig and set your customizations. There are three attributes:
       - defaultElementClass: default class to apply in your element
       - defaultFormClass: default class to apply in the forms into your element
-      - defaultBoxedClass: default class to apply in the main div when is not setted size.
+      - defaultBoxedClass: default class to apply in the main div when is not set size.
+      - defaultPanelHeadingRightClass: default class to find content to be applyed in panel heading right
       - templateUrl: url to template.
    - the default template is:
 
@@ -129,6 +143,7 @@ Layout components for your application.
          <section class="panel panel-default">
             <div class="panel-heading" ng-show="showTitle">
                <strong><span ng-show="showTitleIcon" class="glyphicon {{jdTitleIcon}}"></span><jd-i18n>{{jdTitle}}</jd-i18n></strong>
+               <div class="pull-right"></div>
             </div>
             <ng-transclude></ng-transclude>
          </section>
