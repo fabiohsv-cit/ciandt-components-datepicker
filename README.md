@@ -16,13 +16,7 @@ Layout components for your application.
 
    ```html
       <script src='assets/libs/ng-jedi-layout/layout.js'></script>
-      <script src='assets/libs/ng-jedi-layout/datepicker.js'></script>
-      <script src='assets/libs/ng-jedi-layout/input.js'></script>
-      <script src='assets/libs/ng-jedi-layout/treeview.js'></script>
-      <script src='assets/libs/ng-jedi-layout/modal.js'></script>
-      <script src='assets/libs/ng-jedi-layout/panel.js'></script>
    ```
-   - note that the base directory used was assets/libs, you should change bower_components to assets/libs or move from bower_components to assets/libs with [Grunt](http://gruntjs.com/).
 * Include module dependency:
 
    ```javascript
