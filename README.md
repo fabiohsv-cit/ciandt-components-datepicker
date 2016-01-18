@@ -114,7 +114,7 @@ Layout components for your application.
    #### Custom behavior
    - You can define content to be in panel's header and footer
    ```html   
-      <form jd-panel="1" jd-title="My Panel" jd-toggle="myCtrl.myModel.toggleBoolean">
+      <form jd-panel="1" jd-title="My Panel" jd-toggle="myCtrl.myModel.toggleBoolean" jd-disabled="myCtrl.myModel.disabledBoolean">
           <div class="panel-heading-right">
               ...
           </div>

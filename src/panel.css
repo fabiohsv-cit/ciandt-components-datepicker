@@ -1,3 +1,8 @@
-.head-toggleable.panel-collapsed .pull-right{
+.panel-collapsed .pull-right{
     display: none;
+}
+
+.jd-panel-disabled {
+    opacity: .7;
+    cursor: not-allowed;
 }

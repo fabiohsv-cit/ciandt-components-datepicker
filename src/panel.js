@@ -5,7 +5,7 @@
         defaultPanelHeadingRightClass: 'panel-heading-right',
         templateUrl: 'assets/libs/ng-jedi-layout/panel.html'
     }).run(['$templateCache', function($templateCache) {
-        $templateCache.put('assets/libs/ng-jedi-layout/panel.html', '<div class="{{jdPanel}}">'+
+        $templateCache.put('assets/libs/ng-jedi-layout/panel.html', '<div class="{{jdPanel}}" ng-class="{\'jd-panel-disabled\': jdDisabled}">'+
                                                                     '    <section class="panel panel-default">'+
                                                                     '        <div class="panel-heading" ng-show="showTitle">'+
                                                                     '            <strong><span ng-show="showTitleIcon" class="glyphicon {{jdTitleIcon}}"></span><jd-i18n>{{jdTitle}}</jd-i18n></strong>'+
@@ -75,7 +75,8 @@
                                 jdPanel: attrs.jdPanel,
                                 jdTitleIcon: attrs.jdTitleIcon,
                                 jdTitle: attrs.jdTitle,
-                                jdToggle: attrs.jdToggle
+                                jdToggle: attrs.jdToggle,
+                                jdDisabled: scope.$parent.$eval(attrs.jdDisabled)
                             });
                             $compile(wrapper)(pScope);
                             // adiciona body na área de transclude
@@ -114,7 +115,20 @@
                                     height: 'toggle',
                                     'padding-top': 'toggle',
                                     'padding-bottom': 'toggle'
-                                };
+                                };                                                                
+                                
+                                scope.$watch(function () {
+                                    return scope.$parent.$eval(attrs.jdDisabled);
+                                }, function (newValue, oldValue) {
+                                    if (attrs.jdDisabled) {
+                                        pScope.jdDisabled = newValue;
+                                        if (!newValue) {
+                                            bindToggle();
+                                        } else {
+                                            unbindToggle();
+                                        }
+                                    }
+                                });
 
                                 var toggle = function toggle(changeScope) {
                                     var animateOptions = {
@@ -139,12 +153,32 @@
                                         doneToggling(true);
                                     });
                                 };
-
-                                toggleElement = panelHead.addClass('head-toggleable').find('*:first').addClass('toggleable').click(function (e) {
+                                
+                                var doToggle = function (e) {
                                     toggle();
                                     e.stopPropagation();
                                     return false;
-                                });
+                                };
+                                                                                                                                                                                                     
+                                var bindToggle = function () {
+                                    toggleElement = panelHead.addClass('head-toggleable')
+                                                             .find('*:first')
+                                                             .addClass('toggleable')
+                                                             .off('click', doToggle)
+                                                             .on('click', doToggle);
+                                };
+                                
+                                var unbindToggle = function () {                                    
+                                    toggleElement = panelHead.removeClass('head-toggleable')
+                                                             .find('*:first')
+                                                             .removeClass('toggleable')
+                                                             .off('click', doToggle);
+                                }
+                                
+                                if (!pScope.jdDisabled) {                                    
+                                    bindToggle();
+                                }
+                                
 
                                 if (attrs.jdToggle.toLowerCase().trim() === 'false') {
                                     hide();
