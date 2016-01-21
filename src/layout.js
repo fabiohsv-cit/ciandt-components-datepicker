@@ -4,3 +4,7 @@
 									'jedi.layout.treeview',
 									'jedi.layout.input',
 									'jedi.layout.validationtooltip']);
+
+	angular.module('jedi.layout').constant('jedi.layout.LayoutConfig', {
+		defaultUiImpl: 'bootstrap'
+	});
