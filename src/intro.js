@@ -1,6 +1,6 @@
 (function (factory) {
     if (typeof define === 'function') {
-        define(['moment', 'ng-jedi-utilities', 'angular-ngMask', 'bootstrap-datetimepicker'], factory);
+        define(['moment', 'ng-jedi-utilities', 'angular-ngMask'], factory);
     } else {
         var _moment = moment;
         if (typeof module !== "undefined" && typeof exports !== "undefined" && module.exports === exports){

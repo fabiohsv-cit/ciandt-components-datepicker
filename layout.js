@@ -5,7 +5,7 @@
 */
 (function (factory) {
     if (typeof define === 'function') {
-        define(['moment', 'ng-jedi-utilities', 'angular-ngMask', 'bootstrap-datetimepicker'], factory);
+        define(['moment', 'ng-jedi-utilities', 'angular-ngMask'], factory);
     } else {
         var _moment = moment;
         if (typeof module !== "undefined" && typeof exports !== "undefined" && module.exports === exports){
@@ -381,22 +381,60 @@
         };
     }]);
     angular.module('jedi.layout.panel', ['jedi.utilities']).constant('jedi.layout.panel.PanelConfig', {
-        defaultElementClass: 'panel-body form-horizontal',
-        defaultFormClass: 'form-validation',
-        defaultBoxedClass: 'page',
         defaultPanelHeadingRightClass: 'panel-heading-right',
-        templateUrl: 'assets/libs/ng-jedi-layout/panel.html'
-    }).run(['$templateCache', function($templateCache) {
-        $templateCache.put('assets/libs/ng-jedi-layout/panel.html', '<div class="{{jdPanel}}" ng-class="{\'jd-panel-disabled\': jdDisabled}">'+
-                                                                    '    <section class="panel panel-default">'+
-                                                                    '        <div class="panel-heading" ng-show="showTitle">'+
-                                                                    '            <strong><span ng-show="showTitleIcon" class="glyphicon {{jdTitleIcon}}"></span><jd-i18n>{{jdTitle}}</jd-i18n></strong>'+
-                                                                    '            <div class="pull-right"></div>'+                                                                    
-                                                                    '        </div>'+
-                                                                    '        <ng-transclude></ng-transclude>'+
-                                                                    '    </section>'+
-                                                                    '</div>');
-    }]).directive('jdPanel', ['jedi.utilities.Utilities', 'jedi.layout.panel.PanelConfig', '$timeout', '$compile', '$filter', '$templateCache', function (utilities, PanelConfig, $timeout, $compile, $filter, $templateCache) {
+        templateUrl: 'assets/libs/ng-jedi-layout/panel.html',
+        uiImplementations: {
+            bootstrap: {
+                template: '<div class="{{jdPanel}}" ng-class="{\'jd-panel-disabled\': jdDisabled}">'+
+                          '    <section class="panel panel-default">'+
+                          '        <div class="panel-heading" ng-show="showTitle">'+
+                          '            <strong><span ng-show="showTitleIcon" class="glyphicon {{jdTitleIcon}}"></span><jd-i18n>{{jdTitle}}</jd-i18n></strong>'+
+                          '            <div class="pull-right"></div>'+                                                                    
+                          '        </div>'+
+                          '        <ng-transclude></ng-transclude>'+
+                          '    </section>'+
+                          '</div>',
+                defaultSizeClass: 'col-lg-',
+                selectorHeader: '.panel-heading',
+                selectorHeaderRight: '.panel-heading-right',
+                selectorHeaderPullRight: '.pull-right',
+                selectorIcon: '.glyphicon',
+                selectorFooter: '.panel-footer',
+                defaultElementClass: 'panel-body form-horizontal',
+                defaultFormClass: 'form-validation',
+                defaultIcon: 'glyphicon-th',
+                defaultToggleOpenIcon: 'glyphicon-chevron-right',
+                defaultToggleCloseIcon: 'glyphicon-chevron-down',
+                defaultBoxedClass: 'page'
+            },
+            materialize: {
+                template: '<div class="{{jdPanel}}" ng-class="{\'jd-panel-disabled\': jdDisabled}">'+
+                          '   <div class="card">'+
+                          '       <div class="card-content">'+
+                          '          <div class="card-title" ng-show="showTitle">'+
+                          '             <i ng-show="showTitleIcon" class="material-icons tiny">{{jdTitleIcon}}</i>'+
+                          '             <jd-i18n>{{jdTitle}}</jd-i18n>'+
+                          '             <div class="right"></div>'+                                                                    
+                          '          </div>'+
+                          '          <ng-transclude></ng-transclude>'+
+                          '       </div>'+
+                          '    </div>'+
+                          '</div>',
+                defaultSizeClass: 'col l',
+                selectorHeader: '.card-title',
+                selectorHeaderRight: '.panel-heading-right',
+                selectorHeaderPullRight: '.right',
+                selectorIcon: '.material-icons',
+                selectorFooter: '.card-action',
+                defaultIcon: 'subtitles',
+                defaultToggleOpenIcon: 'call_made',
+                defaultToggleCloseIcon: 'call_received',
+            }
+        }
+    }).run(['$templateCache', 'jedi.layout.panel.PanelConfig', 'jedi.layout.LayoutConfig', function($templateCache, PanelConfig, LayoutConfig) {
+        $templateCache.put('assets/libs/ng-jedi-layout/panel.html', PanelConfig.uiImplementations[LayoutConfig.defaultUiImpl].template);
+    }]).directive('jdPanel', ['jedi.utilities.Utilities', 'jedi.layout.panel.PanelConfig', '$timeout', '$compile', '$filter', '$templateCache', 'jedi.layout.LayoutConfig', function (utilities, PanelConfig, $timeout, $compile, $filter, $templateCache, LayoutConfig) {
+        var uiImpl = PanelConfig.uiImplementations[LayoutConfig.defaultUiImpl];
         return {
             restrict: 'A',
             scope: true,
@@ -405,16 +443,20 @@
                 
                 $scope.setHeadingRight = function (headingRight) {                 
                     if (headingRight.length > 0) {
-                        $scope.panelHead.find('.pull-right').html(headingRight);
+                        $scope.panelHead.find(uiImpl.selectorHeaderPullRight).html(headingRight);
                     }   
                 }
             },
             compile: function (element, attrs) {
                 // centralizar painel, usar classes: col-md-8 col-md-offset-2
-                element.addClass(PanelConfig.defaultElementClass);
+                if (uiImpl.defaultElementClass) {
+                    element.addClass(uiImpl.defaultElementClass);
+                }
 
                 if (element.is('form')) {
-                    element.addClass(PanelConfig.defaultFormClass);
+                    if (uiImpl.defaultFormClass) {
+                        element.addClass(uiImpl.defaultFormClass);
+                    }
                     if (!attrs.name && attrs.jdTitle) {
                         element.attr('name', $filter('jdReplaceSpecialChars')(attrs.jdTitle));
                     }
@@ -424,19 +466,19 @@
                 }
 
                 if (attrs.jdPanel != '') {
-                    attrs.jdPanel = 'col-lg-' + attrs.jdPanel;
-                } else if (element.parents('.jd-panel:first, .jd-modal:first').length == 0) {
-                    attrs.jdPanel = PanelConfig.defaultBoxedClass;
+                    attrs.jdPanel = uiImpl.defaultSizeClass + attrs.jdPanel;
+                } else if (element.parents('.jd-panel:first, .jd-modal:first').length == 0 && uiImpl.defaultBoxedClass) {
+                    attrs.jdPanel = uiImpl.defaultBoxedClass;
                     element.addClass('jd-panel');
                 }
 
                 // se jdTitleIcon definido vazio então fica sem icone
-                if (typeof attrs.jdTitleIcon == 'undefined') {
-                    attrs.jdTitleIcon = 'glyphicon-th';
+                if (typeof attrs.jdTitleIcon == 'undefined' && uiImpl.defaultIcon) {
+                    attrs.jdTitleIcon = uiImpl.defaultIcon;
                 }
 
                 if (typeof attrs.jdToggle != 'undefined') {
-                    attrs.jdTitleIcon = attrs.jdToggle.toLowerCase().trim() == 'false' ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down';
+                    attrs.jdTitleIcon = attrs.jdToggle.toLowerCase().trim() == 'false' ? uiImpl.defaultToggleOpenIcon : uiImpl.defaultToggleCloseIcon;
                 }
 
                 return {
@@ -444,7 +486,7 @@
                     post: function (scope, element, attrs) {
                         var template = $templateCache.get(PanelConfig.templateUrl);
                         var wrapper = $(template.replace('ng-transclude', 'transclude'));
-                        var panelHead = wrapper.find('.panel-heading');
+                        var panelHead = wrapper.find(uiImpl.selectorHeader);
                         var panelBody = wrapper.find('transclude,[transclude]');
                         // se definido área de transclude, insere antes do element e move o element pro body do transclude
                         if (panelBody.length > 0) {
@@ -464,28 +506,28 @@
                             // adiciona body na área de transclude
                             panelBody.append(element);
 
-                            var footer = element.children('.panel-footer');
+                            var footer = element.children(uiImpl.selectorFooter);
                             if (footer.length > 0) {
                                 element.after(footer);
                             }
-                            
+
                             scope.panelHead = panelHead;
-                            scope.setHeadingRight(element.children('.panel-heading-right'));                            
+                            scope.setHeadingRight(element.children(uiImpl.selectorHeaderRight));
 
                             var panelContent = element.add(footer);
 
                             var toggleElement;
 
                             if (typeof attrs.jdToggle != 'undefined') {
-                                var $target = panelHead.find('.glyphicon');
+                                var $target = panelHead.find(uiImpl.selectorIcon);
 
                                 var doneToggling = function doneToggling(changeScope) {
                                     if (panelContent.is(':visible')) {
-                                        $target.removeClass('glyphicon-chevron-right');
-                                        $target.addClass('glyphicon-chevron-down');
+                                        $target.removeClass(uiImpl.defaultToggleOpenIcon);
+                                        $target.addClass(uiImpl.defaultToggleCloseIcon);
                                     } else {
-                                        $target.removeClass('glyphicon-chevron-down');
-                                        $target.addClass('glyphicon-chevron-right');
+                                        $target.removeClass(uiImpl.defaultToggleCloseIcon);
+                                        $target.addClass(uiImpl.defaultToggleOpenIcon);
                                     }
                                     if (!changeScope && attrs.jdToggle !== "" && attrs.jdToggle !== "true" && attrs.jdToggle !== "false" && scope.$eval(attrs.jdToggle) != panelContent.is(':visible')) {
                                         scope.$eval(attrs.jdToggle + ' = value', { value: panelContent.is(':visible') });
@@ -498,7 +540,7 @@
                                     'padding-top': 'toggle',
                                     'padding-bottom': 'toggle'
                                 };                                                                
-                                
+
                                 scope.$watch(function () {
                                     return scope.$parent.$eval(attrs.jdDisabled);
                                 }, function (newValue, oldValue) {
@@ -520,7 +562,7 @@
                                         done: function(evt) {                                            
                                             panelHead.toggleClass('panel-collapsed');
                                             // stop emite evento done, if adicionado para não passar pelo doneToggling 2x
-                                            if (panelContent.is(':visible') == $target.hasClass('glyphicon-chevron-right')) {
+                                            if (panelContent.is(':visible') == $target.hasClass(uiImpl.defaultToggleOpenIcon)) {
                                                 doneToggling(changeScope);
                                             }
                                         }
@@ -535,13 +577,13 @@
                                         doneToggling(true);
                                     });
                                 };
-                                
+
                                 var doToggle = function (e) {
                                     toggle();
                                     e.stopPropagation();
                                     return false;
                                 };
-                                                                                                                                                                                                     
+
                                 var bindToggle = function () {
                                     toggleElement = panelHead.addClass('head-toggleable')
                                                              .find('*:first')
@@ -549,14 +591,14 @@
                                                              .off('click', doToggle)
                                                              .on('click', doToggle);
                                 };
-                                
+
                                 var unbindToggle = function () {                                    
                                     toggleElement = panelHead.removeClass('head-toggleable')
                                                              .find('*:first')
                                                              .removeClass('toggleable')
                                                              .off('click', doToggle);
                                 }
-                                
+
                                 if (!pScope.jdDisabled) {                                    
                                     bindToggle();
                                 }
@@ -858,7 +900,7 @@
             bootstrap: {
                 elementClass: 'form-control',
                 templates: {
-                    singleInpout: '<div class="col-xs-{{jdXsSize}} col-sm-{{jdSmSize}} col-md-{{jdMdSize}} col-lg-{{jdLgSize}} jd-{{type}}">'+
+                    singleInput: '<div class="col-xs-{{jdXsSize}} col-sm-{{jdSmSize}} col-md-{{jdMdSize}} col-lg-{{jdLgSize}} jd-{{type}}">'+
                                   '    <div class="form-group">'+
                                   '        <label ng-if="showLabel" for="{{id}}" class="col-xs-{{jdXsLabelSize}} col-sm-{{jdSmLabelSize}} col-md-{{jdMdLabelSize}} col-lg-{{jdLgLabelSize}} {{jdLabelClass}} control-label" jd-i18n>{{jdLabel}}{{showRequired}}</label>'+
                                   '         <div class="col-xs-{{jdXsInputSize}} col-sm-{{jdSmInputSize}} col-md-{{jdMdInputSize}} col-lg-{{jdLgInputSize}} {{jdInputClass}}">'+
@@ -897,7 +939,7 @@
                     return element.is('textarea') ? 'materialize-textarea' : '';
                 }],
                 templates: {
-                    singleInpout: '<div class="input-field col s{{jdSmSize}} m{{jdMdSize}} l{{jdLgSize}} jd-{{type}} {{jdInputClass}}">'+
+                    singleInput: '<div class="input-field col s{{jdSmSize}} m{{jdMdSize}} l{{jdLgSize}} jd-{{type}} {{jdInputClass}}">'+
                                   '  <ng-transclude></ng-transclude>'+
                                   '  <label ng-if="showLabel" for="{{id}}" jd-i18n class="{{jdLabelClass}}">{{jdLabel}}{{showRequired}}</label>'+
                                   '  <small ng-if="showHelp" jd-i18n>{{jdHelp}}</small>'+
@@ -921,16 +963,34 @@
                         var label = element.find('label');
                         if (label.length > 0) {
                             var input = element.find('ng-transclude:first > :first-child,[ng-transclude]:first > :first-child');
-                            if (input.val()) {
-                                label.addClass('active');
-                            }
-                            input.on('focus', function() {
-                                label.addClass('active');
-                            }).on('blur', function() {
-                                if (!input.val()) {
+                            
+                            if (input.is('input[type=text], input[type=password], input[type=email], input[type=url], input[type=tel], input[type=number], input[type=search], textarea')) {
+                                input.on('change', function () {
+                                    if (input.val().length !== 0 || input.attr('placeholder') !== undefined) {
+                                        label.addClass('active');
+                                    }
+                                }).on('reset', function(e) {
+                                    if (input.val().length === '') {
+                                        label.removeClass('active');
+                                    }
+                                }).on('focus', function() {
+                                    label.addClass('active').addClass('focus');
+                                }).on('blur', function() {
+                                    if (input.val().length === 0) {
+                                        label.removeClass('active');
+                                    }
+                                    label.removeClass('focus');
+                                });
+
+                                if (input.val().length > 0 || input.attr('autofocus') || input.attr('placeholder') !== undefined) {
+                                    label.addClass('active');
+                                } else {
                                     label.removeClass('active');
                                 }
-                            });
+                            } else if (input.is('select')) {
+                                input.material_select();
+                                label.addClass('active');
+                            }
                         }
                     }, 0);
                 }
@@ -1224,8 +1284,53 @@
             'cpf': 'Invalid CPF.',
             'cnpj': 'Invalid CNPJ.',
             'default': 'Invalid value.'
+        },
+        uiImplementations: {
+            bootstrap: {
+                open: function(element, message) {
+                    var _tooltip = element.data('bs.tooltip');
+                    if (!_tooltip) {
+                        element.tooltip({ trigger: 'manual', container: 'body' });
+                    }
+                    _tooltip = element.data('bs.tooltip');
+                    if (!_tooltip.tip().hasClass('in') || _tooltip.options.title != message) {
+                        _tooltip.options.title = message;
+                        if ((window.innerWidth || document.documentElement.clientWidth) < 995) {
+                            _tooltip.options.placement = 'top';
+                        } else {
+                            _tooltip.options.placement = 'right';
+                        }
+                        element.tooltip('show');
+                    }
+                },
+                close: function(element) {
+                    var _tooltip = element.data('bs.tooltip');
+                    if (_tooltip && _tooltip.tip().hasClass('in')) {
+                        element.tooltip('hide');
+                    }
+                },
+                destroy: function(element) {
+                    var _tooltip = element.data('bs.tooltip');
+                    if (_tooltip) {
+                        element.tooltip('destroy');
+                    }
+                }
+            },
+            materialize: {
+                open: function(element, message) {
+                    element.attr('data-position', "right");
+                    element.attr('data-tooltip', message);
+                    element.tooltip();
+                },
+                close: function(element) {
+                    element.tooltip('remove');
+                },
+                destroy: function(element) {
+                    element.tooltip('remove');
+                }
+            }
         }
-    }).directive('jdValidationTooltip', ['$injector', '$interpolate', 'jedi.layout.validationtooltip.ValidationTooltipConfig', function ($injector, $interpolate, ValidationTooltipConfig) {
+    }).directive('jdValidationTooltip', ['$injector', '$interpolate', 'jedi.layout.validationtooltip.ValidationTooltipConfig', 'jedi.layout.LayoutConfig', function ($injector, $interpolate, ValidationTooltipConfig, LayoutConfig) {
         var localize;
         try {
             localize = $injector.get('jedi.i18n.Localize');
@@ -1235,7 +1340,8 @@
             restrict: 'A',
             require: '^ngModel',
             link: function (scope, element, attrs, ngModel) {
-				var minLength = attrs['ngMinlength'];
+				var uiImpl = ValidationTooltipConfig.uiImplementations[LayoutConfig.defaultUiImpl];
+                var minLength = attrs['ngMinlength'];
                 var maxLength = attrs['ngMaxlength'];
 
                 if (minLength) {
@@ -1253,75 +1359,55 @@
                 });
 
                 scope.$watch(function () {
-                    return (ngModel.$dirty && ngModel.$invalid) || angular.isDefined(element.data('jd-modelstate-errors'));
+                    return (ngModel.$dirty && ngModel.$invalid && !_.isEmpty(ngModel.$error)) || angular.isDefined(element.data('jd-modelstate-errors'));
                 }, function (value) {
-                    var tooltip = element.data('bs.tooltip');
                     if (value) {
-                        scope.$watch(function () {
-                            return element.data('bs.tooltip');
-                        }, function (value) {
-                            if (!value && !_.isEmpty(ngModel.$error)) {
-                                element.tooltip({ trigger: 'manual', container: 'body' });
-                                element.on('focus.jdValidationTooltip mouseenter.jdValidationTooltip', function () {
-                                    var _tooltip = element.data('bs.tooltip');
-                                    var listError = Object.getOwnPropertyNames(ngModel.$error);
-                                    var error;
+                        element.on('focus.jdValidationTooltip mouseenter.jdValidationTooltip', function () {
+                            var listError = Object.getOwnPropertyNames(ngModel.$error);
+                            var error;
 
-                                    // required possui preferência sobre os outros erros, já que quando o campo estiver vazio, deve aparecer a mensagem adequada.
-                                    if (_.contains(listError, "required")) {
-                                        error = "required";
-                                    } else {
-                                        var isFirefox = typeof InstallTrigger !== 'undefined';
-                                        //No firefox, a mensagem correta fica no final do array.
-                                        if (isFirefox) {
-                                            error = listError[listError.length - 1];
-                                        } else {
-                                            error = listError[0];
-                                        }
-                                    }
-
-                                    var message = ValidationTooltipConfig.messages[error];
-                                    if (!message) {
-                                        if (error == 'jdAsyncValidate') {
-                                            message = attrs.jdAsyncValidateMessage;
-                                        }
-                                        if (!message) {
-                                            message = element.data('jd-modelstate-errors');
-                                            if (!message) {
-                                                message = attrs[error + 'Message'];
-                                                if (!message) {
-                                                    message = ValidationTooltipConfig.messages.default;
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    // interpolate message
-                                    message = $interpolate(message)(angular.extend({}, scope, attrs));
-
-                                    if (!_tooltip.tip().hasClass('in') || _tooltip.options.title != message) {
-                                        _tooltip.options.title = (localize ? localize.get(message) : message);
-                                        if ((window.innerWidth || document.documentElement.clientWidth) < 995) {
-                                            _tooltip.options.placement = 'top';
-                                        } else {
-                                            _tooltip.options.placement = 'right';
-                                        }
-                                        element.tooltip('show');
-                                    }
-                                });
-
-                                // oculta tooltip ao perder foco
-                                element.on('blur.jdValidationTooltip mouseleave.jdValidationTooltip', function () {
-                                    var _tooltip = element.data('bs.tooltip');
-                                    if (_tooltip && _tooltip.tip().hasClass('in')) {
-                                        element.tooltip('hide');
-                                    }
-                                });
+                            // required possui preferência sobre os outros erros, já que quando o campo estiver vazio, deve aparecer a mensagem adequada.
+                            if (_.contains(listError, "required")) {
+                                error = "required";
+                            } else {
+                                var isFirefox = typeof InstallTrigger !== 'undefined';
+                                //No firefox, a mensagem correta fica no final do array.
+                                if (isFirefox) {
+                                    error = listError[listError.length - 1];
+                                } else {
+                                    error = listError[0];
+                                }
                             }
+
+                            var message = ValidationTooltipConfig.messages[error];
+                            if (!message) {
+                                if (error == 'jdAsyncValidate') {
+                                    message = attrs.jdAsyncValidateMessage;
+                                }
+                                if (!message) {
+                                    message = element.data('jd-modelstate-errors');
+                                    if (!message) {
+                                        message = attrs[error + 'Message'];
+                                        if (!message) {
+                                            message = ValidationTooltipConfig.messages.default;
+                                        }
+                                    }
+                                }
+                            }
+
+                            // interpolate message
+                            message = $interpolate(message)(angular.extend({}, scope, attrs));
+
+                            uiImpl.open(element, (localize ? localize.get(message) : message));
                         });
-                    } else if (tooltip) {
+
+                        // oculta tooltip ao perder foco
+                        element.on('blur.jdValidationTooltip mouseleave.jdValidationTooltip', function () {
+                            uiImpl.close(element);
+                        });
+                    } else {
                         element.unbind('focus.jdValidationTooltip mouseenter.jdValidationTooltip blur.jdValidationTooltip mouseleave.jdValidationTooltip');
-                        element.tooltip('destroy');
+                        uiImpl.destroy(element);
                     }
                 });
 
@@ -1329,7 +1415,7 @@
                 // se escopo destruido remove eventos
                 scope.$on('$destroy', function () {
                     element.unbind('change.jdValidationTooltip click.jdValidationTooltip input.jdValidationTooltip paste.jdValidationTooltip keyup.jdValidationTooltip focus.jdValidationTooltip mouseenter.jdValidationTooltip blur.jdValidationTooltip mouseleave.jdValidationTooltip');
-                    element.tooltip('destroy');
+                    uiImpl.destroy(element);
                 });
             }
         };

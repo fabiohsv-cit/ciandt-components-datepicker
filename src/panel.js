@@ -1,20 +1,58 @@
 ﻿    angular.module('jedi.layout.panel', ['jedi.utilities']).constant('jedi.layout.panel.PanelConfig', {
-        defaultElementClass: 'panel-body form-horizontal',
-        defaultFormClass: 'form-validation',
-        defaultBoxedClass: 'page',
         defaultPanelHeadingRightClass: 'panel-heading-right',
-        templateUrl: 'assets/libs/ng-jedi-layout/panel.html'
-    }).run(['$templateCache', function($templateCache) {
-        $templateCache.put('assets/libs/ng-jedi-layout/panel.html', '<div class="{{jdPanel}}" ng-class="{\'jd-panel-disabled\': jdDisabled}">'+
-                                                                    '    <section class="panel panel-default">'+
-                                                                    '        <div class="panel-heading" ng-show="showTitle">'+
-                                                                    '            <strong><span ng-show="showTitleIcon" class="glyphicon {{jdTitleIcon}}"></span><jd-i18n>{{jdTitle}}</jd-i18n></strong>'+
-                                                                    '            <div class="pull-right"></div>'+                                                                    
-                                                                    '        </div>'+
-                                                                    '        <ng-transclude></ng-transclude>'+
-                                                                    '    </section>'+
-                                                                    '</div>');
-    }]).directive('jdPanel', ['jedi.utilities.Utilities', 'jedi.layout.panel.PanelConfig', '$timeout', '$compile', '$filter', '$templateCache', function (utilities, PanelConfig, $timeout, $compile, $filter, $templateCache) {
+        templateUrl: 'assets/libs/ng-jedi-layout/panel.html',
+        uiImplementations: {
+            bootstrap: {
+                template: '<div class="{{jdPanel}}" ng-class="{\'jd-panel-disabled\': jdDisabled}">'+
+                          '    <section class="panel panel-default">'+
+                          '        <div class="panel-heading" ng-show="showTitle">'+
+                          '            <strong><span ng-show="showTitleIcon" class="glyphicon {{jdTitleIcon}}"></span><jd-i18n>{{jdTitle}}</jd-i18n></strong>'+
+                          '            <div class="pull-right"></div>'+                                                                    
+                          '        </div>'+
+                          '        <ng-transclude></ng-transclude>'+
+                          '    </section>'+
+                          '</div>',
+                defaultSizeClass: 'col-lg-',
+                selectorHeader: '.panel-heading',
+                selectorHeaderRight: '.panel-heading-right',
+                selectorHeaderPullRight: '.pull-right',
+                selectorIcon: '.glyphicon',
+                selectorFooter: '.panel-footer',
+                defaultElementClass: 'panel-body form-horizontal',
+                defaultFormClass: 'form-validation',
+                defaultIcon: 'glyphicon-th',
+                defaultToggleOpenIcon: 'glyphicon-chevron-right',
+                defaultToggleCloseIcon: 'glyphicon-chevron-down',
+                defaultBoxedClass: 'page'
+            },
+            materialize: {
+                template: '<div class="{{jdPanel}}" ng-class="{\'jd-panel-disabled\': jdDisabled}">'+
+                          '   <div class="card">'+
+                          '       <div class="card-content">'+
+                          '          <div class="card-title" ng-show="showTitle">'+
+                          '             <i ng-show="showTitleIcon" class="material-icons tiny">{{jdTitleIcon}}</i>'+
+                          '             <jd-i18n>{{jdTitle}}</jd-i18n>'+
+                          '             <div class="right"></div>'+                                                                    
+                          '          </div>'+
+                          '          <ng-transclude></ng-transclude>'+
+                          '       </div>'+
+                          '    </div>'+
+                          '</div>',
+                defaultSizeClass: 'col l',
+                selectorHeader: '.card-title',
+                selectorHeaderRight: '.panel-heading-right',
+                selectorHeaderPullRight: '.right',
+                selectorIcon: '.material-icons',
+                selectorFooter: '.card-action',
+                defaultIcon: 'subtitles',
+                defaultToggleOpenIcon: 'call_made',
+                defaultToggleCloseIcon: 'call_received',
+            }
+        }
+    }).run(['$templateCache', 'jedi.layout.panel.PanelConfig', 'jedi.layout.LayoutConfig', function($templateCache, PanelConfig, LayoutConfig) {
+        $templateCache.put('assets/libs/ng-jedi-layout/panel.html', PanelConfig.uiImplementations[LayoutConfig.defaultUiImpl].template);
+    }]).directive('jdPanel', ['jedi.utilities.Utilities', 'jedi.layout.panel.PanelConfig', '$timeout', '$compile', '$filter', '$templateCache', 'jedi.layout.LayoutConfig', function (utilities, PanelConfig, $timeout, $compile, $filter, $templateCache, LayoutConfig) {
+        var uiImpl = PanelConfig.uiImplementations[LayoutConfig.defaultUiImpl];
         return {
             restrict: 'A',
             scope: true,
@@ -23,16 +61,20 @@
                 
                 $scope.setHeadingRight = function (headingRight) {                 
                     if (headingRight.length > 0) {
-                        $scope.panelHead.find('.pull-right').html(headingRight);
+                        $scope.panelHead.find(uiImpl.selectorHeaderPullRight).html(headingRight);
                     }   
                 }
             },
             compile: function (element, attrs) {
                 // centralizar painel, usar classes: col-md-8 col-md-offset-2
-                element.addClass(PanelConfig.defaultElementClass);
+                if (uiImpl.defaultElementClass) {
+                    element.addClass(uiImpl.defaultElementClass);
+                }
 
                 if (element.is('form')) {
-                    element.addClass(PanelConfig.defaultFormClass);
+                    if (uiImpl.defaultFormClass) {
+                        element.addClass(uiImpl.defaultFormClass);
+                    }
                     if (!attrs.name && attrs.jdTitle) {
                         element.attr('name', $filter('jdReplaceSpecialChars')(attrs.jdTitle));
                     }
@@ -42,19 +84,19 @@
                 }
 
                 if (attrs.jdPanel != '') {
-                    attrs.jdPanel = 'col-lg-' + attrs.jdPanel;
-                } else if (element.parents('.jd-panel:first, .jd-modal:first').length == 0) {
-                    attrs.jdPanel = PanelConfig.defaultBoxedClass;
+                    attrs.jdPanel = uiImpl.defaultSizeClass + attrs.jdPanel;
+                } else if (element.parents('.jd-panel:first, .jd-modal:first').length == 0 && uiImpl.defaultBoxedClass) {
+                    attrs.jdPanel = uiImpl.defaultBoxedClass;
                     element.addClass('jd-panel');
                 }
 
                 // se jdTitleIcon definido vazio então fica sem icone
-                if (typeof attrs.jdTitleIcon == 'undefined') {
-                    attrs.jdTitleIcon = 'glyphicon-th';
+                if (typeof attrs.jdTitleIcon == 'undefined' && uiImpl.defaultIcon) {
+                    attrs.jdTitleIcon = uiImpl.defaultIcon;
                 }
 
                 if (typeof attrs.jdToggle != 'undefined') {
-                    attrs.jdTitleIcon = attrs.jdToggle.toLowerCase().trim() == 'false' ? 'glyphicon-chevron-right' : 'glyphicon-chevron-down';
+                    attrs.jdTitleIcon = attrs.jdToggle.toLowerCase().trim() == 'false' ? uiImpl.defaultToggleOpenIcon : uiImpl.defaultToggleCloseIcon;
                 }
 
                 return {
@@ -62,7 +104,7 @@
                     post: function (scope, element, attrs) {
                         var template = $templateCache.get(PanelConfig.templateUrl);
                         var wrapper = $(template.replace('ng-transclude', 'transclude'));
-                        var panelHead = wrapper.find('.panel-heading');
+                        var panelHead = wrapper.find(uiImpl.selectorHeader);
                         var panelBody = wrapper.find('transclude,[transclude]');
                         // se definido área de transclude, insere antes do element e move o element pro body do transclude
                         if (panelBody.length > 0) {
@@ -82,28 +124,28 @@
                             // adiciona body na área de transclude
                             panelBody.append(element);
 
-                            var footer = element.children('.panel-footer');
+                            var footer = element.children(uiImpl.selectorFooter);
                             if (footer.length > 0) {
                                 element.after(footer);
                             }
-                            
+
                             scope.panelHead = panelHead;
-                            scope.setHeadingRight(element.children('.panel-heading-right'));                            
+                            scope.setHeadingRight(element.children(uiImpl.selectorHeaderRight));
 
                             var panelContent = element.add(footer);
 
                             var toggleElement;
 
                             if (typeof attrs.jdToggle != 'undefined') {
-                                var $target = panelHead.find('.glyphicon');
+                                var $target = panelHead.find(uiImpl.selectorIcon);
 
                                 var doneToggling = function doneToggling(changeScope) {
                                     if (panelContent.is(':visible')) {
-                                        $target.removeClass('glyphicon-chevron-right');
-                                        $target.addClass('glyphicon-chevron-down');
+                                        $target.removeClass(uiImpl.defaultToggleOpenIcon);
+                                        $target.addClass(uiImpl.defaultToggleCloseIcon);
                                     } else {
-                                        $target.removeClass('glyphicon-chevron-down');
-                                        $target.addClass('glyphicon-chevron-right');
+                                        $target.removeClass(uiImpl.defaultToggleCloseIcon);
+                                        $target.addClass(uiImpl.defaultToggleOpenIcon);
                                     }
                                     if (!changeScope && attrs.jdToggle !== "" && attrs.jdToggle !== "true" && attrs.jdToggle !== "false" && scope.$eval(attrs.jdToggle) != panelContent.is(':visible')) {
                                         scope.$eval(attrs.jdToggle + ' = value', { value: panelContent.is(':visible') });
@@ -116,7 +158,7 @@
                                     'padding-top': 'toggle',
                                     'padding-bottom': 'toggle'
                                 };                                                                
-                                
+
                                 scope.$watch(function () {
                                     return scope.$parent.$eval(attrs.jdDisabled);
                                 }, function (newValue, oldValue) {
@@ -138,7 +180,7 @@
                                         done: function(evt) {                                            
                                             panelHead.toggleClass('panel-collapsed');
                                             // stop emite evento done, if adicionado para não passar pelo doneToggling 2x
-                                            if (panelContent.is(':visible') == $target.hasClass('glyphicon-chevron-right')) {
+                                            if (panelContent.is(':visible') == $target.hasClass(uiImpl.defaultToggleOpenIcon)) {
                                                 doneToggling(changeScope);
                                             }
                                         }
@@ -153,13 +195,13 @@
                                         doneToggling(true);
                                     });
                                 };
-                                
+
                                 var doToggle = function (e) {
                                     toggle();
                                     e.stopPropagation();
                                     return false;
                                 };
-                                                                                                                                                                                                     
+
                                 var bindToggle = function () {
                                     toggleElement = panelHead.addClass('head-toggleable')
                                                              .find('*:first')
@@ -167,14 +209,14 @@
                                                              .off('click', doToggle)
                                                              .on('click', doToggle);
                                 };
-                                
+
                                 var unbindToggle = function () {                                    
                                     toggleElement = panelHead.removeClass('head-toggleable')
                                                              .find('*:first')
                                                              .removeClass('toggleable')
                                                              .off('click', doToggle);
                                 }
-                                
+
                                 if (!pScope.jdDisabled) {                                    
                                     bindToggle();
                                 }
