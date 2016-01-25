@@ -1,5 +1,5 @@
 /*
- ng-jedi-layout v0.0.5
+ ng-jedi-layout v0.0.6
  AngularJs UI jedi component
  https://github.com/jediproject/ng-jedi-layout
 */
