@@ -1317,13 +1317,19 @@
                 }
             },
             materialize: {
-                open: function(element, message) {
+                open: function(element, message, type) {
                     element.attr('data-position', "right");
                     element.attr('data-tooltip', message);
-                    element.tooltip();
-                },
-                close: function(element) {
                     element.tooltip('remove');
+                    element.tooltip();                                                                       
+                    if (type === 'focus') {
+                        element.trigger('mouseenter.tooltip');                        
+                    } 
+                },
+                close: function(element, type) {
+                    if (type === 'blur') {
+                        element.trigger('mouseleave.tooltip');
+                    }
                 },
                 destroy: function(element) {
                     element.tooltip('remove');
@@ -1362,7 +1368,7 @@
                     return (ngModel.$dirty && ngModel.$invalid && !_.isEmpty(ngModel.$error)) || angular.isDefined(element.data('jd-modelstate-errors'));
                 }, function (value) {
                     if (value) {
-                        element.on('focus.jdValidationTooltip mouseenter.jdValidationTooltip', function () {
+                        element.on('focus.jdValidationTooltip mouseenter.jdValidationTooltip', function () {                            
                             var listError = Object.getOwnPropertyNames(ngModel.$error);
                             var error;
 
@@ -1398,12 +1404,12 @@
                             // interpolate message
                             message = $interpolate(message)(angular.extend({}, scope, attrs));
 
-                            uiImpl.open(element, (localize ? localize.get(message) : message));
+                            uiImpl.open(element, (localize ? localize.get(message) : message), arguments[0].type);
                         });
 
                         // oculta tooltip ao perder foco
                         element.on('blur.jdValidationTooltip mouseleave.jdValidationTooltip', function () {
-                            uiImpl.close(element);
+                            uiImpl.close(element, arguments[0].type);
                         });
                     } else {
                         element.unbind('focus.jdValidationTooltip mouseenter.jdValidationTooltip blur.jdValidationTooltip mouseleave.jdValidationTooltip');
