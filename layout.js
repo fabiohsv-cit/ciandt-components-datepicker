@@ -1321,10 +1321,8 @@
                     element.attr('data-position', "right");
                     element.attr('data-tooltip', message);
                     element.tooltip('remove');
-                    element.tooltip();                                                                       
-                    if (type === 'focus') {
-                        element.trigger('mouseenter.tooltip');                        
-                    } 
+                    element.tooltip();     
+                    element.trigger('mouseenter.tooltip');                        
                 },
                 close: function(element, type) {
                     if (type === 'blur') {
