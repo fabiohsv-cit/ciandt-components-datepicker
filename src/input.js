@@ -146,6 +146,13 @@
                             } else if (input.is('select')) {
                                 input.material_select();
                                 label.addClass('active');
+                                // destroy
+                                scope.$on('$destroy', function() {
+                                    input.material_select('destroy');
+                                });
+                                element.on('$destroy', function() {
+                                    input.material_select('destroy');
+                                });
                             }
                         }
                     }, 0);
