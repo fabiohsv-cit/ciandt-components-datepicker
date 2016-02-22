@@ -110,6 +110,22 @@
                     cElement.attr('ng-options', cAttrs.jdOptions);
                 }
 
+                if (cAttrs.jdAutocomplete) {
+                  cElement.attr('uib-typeahead', cAttrs.jdAutocomplete);
+                  cElement.attr('autocomplete', 'off');
+                  if (cAttrs.jdAutocompleteLoading) {
+                    cElement.attr('typeahead-loading', cAttrs.jdAutocompleteLoading);
+                  }
+
+                  if (cAttrs.jdAutocompleteNoResult) {
+                    cElement.attr('typeahead-no-results', cAttrs.jdAutocompleteNoResult);
+                  }
+
+                  if (cAttrs.jdAutocompleteMinLength) {
+                    cElement.attr('typeahead-min-length', cAttrs.jdAutocompleteMinLength);
+                  }
+                }
+
                 if (InputConfig.useValidationTooltip && !cAttrs.jdValidationTooltip && cAttrs.ngModel && cElement.is(':input')) {
                     cElement.attr('jd-validation-tooltip', '');
                 }

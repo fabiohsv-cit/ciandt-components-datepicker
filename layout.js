@@ -1,5 +1,5 @@
 /*
- ng-jedi-layout v0.0.5
+ ng-jedi-layout v0.0.6
  AngularJs UI jedi component
  https://github.com/jediproject/ng-jedi-layout
 */
@@ -912,6 +912,22 @@
                     cElement.attr('ng-options', cAttrs.jdOptions);
                 }
 
+                if (cAttrs.jdAutocomplete) {
+                  cElement.attr('uib-typeahead', cAttrs.jdAutocomplete);
+                  cElement.attr('autocomplete', 'off');
+                  if (cAttrs.jdAutocompleteLoading) {
+                    cElement.attr('typeahead-loading', cAttrs.jdAutocompleteLoading);
+                  }
+
+                  if (cAttrs.jdAutocompleteNoResult) {
+                    cElement.attr('typeahead-no-results', cAttrs.jdAutocompleteNoResult);
+                  }
+
+                  if (cAttrs.jdAutocompleteMinLength) {
+                    cElement.attr('typeahead-min-length', cAttrs.jdAutocompleteMinLength);
+                  }
+                }
+
                 if (InputConfig.useValidationTooltip && !cAttrs.jdValidationTooltip && cAttrs.ngModel && cElement.is(':input')) {
                     cElement.attr('jd-validation-tooltip', '');
                 }
@@ -1134,6 +1150,7 @@
                                                                              '    </div>'+
                                                                              '</div>');
     }]);
+
     angular.module('jedi.layout.validationtooltip', []).constant('jedi.layout.validationtooltip.ValidationTooltipConfig', {
         messages: {
             'required': 'Required field.',

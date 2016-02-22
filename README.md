@@ -80,7 +80,7 @@ Layout components for your application.
          }
       ]};
    ```
-   
+
    - If the treeview contains an empty array it will show the empty template, that is by default a message saying "No item found"
    - if the treeview value is set null or undefined, it will hide from screen.
 
@@ -110,7 +110,7 @@ Layout components for your application.
          ...
       </form>
    ```
-   
+
    #### Custom behavior
    - You can define content to be in panel's header and footer
    ```html   
@@ -123,7 +123,7 @@ Layout components for your application.
           </div>
       </form>
    ```
-   
+
    - if you need, you can customize the html. In your angular run from app.js, override the constant jedi.layout.panel.PanelConfig and set your customizations. There are three attributes:
       - defaultElementClass: default class to apply in your element
       - defaultFormClass: default class to apply in the forms into your element
@@ -175,7 +175,7 @@ Layout components for your application.
       - defaultFormClass: default class to apply in the forms into your element.
       - defaultTableClass: default class to apply in the tables into your element.
       - defaultTemplateUrl: default template to use for the modal.
-   
+
    - The default html template can also be changed through  the templateUrl attribute
    ```html
    <jd-modal templateUrl="app/common/components/modal/yourModal.html"></jd-modal>
@@ -197,7 +197,7 @@ Layout components for your application.
          - jd-xs-label-size / jd-sm-label-size / jd-md-label-size / jd-lg-label-size (Label's size).
          - jd-xs-input-size / jd-sm-input-size / jd-md-input-size / jd-lg-input-size (Input's size).
 
-      - Label 
+      - Label
          - jd-label (Correspond to the text that is displayed above the input).
          - jd-grouplabel (Correspond to the text that is displayed above the group of inputs - Multicheck/radio).
 
@@ -216,7 +216,7 @@ Layout components for your application.
       - The ```jd-repeat``` and ```jd-options``` are not directives, they are used just to avoid conflicts with ```ng-repeat``` and ```transclude```. Under the hood the directive replaces them with ```ng-repeat```.
 
    - **IMPORTANT: You will notice that some attributes of the inputs have a ```$parent``` tag. That's because of the transclude that is used in the directive. It creates a new scope for the cloned element, plus the directive itself has its own scope causing the model to be acessible only through the scope of the $parent.$parent element. In other cases through the $parent.$parent.$parent element because of ng-repeat.**
-      
+
    ---      
 
    ##### Examples:
@@ -235,6 +235,16 @@ Layout components for your application.
             </div>
       </div>
    </div>
+   ```
+   - Type: Autocomplete
+   ```html
+   <input type="text"
+      ng-model="myModel"
+      jd-input="12" jd-label="Autocomplete"
+      jd-autocomplete="item.name for item in getAutocompleteItems($viewValue)"
+      jd-autocomplete-loading="isLoading"
+      jd-autocomplete-no-results="noResults"
+      jd-autocomplete-min-length="3" />
    ```
 
    - Type: Checkbox
@@ -278,7 +288,7 @@ Layout components for your application.
       </div>
    </div>
    ```
-   
+
    - Type: Radio
    ```html
    <input jd-input jd-label="My Radio" ng-model="myRadio" type="radio" ng-value="true"/>
@@ -343,7 +353,7 @@ Layout components for your application.
       </div>
    </div>
    ```
-   
+
    - Type: Select (2nd Way)
    ```html
    <select jd-input jd-label="My Select 2" ng-model="mySelect2" jd-options="item.id as item.value for item in list"></select>
