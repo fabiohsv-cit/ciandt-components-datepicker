@@ -996,6 +996,13 @@
                             } else if (input.is('select')) {
                                 input.material_select();
                                 label.addClass('active');
+                                // destroy
+                                scope.$on('$destroy', function() {
+                                    input.material_select('destroy');
+                                });
+                                element.on('$destroy', function() {
+                                    input.material_select('destroy');
+                                });
                             }
                         }
                         
@@ -1350,9 +1357,7 @@
                     element.attr('data-tooltip', message);
                     element.tooltip('remove');
                     element.tooltip();                                                                       
-                    if (type === 'focus') {
-                        element.trigger('mouseenter.tooltip');                        
-                    } 
+                    element.trigger('mouseenter.tooltip');                        
                 },
                 close: function(element, type) {
                     if (type === 'blur') {
