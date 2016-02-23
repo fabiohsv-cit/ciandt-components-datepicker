@@ -102,16 +102,22 @@
                                   '</div>',
                     multipleInput: '<div class="col s{{jdSmSize}} m{{jdMdSize}} l{{jdLgSize}} jd-multi-{{type}}">'+
                                    '    <label ng-if="showLabel" class="{{jdLabelClass}}" jd-i18n>{{jdGrouplabel}}{{showRequired}}</label>'+
-                                   '    <span class="{{jdInputClass}}" ng-repeat>'+
+                                   '    <p class="{{jdInputClass}} jd-input-container" ng-repeat>'+
                                    '      <ng-transclude></ng-transclude>'+
-                                   '      <label ng-if="showLabel" for="{{id}}" jd-i18n>{{jdLabel}}</label>'+
-                                   '    </span>'+
+                                   '      <label for="{{id}}" jd-i18n>{{jdLabel}}</label>'+
+                                   '    </p>'+
                                    '    <small ng-if="showHelp" jd-i18n>{{jdHelp}}</small>'+
                                    '</div>',
-                    oneInput: '<div class="col s{{jdSmSize}} m{{jdMdSize}} l{{jdLgSize}} jd-{{type}} {{jdInputClass}}">'+
-                              '  <ng-transclude></ng-transclude>'+
-                              '  <label ng-if="showLabel" for="{{id}}" class="{{jdLabelClass}}" jd-i18n>{{jdLabel}}{{showRequired}}</label>'+
-                              '  <small ng-if="showHelp" jd-i18n>{{jdHelp}}</small>'+
+                    oneInput: '<div class="col s{{jdSmSize}} m{{jdMdSize}} l{{jdLgSize}} jd-{{type}} {{jdInputClass}}">' +                    
+                              '<label ng-if="showLabel" for="{{id}}" class="{{jdLabelClass}}" jd-i18n>{{jdLabel}}{{showRequired}}</label>' +
+                              '<div class="switch">' +
+                              ' <label class="jd-input-container">' +
+                              '  <ng-transclude></ng-transclude>' +
+                              ' <span class="lever"></span>' +
+                              ' {{ jdLabel }}' +
+                              ' </label>' +
+                              '</div>' +                              
+                              '<small ng-if="showHelp" jd-i18n>{{jdHelp}}</small>'+
                               '</div>'
                 },
                 postLink: function(scope, element) {
@@ -148,6 +154,24 @@
                                 label.addClass('active');
                             }
                         }
+                        
+                        var type = element.attr('type') || element.data('type');
+                        if (type == 'radio' || type == 'checkbox') {
+                            element.removeAttr('type');
+                            element.data('type', type);                            
+                            element.find('.jd-input-container').each(function(index) {
+                                var $inputContainer = $(this);                                
+                                var transclude = $inputContainer.find('ng-transclude');
+                                var label = $inputContainer.find('label');
+                                var input = $inputContainer.find('input');
+                                var id = input.attr('id') + index; 
+                                
+                                input.attr('id', id).insertAfter(transclude);
+                                label.attr('for', id);                                                    
+                                input.addClass('with-gap');            
+                            });                            
+                        }
+                        
                     }, 0);
                 }
             }
@@ -413,7 +437,11 @@
                     }
 
                     if (InputConfig.uiImplementations[LayoutConfig.defaultUiImpl] && InputConfig.uiImplementations[LayoutConfig.defaultUiImpl].postLink) {
-                        InputConfig.uiImplementations[LayoutConfig.defaultUiImpl].postLink(scope, element, attrs, ctrl, transclude);
+                        scope.$watch(function(){
+                            return element.find('.jd-input-container').length;
+                        }, function() {
+                            InputConfig.uiImplementations[LayoutConfig.defaultUiImpl].postLink(scope, element, attrs, ctrl, transclude);                            
+                        });                        
                     }
                 };
             }
