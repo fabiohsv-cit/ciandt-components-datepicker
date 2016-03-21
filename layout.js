@@ -1,5 +1,5 @@
 /*
- ng-jedi-layout v0.0.6
+ ng-jedi-layout v0.0.7
  AngularJs UI jedi component
  https://github.com/jediproject/ng-jedi-layout
 */
@@ -405,7 +405,16 @@
                 defaultIcon: 'glyphicon-th',
                 defaultToggleOpenIcon: 'glyphicon-chevron-right',
                 defaultToggleCloseIcon: 'glyphicon-chevron-down',
-                defaultBoxedClass: 'page'
+                defaultBoxedClass: 'page',
+                toggleIcon: function(panelContent, $target) {
+                    if (panelContent.is(':visible')) {
+                        $target.removeClass(this.defaultToggleOpenIcon);
+                        $target.addClass(this.defaultToggleCloseIcon);
+                    } else {
+                        $target.removeClass(this.defaultToggleCloseIcon);
+                        $target.addClass(this.defaultToggleOpenIcon);
+                    }
+                }
             },
             materialize: {
                 template: '<div class="{{jdPanel}}" ng-class="{\'jd-panel-disabled\': jdDisabled}">'+
@@ -427,8 +436,17 @@
                 selectorIcon: '.material-icons',
                 selectorFooter: '.card-action',
                 defaultIcon: 'subtitles',
-                defaultToggleOpenIcon: 'call_made',
-                defaultToggleCloseIcon: 'call_received',
+                defaultToggleOpenIcon: 'call_received',
+                defaultToggleCloseIcon: 'call_made',
+                toggleIcon: function(panelContent, $target) {
+                    if (panelContent.is(':visible')) {
+                        $target.removeClass(this.defaultToggleOpenIcon);
+                        $target.addClass(this.defaultToggleCloseIcon).text(this.defaultToggleCloseIcon);
+                    } else {
+                        $target.removeClass(this.defaultToggleCloseIcon);
+                        $target.addClass(this.defaultToggleOpenIcon).text(this.defaultToggleOpenIcon);
+                    }
+                }
             }
         }
     }).run(['$templateCache', 'jedi.layout.panel.PanelConfig', 'jedi.layout.LayoutConfig', function($templateCache, PanelConfig, LayoutConfig) {
@@ -522,13 +540,7 @@
                                 var $target = panelHead.find(uiImpl.selectorIcon);
 
                                 var doneToggling = function doneToggling(changeScope) {
-                                    if (panelContent.is(':visible')) {
-                                        $target.removeClass(uiImpl.defaultToggleOpenIcon);
-                                        $target.addClass(uiImpl.defaultToggleCloseIcon);
-                                    } else {
-                                        $target.removeClass(uiImpl.defaultToggleCloseIcon);
-                                        $target.addClass(uiImpl.defaultToggleOpenIcon);
-                                    }
+                                    uiImpl.toggleIcon(panelContent, $target);
                                     if (!changeScope && attrs.jdToggle !== "" && attrs.jdToggle !== "true" && attrs.jdToggle !== "false" && scope.$eval(attrs.jdToggle) != panelContent.is(':visible')) {
                                         scope.$eval(attrs.jdToggle + ' = value', { value: panelContent.is(':visible') });
                                         scope.$apply();
@@ -539,7 +551,7 @@
                                     height: 'toggle',
                                     'padding-top': 'toggle',
                                     'padding-bottom': 'toggle'
-                                };                                                                
+                                };
 
                                 scope.$watch(function () {
                                     return scope.$parent.$eval(attrs.jdDisabled);
@@ -602,7 +614,6 @@
                                 if (!pScope.jdDisabled) {                                    
                                     bindToggle();
                                 }
-                                
 
                                 if (attrs.jdToggle.toLowerCase().trim() === 'false') {
                                     hide();
@@ -902,7 +913,7 @@
                 templates: {
                     singleInput: '<div class="col-xs-{{jdXsSize}} col-sm-{{jdSmSize}} col-md-{{jdMdSize}} col-lg-{{jdLgSize}} jd-{{type}}">'+
                                   '    <div class="form-group">'+
-                                  '        <label ng-if="showLabel" for="{{id}}" class="col-xs-{{jdXsLabelSize}} col-sm-{{jdSmLabelSize}} col-md-{{jdMdLabelSize}} col-lg-{{jdLgLabelSize}} {{jdLabelClass}} control-label" jd-i18n>{{jdLabel}}{{showRequired}}</label>'+
+                                  '         <label ng-if="showLabel" for="{{id}}" class="col-xs-{{jdXsLabelSize}} col-sm-{{jdSmLabelSize}} col-md-{{jdMdLabelSize}} col-lg-{{jdLgLabelSize}} {{jdLabelClass}} control-label"><jd-i18n>{{jdLabel}}</jd-i18n>{{showRequired}}</label>'+
                                   '         <div class="col-xs-{{jdXsInputSize}} col-sm-{{jdSmInputSize}} col-md-{{jdMdInputSize}} col-lg-{{jdLgInputSize}} {{jdInputClass}}">'+
                                   '            <ng-transclude></ng-transclude>'+
                                   '            <small class="help-block" ng-if="showHelp" jd-i18n>{{jdHelp}}</small>'+
@@ -911,7 +922,7 @@
                                   '</div>',
                     multipleInput: '<div class="col-xs-{{jdXsSize}} col-sm-{{jdSmSize}} col-md-{{jdMdSize}} col-lg-{{jdLgSize}} jd-multi-{{type}}">'+
                                    '    <div class="form-group">'+
-                                   '        <label ng-if="showLabel" class="col-xs-{{jdXsLabelSize}} col-sm-{{jdSmLabelSize}} col-md-{{jdMdLabelSize}} col-lg-{{jdLgLabelSize}} {{jdLabelClass}} control-label" jd-i18n>{{jdGrouplabel}}{{showRequired}}</label>'+
+                                   '        <label ng-if="showLabel" class="col-xs-{{jdXsLabelSize}} col-sm-{{jdSmLabelSize}} col-md-{{jdMdLabelSize}} col-lg-{{jdLgLabelSize}} {{jdLabelClass}} control-label"><jd-i18n>{{jdGrouplabel}}</jd-i18n>{{showRequired}}</label>'+
                                    '        <div class="col-xs-{{jdXsInputSize}} col-sm-{{jdSmInputSize}} col-md-{{jdMdInputSize}} col-lg-{{jdLgInputSize}} {{jdInputClass}}">'+
                                    '            <label class="{{type}}-inline" ng-repeat>'+
                                    '                <ng-transclude></ng-transclude>{{jdLabel}}'+
@@ -925,7 +936,7 @@
                               '        <div class="col-xs-offset-{{jdXsLabelSize}} col-sm-offset-{{jdSmLabelSize}} col-md-offset-{{jdMdLabelSize}} col-lg-offset-{{jdLgLabelSize}} {{jdLabelClass}} col-xs-{{jdXsInputSize}} col-sm-{{jdSmInputSize}} col-md-{{jdMdInputSize}} col-lg-{{jdLgInputSize}} {{jdInputClass}}">'+
                               '            <div class="{{type}}">'+
                               '                <label>'+
-                              '                    <ng-transclude></ng-transclude>{{jdLabel}}{{showRequired}}'+
+                              '                    <ng-transclude></ng-transclude><jd-i18n>{{jdLabel}}</jd-i18n>{{showRequired}}'+
                               '                </label>'+
                               '            </div>'+
                               '            <small class="help-block" ng-if="showHelp" jd-i18n>{{jdHelp}}</small>'+
@@ -941,11 +952,11 @@
                 templates: {
                     singleInput: '<div class="input-field col s{{jdSmSize}} m{{jdMdSize}} l{{jdLgSize}} jd-{{type}} {{jdInputClass}}">'+
                                   '  <ng-transclude></ng-transclude>'+
-                                  '  <label ng-if="showLabel" for="{{id}}" jd-i18n class="{{jdLabelClass}}">{{jdLabel}}{{showRequired}}</label>'+
+                                  '  <label ng-if="showLabel" for="{{id}}" class="{{jdLabelClass}}"><jd-i18n>{{jdLabel}}</jd-i18n>{{showRequired}}</label>'+
                                   '  <small ng-if="showHelp" jd-i18n>{{jdHelp}}</small>'+
                                   '</div>',
                     multipleInput: '<div class="col s{{jdSmSize}} m{{jdMdSize}} l{{jdLgSize}} jd-multi-{{type}}">'+
-                                   '    <label ng-if="showLabel" class="{{jdLabelClass}}" jd-i18n>{{jdGrouplabel}}{{showRequired}}</label>'+
+                                   '    <label ng-if="showLabel" class="{{jdLabelClass}}"><jd-i18n>{{jdGrouplabel}}</jd-i18n>{{showRequired}}</label>'+
                                    '    <p class="{{jdInputClass}} jd-input-container" ng-repeat>'+
                                    '      <ng-transclude></ng-transclude>'+
                                    '      <label for="{{id}}" jd-i18n>{{jdLabel}}</label>'+
@@ -953,7 +964,7 @@
                                    '    <small ng-if="showHelp" jd-i18n>{{jdHelp}}</small>'+
                                    '</div>',
                     oneInput: '<div class="col s{{jdSmSize}} m{{jdMdSize}} l{{jdLgSize}} jd-{{type}} {{jdInputClass}}">' +                    
-                              '<label ng-if="showLabel" for="{{id}}" class="{{jdLabelClass}}" jd-i18n>{{jdLabel}}{{showRequired}}</label>' +
+                              '<label ng-if="showLabel" for="{{id}}" class="{{jdLabelClass}}"><jd-i18n>{{jdLabel}}</jd-i18n>{{showRequired}}</label>' +
                               '<div class="switch">' +
                               ' <label class="jd-input-container">' +
                               '  <ng-transclude></ng-transclude>' +
@@ -972,17 +983,17 @@
                             
                             if (input.is('input[type=text], input[type=password], input[type=email], input[type=url], input[type=tel], input[type=number], input[type=search], textarea')) {
                                 input.on('change', function () {
-                                    if (input.val().length !== 0 || input.attr('placeholder') !== undefined) {
+                                    if (input.val().length !== 0) {
                                         label.addClass('active');
                                     }
                                 }).on('reset', function(e) {
-                                    if (input.val().length === '') {
+                                    if (input.val().length === '' && input.attr('placeholder') === undefined) {
                                         label.removeClass('active');
                                     }
                                 }).on('focus', function() {
                                     label.addClass('active').addClass('focus');
                                 }).on('blur', function() {
-                                    if (input.val().length === 0) {
+                                    if (input.val().length === 0 && input.attr('placeholder') === undefined) {
                                         label.removeClass('active');
                                     }
                                     label.removeClass('focus');
@@ -990,7 +1001,7 @@
 
                                 if (input.val().length > 0 || input.attr('autofocus') || input.attr('placeholder') !== undefined) {
                                     label.addClass('active');
-                                } else {
+                                } else if (input.attr('placeholder') === undefined) {
                                     label.removeClass('active');
                                 }
                             } else if (input.is('select')) {
@@ -1357,7 +1368,9 @@
                     element.attr('data-tooltip', message);
                     element.tooltip('remove');
                     element.tooltip();                                                                       
-                    element.trigger('mouseenter.tooltip');                        
+                    if (type === 'focus') {
+                        element.trigger('mouseenter.tooltip');                        
+                    } 
                 },
                 close: function(element, type) {
                     if (type === 'blur') {

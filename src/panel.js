@@ -23,7 +23,16 @@
                 defaultIcon: 'glyphicon-th',
                 defaultToggleOpenIcon: 'glyphicon-chevron-right',
                 defaultToggleCloseIcon: 'glyphicon-chevron-down',
-                defaultBoxedClass: 'page'
+                defaultBoxedClass: 'page',
+                toggleIcon: function(panelContent, $target) {
+                    if (panelContent.is(':visible')) {
+                        $target.removeClass(this.defaultToggleOpenIcon);
+                        $target.addClass(this.defaultToggleCloseIcon);
+                    } else {
+                        $target.removeClass(this.defaultToggleCloseIcon);
+                        $target.addClass(this.defaultToggleOpenIcon);
+                    }
+                }
             },
             materialize: {
                 template: '<div class="{{jdPanel}}" ng-class="{\'jd-panel-disabled\': jdDisabled}">'+
@@ -45,8 +54,17 @@
                 selectorIcon: '.material-icons',
                 selectorFooter: '.card-action',
                 defaultIcon: 'subtitles',
-                defaultToggleOpenIcon: 'call_made',
-                defaultToggleCloseIcon: 'call_received',
+                defaultToggleOpenIcon: 'call_received',
+                defaultToggleCloseIcon: 'call_made',
+                toggleIcon: function(panelContent, $target) {
+                    if (panelContent.is(':visible')) {
+                        $target.removeClass(this.defaultToggleOpenIcon);
+                        $target.addClass(this.defaultToggleCloseIcon).text(this.defaultToggleCloseIcon);
+                    } else {
+                        $target.removeClass(this.defaultToggleCloseIcon);
+                        $target.addClass(this.defaultToggleOpenIcon).text(this.defaultToggleOpenIcon);
+                    }
+                }
             }
         }
     }).run(['$templateCache', 'jedi.layout.panel.PanelConfig', 'jedi.layout.LayoutConfig', function($templateCache, PanelConfig, LayoutConfig) {
@@ -140,13 +158,7 @@
                                 var $target = panelHead.find(uiImpl.selectorIcon);
 
                                 var doneToggling = function doneToggling(changeScope) {
-                                    if (panelContent.is(':visible')) {
-                                        $target.removeClass(uiImpl.defaultToggleOpenIcon);
-                                        $target.addClass(uiImpl.defaultToggleCloseIcon);
-                                    } else {
-                                        $target.removeClass(uiImpl.defaultToggleCloseIcon);
-                                        $target.addClass(uiImpl.defaultToggleOpenIcon);
-                                    }
+                                    uiImpl.toggleIcon(panelContent, $target);
                                     if (!changeScope && attrs.jdToggle !== "" && attrs.jdToggle !== "true" && attrs.jdToggle !== "false" && scope.$eval(attrs.jdToggle) != panelContent.is(':visible')) {
                                         scope.$eval(attrs.jdToggle + ' = value', { value: panelContent.is(':visible') });
                                         scope.$apply();
@@ -157,7 +169,7 @@
                                     height: 'toggle',
                                     'padding-top': 'toggle',
                                     'padding-bottom': 'toggle'
-                                };                                                                
+                                };
 
                                 scope.$watch(function () {
                                     return scope.$parent.$eval(attrs.jdDisabled);
@@ -220,7 +232,6 @@
                                 if (!pScope.jdDisabled) {                                    
                                     bindToggle();
                                 }
-                                
 
                                 if (attrs.jdToggle.toLowerCase().trim() === 'false') {
                                     hide();

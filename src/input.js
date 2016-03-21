@@ -58,7 +58,7 @@
                 templates: {
                     singleInput: '<div class="col-xs-{{jdXsSize}} col-sm-{{jdSmSize}} col-md-{{jdMdSize}} col-lg-{{jdLgSize}} jd-{{type}}">'+
                                   '    <div class="form-group">'+
-                                  '        <label ng-if="showLabel" for="{{id}}" class="col-xs-{{jdXsLabelSize}} col-sm-{{jdSmLabelSize}} col-md-{{jdMdLabelSize}} col-lg-{{jdLgLabelSize}} {{jdLabelClass}} control-label" jd-i18n>{{jdLabel}}{{showRequired}}</label>'+
+                                  '         <label ng-if="showLabel" for="{{id}}" class="col-xs-{{jdXsLabelSize}} col-sm-{{jdSmLabelSize}} col-md-{{jdMdLabelSize}} col-lg-{{jdLgLabelSize}} {{jdLabelClass}} control-label"><jd-i18n>{{jdLabel}}</jd-i18n>{{showRequired}}</label>'+
                                   '         <div class="col-xs-{{jdXsInputSize}} col-sm-{{jdSmInputSize}} col-md-{{jdMdInputSize}} col-lg-{{jdLgInputSize}} {{jdInputClass}}">'+
                                   '            <ng-transclude></ng-transclude>'+
                                   '            <small class="help-block" ng-if="showHelp" jd-i18n>{{jdHelp}}</small>'+
@@ -67,7 +67,7 @@
                                   '</div>',
                     multipleInput: '<div class="col-xs-{{jdXsSize}} col-sm-{{jdSmSize}} col-md-{{jdMdSize}} col-lg-{{jdLgSize}} jd-multi-{{type}}">'+
                                    '    <div class="form-group">'+
-                                   '        <label ng-if="showLabel" class="col-xs-{{jdXsLabelSize}} col-sm-{{jdSmLabelSize}} col-md-{{jdMdLabelSize}} col-lg-{{jdLgLabelSize}} {{jdLabelClass}} control-label" jd-i18n>{{jdGrouplabel}}{{showRequired}}</label>'+
+                                   '        <label ng-if="showLabel" class="col-xs-{{jdXsLabelSize}} col-sm-{{jdSmLabelSize}} col-md-{{jdMdLabelSize}} col-lg-{{jdLgLabelSize}} {{jdLabelClass}} control-label"><jd-i18n>{{jdGrouplabel}}</jd-i18n>{{showRequired}}</label>'+
                                    '        <div class="col-xs-{{jdXsInputSize}} col-sm-{{jdSmInputSize}} col-md-{{jdMdInputSize}} col-lg-{{jdLgInputSize}} {{jdInputClass}}">'+
                                    '            <label class="{{type}}-inline" ng-repeat>'+
                                    '                <ng-transclude></ng-transclude>{{jdLabel}}'+
@@ -81,7 +81,7 @@
                               '        <div class="col-xs-offset-{{jdXsLabelSize}} col-sm-offset-{{jdSmLabelSize}} col-md-offset-{{jdMdLabelSize}} col-lg-offset-{{jdLgLabelSize}} {{jdLabelClass}} col-xs-{{jdXsInputSize}} col-sm-{{jdSmInputSize}} col-md-{{jdMdInputSize}} col-lg-{{jdLgInputSize}} {{jdInputClass}}">'+
                               '            <div class="{{type}}">'+
                               '                <label>'+
-                              '                    <ng-transclude></ng-transclude>{{jdLabel}}{{showRequired}}'+
+                              '                    <ng-transclude></ng-transclude><jd-i18n>{{jdLabel}}</jd-i18n>{{showRequired}}'+
                               '                </label>'+
                               '            </div>'+
                               '            <small class="help-block" ng-if="showHelp" jd-i18n>{{jdHelp}}</small>'+
@@ -97,11 +97,11 @@
                 templates: {
                     singleInput: '<div class="input-field col s{{jdSmSize}} m{{jdMdSize}} l{{jdLgSize}} jd-{{type}} {{jdInputClass}}">'+
                                   '  <ng-transclude></ng-transclude>'+
-                                  '  <label ng-if="showLabel" for="{{id}}" jd-i18n class="{{jdLabelClass}}">{{jdLabel}}{{showRequired}}</label>'+
+                                  '  <label ng-if="showLabel" for="{{id}}" class="{{jdLabelClass}}"><jd-i18n>{{jdLabel}}</jd-i18n>{{showRequired}}</label>'+
                                   '  <small ng-if="showHelp" jd-i18n>{{jdHelp}}</small>'+
                                   '</div>',
                     multipleInput: '<div class="col s{{jdSmSize}} m{{jdMdSize}} l{{jdLgSize}} jd-multi-{{type}}">'+
-                                   '    <label ng-if="showLabel" class="{{jdLabelClass}}" jd-i18n>{{jdGrouplabel}}{{showRequired}}</label>'+
+                                   '    <label ng-if="showLabel" class="{{jdLabelClass}}"><jd-i18n>{{jdGrouplabel}}</jd-i18n>{{showRequired}}</label>'+
                                    '    <p class="{{jdInputClass}} jd-input-container" ng-repeat>'+
                                    '      <ng-transclude></ng-transclude>'+
                                    '      <label for="{{id}}" jd-i18n>{{jdLabel}}</label>'+
@@ -109,7 +109,7 @@
                                    '    <small ng-if="showHelp" jd-i18n>{{jdHelp}}</small>'+
                                    '</div>',
                     oneInput: '<div class="col s{{jdSmSize}} m{{jdMdSize}} l{{jdLgSize}} jd-{{type}} {{jdInputClass}}">' +                    
-                              '<label ng-if="showLabel" for="{{id}}" class="{{jdLabelClass}}" jd-i18n>{{jdLabel}}{{showRequired}}</label>' +
+                              '<label ng-if="showLabel" for="{{id}}" class="{{jdLabelClass}}"><jd-i18n>{{jdLabel}}</jd-i18n>{{showRequired}}</label>' +
                               '<div class="switch">' +
                               ' <label class="jd-input-container">' +
                               '  <ng-transclude></ng-transclude>' +
@@ -128,17 +128,17 @@
                             
                             if (input.is('input[type=text], input[type=password], input[type=email], input[type=url], input[type=tel], input[type=number], input[type=search], textarea')) {
                                 input.on('change', function () {
-                                    if (input.val().length !== 0 || input.attr('placeholder') !== undefined) {
+                                    if (input.val().length !== 0) {
                                         label.addClass('active');
                                     }
                                 }).on('reset', function(e) {
-                                    if (input.val().length === '') {
+                                    if (input.val().length === '' && input.attr('placeholder') === undefined) {
                                         label.removeClass('active');
                                     }
                                 }).on('focus', function() {
                                     label.addClass('active').addClass('focus');
                                 }).on('blur', function() {
-                                    if (input.val().length === 0) {
+                                    if (input.val().length === 0 && input.attr('placeholder') === undefined) {
                                         label.removeClass('active');
                                     }
                                     label.removeClass('focus');
@@ -146,7 +146,7 @@
 
                                 if (input.val().length > 0 || input.attr('autofocus') || input.attr('placeholder') !== undefined) {
                                     label.addClass('active');
-                                } else {
+                                } else if (input.attr('placeholder') === undefined) {
                                     label.removeClass('active');
                                 }
                             } else if (input.is('select')) {
