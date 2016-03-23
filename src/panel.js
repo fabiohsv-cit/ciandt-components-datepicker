@@ -1,76 +1,9 @@
 ﻿    angular.module('jedi.layout.panel', ['jedi.utilities']).constant('jedi.layout.panel.PanelConfig', {
         defaultPanelHeadingRightClass: 'panel-heading-right',
-        templateUrl: 'assets/libs/ng-jedi-layout/panel.html',
-        uiImplementations: {
-            bootstrap: {
-                template: '<div class="{{jdPanel}}" ng-class="{\'jd-panel-disabled\': jdDisabled}">'+
-                          '    <section class="panel panel-default">'+
-                          '        <div class="panel-heading" ng-show="showTitle">'+
-                          '            <strong><span ng-show="showTitleIcon" class="glyphicon {{jdTitleIcon}}"></span><jd-i18n>{{jdTitle}}</jd-i18n></strong>'+
-                          '            <div class="pull-right"></div>'+                                                                    
-                          '        </div>'+
-                          '        <ng-transclude></ng-transclude>'+
-                          '    </section>'+
-                          '</div>',
-                defaultSizeClass: 'col-lg-',
-                selectorHeader: '.panel-heading',
-                selectorHeaderRight: '.panel-heading-right',
-                selectorHeaderPullRight: '.pull-right',
-                selectorIcon: '.glyphicon',
-                selectorFooter: '.panel-footer',
-                defaultElementClass: 'panel-body form-horizontal',
-                defaultFormClass: 'form-validation',
-                defaultIcon: 'glyphicon-th',
-                defaultToggleOpenIcon: 'glyphicon-chevron-right',
-                defaultToggleCloseIcon: 'glyphicon-chevron-down',
-                defaultBoxedClass: 'page',
-                toggleIcon: function(panelContent, $target) {
-                    if (panelContent.is(':visible')) {
-                        $target.removeClass(this.defaultToggleOpenIcon);
-                        $target.addClass(this.defaultToggleCloseIcon);
-                    } else {
-                        $target.removeClass(this.defaultToggleCloseIcon);
-                        $target.addClass(this.defaultToggleOpenIcon);
-                    }
-                }
-            },
-            materialize: {
-                template: '<div class="{{jdPanel}}" ng-class="{\'jd-panel-disabled\': jdDisabled}">'+
-                          '   <div class="card">'+
-                          '       <div class="card-content">'+
-                          '          <div class="card-title" ng-show="showTitle">'+
-                          '             <i ng-show="showTitleIcon" class="material-icons tiny">{{jdTitleIcon}}</i>'+
-                          '             <jd-i18n>{{jdTitle}}</jd-i18n>'+
-                          '             <div class="right"></div>'+                                                                    
-                          '          </div>'+
-                          '          <ng-transclude></ng-transclude>'+
-                          '       </div>'+
-                          '    </div>'+
-                          '</div>',
-                defaultSizeClass: 'col l',
-                selectorHeader: '.card-title',
-                selectorHeaderRight: '.panel-heading-right',
-                selectorHeaderPullRight: '.right',
-                selectorIcon: '.material-icons',
-                selectorFooter: '.card-action',
-                defaultIcon: 'subtitles',
-                defaultToggleOpenIcon: 'call_received',
-                defaultToggleCloseIcon: 'call_made',
-                toggleIcon: function(panelContent, $target) {
-                    if (panelContent.is(':visible')) {
-                        $target.removeClass(this.defaultToggleOpenIcon);
-                        $target.addClass(this.defaultToggleCloseIcon).text(this.defaultToggleCloseIcon);
-                    } else {
-                        $target.removeClass(this.defaultToggleCloseIcon);
-                        $target.addClass(this.defaultToggleOpenIcon).text(this.defaultToggleOpenIcon);
-                    }
-                }
-            }
-        }
-    }).run(['$templateCache', 'jedi.layout.panel.PanelConfig', 'jedi.layout.LayoutConfig', function($templateCache, PanelConfig, LayoutConfig) {
-        $templateCache.put('assets/libs/ng-jedi-layout/panel.html', PanelConfig.uiImplementations[LayoutConfig.defaultUiImpl].template);
-    }]).directive('jdPanel', ['jedi.utilities.Utilities', 'jedi.layout.panel.PanelConfig', '$timeout', '$compile', '$filter', '$templateCache', 'jedi.layout.LayoutConfig', function (utilities, PanelConfig, $timeout, $compile, $filter, $templateCache, LayoutConfig) {
-        var uiImpl = PanelConfig.uiImplementations[LayoutConfig.defaultUiImpl];
+        templateUrl: 'assets/libs/ng-jedi-layout/panel.html'
+    }).run(['$templateCache', 'jedi.layout.impl.Panel', function($templateCache, uiImpl) {
+        $templateCache.put('assets/libs/ng-jedi-layout/panel.html', uiImpl.template);
+    }]).directive('jdPanel', ['jedi.utilities.Utilities', 'jedi.layout.panel.PanelConfig', '$timeout', '$compile', '$filter', '$templateCache', 'jedi.layout.impl.Panel', function (utilities, PanelConfig, $timeout, $compile, $filter, $templateCache, uiImpl) {
         return {
             restrict: 'A',
             scope: true,

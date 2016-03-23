@@ -30,6 +30,20 @@ module.exports = (grunt) ->
                     banner: '<%= banner %>'
                     sourceMap: (fileName) ->
                         fileName.replace /\.js$/, '.map'
+            jsImplBs:
+                src: ['layout-impl-bs.js']
+                dest: 'layout-impl-bs.min.js'
+                options:
+                    banner: '<%= banner %>'
+                    sourceMap: (fileName) ->
+                        fileName.replace /\.js$/, '.map'
+            jsImplMcss:
+                src: ['layout-impl-mcss.js']
+                dest: 'layout-impl-mcss.min.js'
+                options:
+                    banner: '<%= banner %>'
+                    sourceMap: (fileName) ->
+                        fileName.replace /\.js$/, '.map'
         concat:
 
             # concat js files before minification

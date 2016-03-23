@@ -51,139 +51,8 @@
             "{{(type === 'radio' || type === 'checkbox') && (jdRepeat == undefined || jdRepeat == '')}}": 'assets/libs/ng-jedi-layout/input-oneinput.html'
         },
         defaultTemplate: 'assets/libs/ng-jedi-layout/input-single.html',
-        useValidationTooltip: true,
-        uiImplementations: {
-            bootstrap: {
-                elementClass: 'form-control',
-                templates: {
-                    singleInput: '<div class="col-xs-{{jdXsSize}} col-sm-{{jdSmSize}} col-md-{{jdMdSize}} col-lg-{{jdLgSize}} jd-{{type}}">'+
-                                  '    <div class="form-group">'+
-                                  '         <label ng-if="showLabel" for="{{id}}" class="col-xs-{{jdXsLabelSize}} col-sm-{{jdSmLabelSize}} col-md-{{jdMdLabelSize}} col-lg-{{jdLgLabelSize}} {{jdLabelClass}} control-label"><jd-i18n>{{jdLabel}}</jd-i18n>{{showRequired}}</label>'+
-                                  '         <div class="col-xs-{{jdXsInputSize}} col-sm-{{jdSmInputSize}} col-md-{{jdMdInputSize}} col-lg-{{jdLgInputSize}} {{jdInputClass}}">'+
-                                  '            <ng-transclude></ng-transclude>'+
-                                  '            <small class="help-block" ng-if="showHelp" jd-i18n>{{jdHelp}}</small>'+
-                                  '         </div>'+
-                                  '    </div>'+
-                                  '</div>',
-                    multipleInput: '<div class="col-xs-{{jdXsSize}} col-sm-{{jdSmSize}} col-md-{{jdMdSize}} col-lg-{{jdLgSize}} jd-multi-{{type}}">'+
-                                   '    <div class="form-group">'+
-                                   '        <label ng-if="showLabel" class="col-xs-{{jdXsLabelSize}} col-sm-{{jdSmLabelSize}} col-md-{{jdMdLabelSize}} col-lg-{{jdLgLabelSize}} {{jdLabelClass}} control-label"><jd-i18n>{{jdGrouplabel}}</jd-i18n>{{showRequired}}</label>'+
-                                   '        <div class="col-xs-{{jdXsInputSize}} col-sm-{{jdSmInputSize}} col-md-{{jdMdInputSize}} col-lg-{{jdLgInputSize}} {{jdInputClass}}">'+
-                                   '            <label class="{{type}}-inline" ng-repeat>'+
-                                   '                <ng-transclude></ng-transclude>{{jdLabel}}'+
-                                   '            </label>'+
-                                   '            <small class="help-block" ng-if="showHelp" jd-i18n>{{jdHelp}}</small>'+
-                                   '        </div>'+
-                                   '    </div>'+
-                                   '</div>',
-                    oneInput: '<div class="col-xs-{{jdXsSize}} col-sm-{{jdSmSize}} col-md-{{jdMdSize}} col-lg-{{jdLgSize}} jd-{{type}}">'+
-                              '    <div class="form-group">'+
-                              '        <div class="col-xs-offset-{{jdXsLabelSize}} col-sm-offset-{{jdSmLabelSize}} col-md-offset-{{jdMdLabelSize}} col-lg-offset-{{jdLgLabelSize}} {{jdLabelClass}} col-xs-{{jdXsInputSize}} col-sm-{{jdSmInputSize}} col-md-{{jdMdInputSize}} col-lg-{{jdLgInputSize}} {{jdInputClass}}">'+
-                              '            <div class="{{type}}">'+
-                              '                <label>'+
-                              '                    <ng-transclude></ng-transclude><jd-i18n>{{jdLabel}}</jd-i18n>{{showRequired}}'+
-                              '                </label>'+
-                              '            </div>'+
-                              '            <small class="help-block" ng-if="showHelp" jd-i18n>{{jdHelp}}</small>'+
-                              '        </div>'+
-                              '    </div>'+
-                              '</div>'
-                }
-            },
-            materialize: {
-                elementClass: ['validate', function(element) {
-                    return element.is('textarea') ? 'materialize-textarea' : '';
-                }],
-                templates: {
-                    singleInput: '<div class="input-field col s{{jdSmSize}} m{{jdMdSize}} l{{jdLgSize}} jd-{{type}} {{jdInputClass}}">'+
-                                  '  <ng-transclude></ng-transclude>'+
-                                  '  <label ng-if="showLabel" for="{{id}}" class="{{jdLabelClass}}"><jd-i18n>{{jdLabel}}</jd-i18n>{{showRequired}}</label>'+
-                                  '  <small ng-if="showHelp" jd-i18n>{{jdHelp}}</small>'+
-                                  '</div>',
-                    multipleInput: '<div class="col s{{jdSmSize}} m{{jdMdSize}} l{{jdLgSize}} jd-multi-{{type}}">'+
-                                   '    <label ng-if="showLabel" class="{{jdLabelClass}}"><jd-i18n>{{jdGrouplabel}}</jd-i18n>{{showRequired}}</label>'+
-                                   '    <p class="{{jdInputClass}} jd-input-container" ng-repeat>'+
-                                   '      <ng-transclude></ng-transclude>'+
-                                   '      <label for="{{id}}" jd-i18n>{{jdLabel}}</label>'+
-                                   '    </p>'+
-                                   '    <small ng-if="showHelp" jd-i18n>{{jdHelp}}</small>'+
-                                   '</div>',
-                    oneInput: '<div class="col s{{jdSmSize}} m{{jdMdSize}} l{{jdLgSize}} jd-{{type}} {{jdInputClass}}">' +                    
-                              '<label ng-if="showLabel" for="{{id}}" class="{{jdLabelClass}}"><jd-i18n>{{jdLabel}}</jd-i18n>{{showRequired}}</label>' +
-                              '<div class="switch">' +
-                              ' <label class="jd-input-container">' +
-                              '  <ng-transclude></ng-transclude>' +
-                              ' <span class="lever"></span>' +
-                              ' {{ jdLabel }}' +
-                              ' </label>' +
-                              '</div>' +                              
-                              '<small ng-if="showHelp" jd-i18n>{{jdHelp}}</small>'+
-                              '</div>'
-                },
-                postLink: function(scope, element) {
-                    setTimeout(function() {
-                        var label = element.find('label');
-                        if (label.length > 0) {
-                            var input = element.find('ng-transclude:first > :first-child,[ng-transclude]:first > :first-child');
-                            
-                            if (input.is('input[type=text], input[type=password], input[type=email], input[type=url], input[type=tel], input[type=number], input[type=search], textarea')) {
-                                input.on('change', function () {
-                                    if (input.val().length !== 0) {
-                                        label.addClass('active');
-                                    }
-                                }).on('reset', function(e) {
-                                    if (input.val().length === '' && input.attr('placeholder') === undefined) {
-                                        label.removeClass('active');
-                                    }
-                                }).on('focus', function() {
-                                    label.addClass('active').addClass('focus');
-                                }).on('blur', function() {
-                                    if (input.val().length === 0 && input.attr('placeholder') === undefined) {
-                                        label.removeClass('active');
-                                    }
-                                    label.removeClass('focus');
-                                });
-
-                                if (input.val().length > 0 || input.attr('autofocus') || input.attr('placeholder') !== undefined) {
-                                    label.addClass('active');
-                                } else if (input.attr('placeholder') === undefined) {
-                                    label.removeClass('active');
-                                }
-                            } else if (input.is('select')) {
-                                input.material_select();
-                                label.addClass('active');
-                                // destroy
-                                scope.$on('$destroy', function() {
-                                    input.material_select('destroy');
-                                });
-                                element.on('$destroy', function() {
-                                    input.material_select('destroy');
-                                });
-                            }
-                        }
-                        
-                        var type = element.attr('type') || element.data('type');
-                        if (type == 'radio' || type == 'checkbox') {
-                            element.removeAttr('type');
-                            element.data('type', type);                            
-                            element.find('.jd-input-container').each(function(index) {
-                                var $inputContainer = $(this);                                
-                                var transclude = $inputContainer.find('ng-transclude');
-                                var label = $inputContainer.find('label');
-                                var input = $inputContainer.find('input');
-                                var id = input.attr('id') + index; 
-                                
-                                input.attr('id', id).insertAfter(transclude);
-                                label.attr('for', id);                                                    
-                                input.addClass('with-gap');            
-                            });                            
-                        }
-                        
-                    }, 0);
-                }
-            }
-        }
-    }).directive("jdInput", ['jedi.layout.input.InputConfig', 'jedi.layout.LayoutConfig', '$filter', function (InputConfig, LayoutConfig, $filter) {
+        useValidationTooltip: true
+    }).directive("jdInput", ['jedi.layout.impl.Input', 'jedi.layout.input.InputConfig', '$filter', function (uiImpl, InputConfig, $filter) {
         // prepara input antes de realizar transclude
         return {
             restrict: "A",
@@ -208,9 +77,8 @@
                     cElement.attr('jd-i18n', '');
                 }
 
-                if (cElement.is(':input') && !cElement.is(':radio') && !cElement.is(':checkbox') && !cElement.hasClass('form-control')
-                    && InputConfig.uiImplementations[LayoutConfig.defaultUiImpl] && InputConfig.uiImplementations[LayoutConfig.defaultUiImpl].elementClass) {
-                    var elementClass = InputConfig.uiImplementations[LayoutConfig.defaultUiImpl].elementClass;
+                if (uiImpl.elementClass && cElement.is(':input') && !cElement.is(':radio') && !cElement.is(':checkbox') && !cElement.hasClass('form-control')) {
+                    var elementClass = uiImpl.elementClass;
 
                     var classToAdd = '';
 
@@ -268,7 +136,7 @@
                 }
             }
         };
-    }]).directive("jdInput", ['jedi.layout.input.InputConfig', 'jedi.layout.LayoutConfig', '$interpolate', function (InputConfig, LayoutConfig, $interpolate) {
+    }]).directive("jdInput", ['jedi.layout.impl.Input', 'jedi.layout.input.InputConfig', '$interpolate', function (uiImpl, InputConfig, $interpolate) {
         // realiza transclude+template no input
         return {
             restrict: "A",
@@ -443,18 +311,18 @@
                         }
                     }
 
-                    if (InputConfig.uiImplementations[LayoutConfig.defaultUiImpl] && InputConfig.uiImplementations[LayoutConfig.defaultUiImpl].postLink) {
+                    if (uiImpl.postLink) {
                         scope.$watch(function(){
                             return element.find('.jd-input-container').length;
                         }, function() {
-                            InputConfig.uiImplementations[LayoutConfig.defaultUiImpl].postLink(scope, element, attrs, ctrl, transclude);                            
+                            uiImpl.postLink(scope, element, attrs, ctrl, transclude);                            
                         });                        
                     }
                 };
             }
         };
-    }]).run(['$templateCache', 'jedi.layout.input.InputConfig', 'jedi.layout.LayoutConfig', function ($templateCache, InputConfig, LayoutConfig) {
-        $templateCache.put('assets/libs/ng-jedi-layout/input-single.html', InputConfig.uiImplementations[LayoutConfig.defaultUiImpl].templates.singleInput);
-        $templateCache.put('assets/libs/ng-jedi-layout/input-multipleinput.html', InputConfig.uiImplementations[LayoutConfig.defaultUiImpl].templates.multipleInput);
-        $templateCache.put('assets/libs/ng-jedi-layout/input-oneinput.html', InputConfig.uiImplementations[LayoutConfig.defaultUiImpl].templates.oneInput);
+    }]).run(['jedi.layout.impl.Input', '$templateCache', function (uiImpl, $templateCache) {
+        $templateCache.put('assets/libs/ng-jedi-layout/input-single.html', uiImpl.templates.singleInput);
+        $templateCache.put('assets/libs/ng-jedi-layout/input-multipleinput.html', uiImpl.templates.multipleInput);
+        $templateCache.put('assets/libs/ng-jedi-layout/input-oneinput.html', uiImpl.templates.oneInput);
     }]);

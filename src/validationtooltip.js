@@ -15,59 +15,8 @@
             'cpf': 'Invalid CPF.',
             'cnpj': 'Invalid CNPJ.',
             'default': 'Invalid value.'
-        },
-        uiImplementations: {
-            bootstrap: {
-                open: function(element, message) {
-                    var _tooltip = element.data('bs.tooltip');
-                    if (!_tooltip) {
-                        element.tooltip({ trigger: 'manual', container: 'body' });
-                    }
-                    _tooltip = element.data('bs.tooltip');
-                    if (!_tooltip.tip().hasClass('in') || _tooltip.options.title != message) {
-                        _tooltip.options.title = message;
-                        if ((window.innerWidth || document.documentElement.clientWidth) < 995) {
-                            _tooltip.options.placement = 'top';
-                        } else {
-                            _tooltip.options.placement = 'right';
-                        }
-                        element.tooltip('show');
-                    }
-                },
-                close: function(element) {
-                    var _tooltip = element.data('bs.tooltip');
-                    if (_tooltip && _tooltip.tip().hasClass('in')) {
-                        element.tooltip('hide');
-                    }
-                },
-                destroy: function(element) {
-                    var _tooltip = element.data('bs.tooltip');
-                    if (_tooltip) {
-                        element.tooltip('destroy');
-                    }
-                }
-            },
-            materialize: {
-                open: function(element, message, type) {
-                    element.attr('data-position', "right");
-                    element.attr('data-tooltip', message);
-                    element.tooltip('remove');
-                    element.tooltip();                                                                       
-                    if (type === 'focus') {
-                        element.trigger('mouseenter.tooltip');                        
-                    } 
-                },
-                close: function(element, type) {
-                    if (type === 'blur') {
-                        element.trigger('mouseleave.tooltip');
-                    }
-                },
-                destroy: function(element) {
-                    element.tooltip('remove');
-                }
-            }
         }
-    }).directive('jdValidationTooltip', ['$injector', '$interpolate', 'jedi.layout.validationtooltip.ValidationTooltipConfig', 'jedi.layout.LayoutConfig', function ($injector, $interpolate, ValidationTooltipConfig, LayoutConfig) {
+    }).directive('jdValidationTooltip', ['$injector', '$interpolate', 'jedi.layout.validationtooltip.ValidationTooltipConfig', 'jedi.layout.impl.ValidationTooltip', function ($injector, $interpolate, ValidationTooltipConfig, uiImpl) {
         var localize;
         try {
             localize = $injector.get('jedi.i18n.Localize');
@@ -77,7 +26,6 @@
             restrict: 'A',
             require: '^ngModel',
             link: function (scope, element, attrs, ngModel) {
-				var uiImpl = ValidationTooltipConfig.uiImplementations[LayoutConfig.defaultUiImpl];
                 var minLength = attrs['ngMinlength'];
                 var maxLength = attrs['ngMaxlength'];
 
