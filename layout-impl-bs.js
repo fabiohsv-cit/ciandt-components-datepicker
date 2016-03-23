@@ -124,6 +124,10 @@
                  '        <button class="btn btn-primary" jd-dismiss-modal jd-i18n>{{ confirmNoLabel }}</button>' +
                  '    </div>' +
                  '</div>'
+    }).constant('jedi.layout.impl.Breadcrumb', {
+        template: '<ol class="breadcrumb hidden-xs">'+
+                  '    <li class="active" ng-repeat="item in jdBreadcrumb track by $index + item" jd-i18n>{{item}}</li>'+
+                  '</ol>'
     });
 
 }));

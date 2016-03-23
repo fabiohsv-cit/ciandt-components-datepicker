@@ -171,6 +171,14 @@
                  '               <a jd-dismiss-modal jd-i18n class="modal-action modal-close waves-effect waves-red btn-flat">{{ confirmNoLabel }}</a>' +
                  '           </div>' +
                  '       </div>'
+    }).constant('jedi.layout.impl.Breadcrumb', {
+        template: '<nav class="light-blue hide-on-med-and-down">'+
+                  '  <div class="nav-wrapper container">'+
+                  '    <div class="col s12">'+
+                  '      <span class="breadcrumb" ng-repeat="item in jdBreadcrumb track by $index + item" jd-i18n>{{item}}</span>'+
+                  '    </div>'+
+                  '  </div>'+
+                  '</nav>'
     });
 
 }));
