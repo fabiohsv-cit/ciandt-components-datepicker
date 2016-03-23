@@ -23,7 +23,7 @@
 	"bootstrap": "=3.3.4",
 	"moment": "=2.9.0",
 	"angular-ngMask-alias": "*",
-	"ng-jedi-utilities": ">=0.0.1"
+	"ng-jedi-utilities": "#materialize"
   },
   "license": "MIT"
 }
