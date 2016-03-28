@@ -161,14 +161,14 @@
                '               <a ng-click="ok()" class=" modal-action modal-close waves-effect waves-green btn-flat" jd-i18n>{{ alertOkLabel }}</a>' +
                '           </div>' +
                '       </div>',
-        confirm: '<div id="modal1" class="modal modal-fixed-footer">' +
+        confirm: '<div id="modal1" class="modal">' +
                  '           <div class="modal-content">' +
                  '               <h4 jd-i18n>{{confirmTitle}}</h4>' +
                  '               <p jd-i18n>{{ message }}</p>' +
                  '           </div>' +
                  '           <div class="modal-footer">' +
-                 '               <a ng-click="ok()" jd-i18n class=" modal-action modal-close waves-effect waves-green btn-flat">{{ confirmYesLabel }}</a>' +
-                 '               <a jd-dismiss-modal jd-i18n class="modal-action modal-close waves-effect waves-red btn-flat">{{ confirmNoLabel }}</a>' +
+                 '               <a ng-click="ok()" jd-i18n class=" modal-action modal-close waves-effect waves-light btn">{{ confirmYesLabel }}</a>' +
+                 '               <a jd-dismiss-modal jd-i18n class="modal-action modal-close waves-effect waves-light btn red">{{ confirmNoLabel }}</a>' +
                  '           </div>' +
                  '       </div>'
     }).constant('jedi.layout.impl.Breadcrumb', {
