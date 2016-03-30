@@ -344,6 +344,17 @@
             };
             ngModel.$formatters.push(dateFormatter);
         }
+    }).constant('jedi.layout.impl.Table', {
+        cssClass: 'bordered striped responsive-table',
+        sortIcons: {
+            empty: 'reorder',
+            desc: 'call_made',
+            asc: 'call_received'
+        },
+        prepareSortIcon: function(icon, attribute) {
+            icon.addClass("material-icons tiny");
+            icon.html("{{getSortIcon('" + attribute + "')}}");
+        }
     });
 
 }));

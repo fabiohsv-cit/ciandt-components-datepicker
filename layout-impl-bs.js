@@ -357,6 +357,17 @@
                 scope.$destroy();
             });
         }
+    }).constant('jedi.layout.impl.Table', {
+        cssClass: 'table table-bordered table-striped table-responsive table-hover',
+        sortIcons: {
+            empty: 'glyphicon-minus',
+            desc: 'glyphicon-chevron-down',
+            asc: 'glyphicon-chevron-up'
+        },
+        prepareSortIcon: function(icon, attribute) {
+            icon.addClass('glyphicon');
+            icon.attr("ng-class", "getSortIcon('" + attribute + "')");
+        }
     });
 
 }));
