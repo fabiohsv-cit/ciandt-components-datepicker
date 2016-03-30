@@ -56,13 +56,13 @@
                             if (input.val().length === '' && input.attr('placeholder') === undefined) {
                                 label.removeClass('active');
                             }
-                        }).on('focus', function() {
-                            label.addClass('active').addClass('focus');
                         }).on('blur', function() {
                             if (input.val().length === 0 && input.attr('placeholder') === undefined) {
                                 label.removeClass('active');
                             }
                             label.removeClass('focus');
+                        }).not('[jd-datepicker]').on('focus', function() {
+                            label.addClass('active').addClass('focus');
                         });
 
                         if (input.val().length > 0 || input.attr('autofocus') || input.attr('placeholder') !== undefined) {
@@ -179,6 +179,171 @@
                   '    </div>'+
                   '  </div>'+
                   '</nav>'
+    }).constant('jedi.layout.impl.Datepicker', {
+        link: function(scope, element, attrs, ngModel, moment) {
+            var isValidDate = function(date) {
+                if( Object.prototype.toString.call(date) === '[object Date]' ) {
+                    return !isNaN(date.getTime());
+                } 
+                return false;
+            };
+
+            var _locale = moment.localeData(moment.locale());
+            var datepickerAttr = attrs.jdDatepicker;
+            var format;
+
+            if ((datepickerAttr.toLowerCase() === "date-time") || (datepickerAttr.toLowerCase() === "datetime") || (datepickerAttr.toLowerCase() === "date.time")) {
+                format = _locale.longDateFormat("L") + " " + _locale.longDateFormat("LT");
+            } else if ((datepickerAttr) === "time") {
+                format = _locale.longDateFormat("LT");
+            } else if ((datepickerAttr === "") || (datepickerAttr === "date")) {
+                format = _locale.longDateFormat("L");
+            } else {
+                format = datepickerAttr;
+            }
+
+            //watcher of min and max
+            var _max;
+            if (typeof element.attr('jd-max-date') !== 'undefined') {
+                _max = 'jd-max-date';
+            } else
+            if (typeof element.attr('max') !== 'undefined') {
+                _max = 'max';
+            }
+            var _min;
+            if (typeof element.attr('jd-min-date') !== 'undefined') {
+                _min = 'jd-min-date';
+            } else
+            if (typeof element.attr('min') !== 'undefined') {
+                _min = 'min';
+            }
+
+            //pickadate API
+            var picker;
+
+            setTimeout(function() {
+                var pickadateInput = element.pickadate({
+                    selectMonths: true,
+                    monthsFull: _locale._months,
+                    monthsShort: _locale._monthsShort,
+                    weekdaysFull: _locale._weekdays,
+                    weekdaysShort: _locale._weekdaysShort,
+                    format: format.toLowerCase(),
+                    closeOnSelect: true,
+                    closeOnClear: true,
+                    onSet: function() {
+                        if (!element.hasClass('ng-untouched')) {
+                            setTimeout(function() {
+                                element.removeClass('invalid');
+                                if (element.val()) {
+                                    element.addClass('valid');
+                                }
+                            });
+                        }
+                    },
+                    onOpen: function() {
+                        if (element.val()) {
+                            element.removeClass('invalid');
+                        }
+                        setTimeout(function() {
+                            if (element.val()) {
+                                element.removeClass('invalid');
+                            }
+                        });
+                    },
+                    onClose: function() {
+                        setTimeout(function() {
+                            if (!element.val() && typeof element.attr('required') !== 'undefined') {
+                                element.addClass('invalid');
+                            } else {
+                                element.removeClass('invalid');
+                                if (element.val()) {
+                                    element.addClass('valid');
+                                }
+                            }
+                        });
+                    }
+                });
+
+                picker = pickadateInput.pickadate('picker');
+
+                if (_max) {
+                    scope.$watch(element.attr(_max), function(newMax) {
+                        var maxDate = new Date(newMax);
+                        picker.set({max: isValidDate(maxDate) ? maxDate : false});
+                    });
+                }
+                
+                if (_min) {
+                    scope.$watch(element.attr(_min), function(newMin) {
+                        var minDate = new Date(newMin);
+                        picker.set({min: isValidDate(minDate) ? minDate : false});
+                    });
+                }
+
+                setTimeout(function() {
+                    element.removeClass('invalid');
+                });
+            });
+
+            ngModel.$parsers.push(function parseDate(viewValue) {
+                var parsedValue;
+                if (!viewValue) {
+                    ngModel.$setValidity('datepicker', true);
+                    parsedValue = viewValue;
+                } else if (moment.isMoment(viewValue) && viewValue.isValid()) {
+                    ngModel.$setValidity('datepicker', true);
+                    parsedValue = viewValue;
+                } else if (angular.isDate(viewValue) && !isNaN(viewValue)) {
+                    ngModel.$setValidity('datepicker', true);
+                    parsedValue = viewValue;
+                } else if (angular.isString(viewValue)) {
+                    var date = moment(viewValue, format, true);
+                    if (date.isValid()) {
+                        ngModel.$setValidity('datepicker', true);
+                        parsedValue = date.toDate();
+                    } else {
+                        ngModel.$setValidity('datepicker', false);
+                        parsedValue = viewValue;
+                    }
+                } else {
+                    ngModel.$setValidity('datepicker', false);
+                    parsedValue = viewValue;
+                }
+
+                return parsedValue;
+            });
+
+            var dateFormatter = function dateFormatter(value) {
+                var date;
+                if (!value) {
+                    return value;
+                } else if (moment.isMoment(value) && value.isValid()) {
+                    return value.format(format);
+                } else if (angular.isDate(value) && !isNaN(value)) {
+                    date = moment(value);
+                    return date.format(format);
+                } else if (angular.isString(value)) {
+                    date = moment(value, format, true);
+                    if (date.isValid()) {
+                        return date.format(format);
+                    } else {
+                        //Em alguns casos value é uma string de um objeto Date (date.toString()), e o moment não consegue realizar o parse
+                        date = new Date(value);
+                        var mDate = moment(date);
+                        if (mDate.isValid()) {
+                            return mDate.format(format);
+                        } else {
+                            ngModel.$setValidity('datepicker', false);
+                            return value;
+                        }
+                    }
+                } else {
+                    return value;
+                }
+            };
+            ngModel.$formatters.push(dateFormatter);
+        }
     });
 
 }));
