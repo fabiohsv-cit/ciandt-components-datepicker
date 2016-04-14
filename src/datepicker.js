@@ -232,6 +232,10 @@
                         ngModel.$setValidity('mask', true);
                         parsedValue = viewValue;
                     } else if (angular.isString(viewValue)) {
+                        if (viewValue.length > format.length) {
+                            // If that's the case the mask will take care of it right away
+                            return undefined;
+                        }
                         var date = moment(viewValue, format, true);
                         if (date.isValid()) {
                             ngModel.$setValidity('datepicker', true);
