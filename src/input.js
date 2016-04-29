@@ -63,7 +63,7 @@
                     cElement.attr('id', cElement.attr('ng-model'));
                     if (!cElement.attr('id')) {
                         cElement.attr('id', cElement.attr('name'));
-                        if (!cElement.attr('id')) {
+                        if (!cElement.attr('id') && cElement.attr('jd-label')) {
                             cElement.attr('id', $filter('jdReplaceSpecialChars')(cElement.attr('jd-label')));
                         }
                     }
