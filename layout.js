@@ -1,5 +1,5 @@
 /*
- ng-jedi-layout v0.0.7
+ ng-jedi-layout v0.0.9
  AngularJs UI jedi component
  https://github.com/jediproject/ng-jedi-layout
 */
@@ -163,6 +163,7 @@
                 var maskFormat;
                 var mask;
                 var dateWrap;
+                var validationType;  // Used to specify what validation message (validationtooltip) should be used
 
                 //Cria o input-group em volta do input
                 dateWrap = utilities.wrapElement(element, DatepickerConfig.template, true);
@@ -171,18 +172,22 @@
                     //setup geral do datepicker
                     options.locale = moment.locale();
                     if ((datepickerAttr.toLowerCase() === "date-time") || (datepickerAttr.toLowerCase() === "datetime") || (datepickerAttr.toLowerCase() === "date.time")) {
+                        validationType = 'datetime';
                         options.format = 'L LT';
                         format = moment.localeData(moment.locale()).longDateFormat("L") + " " + moment.localeData().longDateFormat("LT");
                         options.useCurrent = 'minute';
                     } else if ((datepickerAttr) === "time") {
+                        validationType = 'time';
                         options.format = 'LT';
                         format = moment.localeData(moment.locale()).longDateFormat("LT");
                         options.useCurrent = 'minute';
                     } else if ((datepickerAttr === "") || (datepickerAttr === "date")) {
+                        validationType = 'date';
                         options.format = 'L';
                         format = moment.localeData(moment.locale()).longDateFormat("L");
                         options.useCurrent = 'day';
                     } else {
+                        validationType = 'datepicker';
                         format = datepickerAttr;
                         options.format = format;
                         options.useCurrent = 'minute';
@@ -239,15 +244,15 @@
                 ngModel.$parsers.push(function parseDate(viewValue) {
                     var parsedValue;
                     if (!viewValue) {
-                        ngModel.$setValidity('datepicker', true);
+                        ngModel.$setValidity(validationType, true);
                         ngModel.$setValidity('mask', true);
                         parsedValue = viewValue;
                     } else if (moment.isMoment(viewValue) && viewValue.isValid()) {
-                        ngModel.$setValidity('datepicker', true);
+                        ngModel.$setValidity(validationType, true);
                         ngModel.$setValidity('mask', true);
                         parsedValue = viewValue;
                     } else if (angular.isDate(viewValue) && !isNaN(viewValue)) {
-                        ngModel.$setValidity('datepicker', true);
+                        ngModel.$setValidity(validationType, true);
                         ngModel.$setValidity('mask', true);
                         parsedValue = viewValue;
                     } else if (angular.isString(viewValue)) {
@@ -257,15 +262,15 @@
                         }
                         var date = moment(viewValue, format, true);
                         if (date.isValid()) {
-                            ngModel.$setValidity('datepicker', true);
+                            ngModel.$setValidity(validationType, true);
                             ngModel.$setValidity('mask', true);
                             parsedValue = date.toDate();
                         } else {
-                            ngModel.$setValidity('datepicker', false);
+                            ngModel.$setValidity(validationType, false);
                             parsedValue = viewValue;
                         }
                     } else {
-                        ngModel.$setValidity('datepicker', false);
+                        ngModel.$setValidity(validationType, false);
                         parsedValue = viewValue;
                     }
 
@@ -297,7 +302,7 @@
                             if (mDate.isValid()) {
                                 return mDate.format(format);
                             } else {
-                                ngModel.$setValidity('datepicker', false);
+                                ngModel.$setValidity(validationType, false);
                                 return value;
                             }
                         }
@@ -1166,6 +1171,8 @@
             'url': 'Invalid Url.',
             'number': 'Please use a valid number.',
             'datepicker': 'Plase use a valid date.',
+            'datetime': 'Plase use a valid date and time.',
+            'time': 'Plase use a valid time.',
             'date': 'Plase use a valid date.',
             'min': 'Use a number starting from {{min}}.',
             'max': 'Use a number that is less or equal to {{max}}.',

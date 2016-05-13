@@ -9,6 +9,8 @@
             'url': 'Invalid Url.',
             'number': 'Please use a valid number.',
             'datepicker': 'Plase use a valid date.',
+            'datetime': 'Plase use a valid date and time.',
+            'time': 'Plase use a valid time.',
             'date': 'Plase use a valid date.',
             'min': 'Use a number starting from {{min}}.',
             'max': 'Use a number that is less or equal to {{max}}.',
